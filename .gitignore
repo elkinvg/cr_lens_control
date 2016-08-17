@@ -1,0 +1,9 @@
+*bootstrap.*
+*classic.json
+*modern.json
+*config.rb
+nbproject/*
+rtrrn/*
+.sencha/*
+sass/example/*
+app/oth/Property.js
