@@ -1,0 +1,3 @@
+sencha generate app --ext --classic LensControl apps/cr_lens_control
+remote control DeviceProxy("tango://IP:10000/test/psw/group_psw")
+ux = ext\packages\ux\classic\src\ and add "ux", to    "requires": in app.json

@@ -13,13 +13,16 @@ Ext.define('LensControl.view.main.Main', {
         'Ext.plugin.Viewport',
         'Ext.window.MessageBox',
 
-        'LensControl.view.main.MainController',
-        'LensControl.view.main.MainModel',
-        'LensControl.view.main.List'
+        'LensControl.view.main.LensMainController',
+        'LensControl.view.main.LensMainModel',
+        //'LensControl.view.main.List'
     ],
 
-    controller: 'main',
-    viewModel: 'main',
+    controller: 'lensmain',
+    viewModel: 'lensmain',
+    // http://docs.sencha.com/extjs/6.0.0-classic/guides/getting_started/login_app.html#getting_started-_-login_app_-_step_7_add_viewport_plugin_logout_button
+    plugins: 'viewport', 
+    
 
     ui: 'navigation',
 
@@ -53,7 +56,8 @@ Ext.define('LensControl.view.main.Main', {
             headerPosition: 'top'
         },
         wide: {
-            headerPosition: 'left'
+            //headerPosition: 'left'
+            headerPosition: 'top'
         }
     },
 
@@ -74,31 +78,40 @@ Ext.define('LensControl.view.main.Main', {
             }
         }
     },
-
+    
     items: [{
-        title: 'Home',
-        iconCls: 'fa-home',
-        // The following grid shares a store with the classic version's grid as well!
+        title: 'Линзы',
+        iconCls: 'fa-plug',
+        scrollable: true,
         items: [{
-            xtype: 'mainlist'
+            xtype: 'lens'    
         }]
-    }, {
-        title: 'Users',
-        iconCls: 'fa-user',
-        bind: {
-            html: '{loremIpsum}'
-        }
-    }, {
-        title: 'Groups',
-        iconCls: 'fa-users',
-        bind: {
-            html: '{loremIpsum}'
-        }
-    }, {
-        title: 'Settings',
-        iconCls: 'fa-cog',
-        bind: {
-            html: '{loremIpsum}'
-        }
     }]
+
+//    items: [{
+//        title: 'Home',
+//        iconCls: 'fa-home',
+//        // The following grid shares a store with the classic version's grid as well!
+//        items: [{
+//            xtype: 'mainlist'
+//        }]
+//    }, {
+//        title: 'Users',
+//        iconCls: 'fa-user',
+//        bind: {
+//            html: '{loremIpsum}'
+//        }
+//    }, {
+//        title: 'Groups',
+//        iconCls: 'fa-users',
+//        bind: {
+//            html: '{loremIpsum}'
+//        }
+//    }, {
+//        title: 'Settings',
+//        iconCls: 'fa-cog',
+//        bind: {
+//            html: '{loremIpsum}'
+//        }
+//    }]
 });

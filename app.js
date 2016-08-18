@@ -3,6 +3,14 @@
  * needed for your application, but these edits will have to be merged by
  * Sencha Cmd when upgrading.
  */
+//Ext.Loader.setConfig ({
+//    enabled: true ,
+//    paths: {
+//        'Ext.ux.WebSocket': '/components/ext.ux.websocket/WebSocket.js' ,
+//        'Ext.ux.WebSocketManager': '/components/ext.ux.websocket/WebSocketManager.js'
+//    }
+//});
+
 Ext.application({
     name: 'LensControl',
 
@@ -16,7 +24,7 @@ Ext.application({
     // will gain a "viewport" plugin if it does not extend Ext.Viewport. With the
     // modern toolkit, the main view will be added to the Viewport.
     //
-    mainView: 'LensControl.view.main.Main'
+    //mainView: 'LensControl.view.main.Main'
 	
     //-------------------------------------------------------------------------
     // Most customizations should be made to LensControl.Application. If you need to

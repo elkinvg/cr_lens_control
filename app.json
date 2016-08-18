@@ -22,7 +22,8 @@
      */
     "classpath": [
         "app",
-        "${toolkit.name}/src"
+        "${toolkit.name}/src",
+        "../cr_login/app"
     ],
 
     /**
@@ -67,7 +68,8 @@
      *      ]
      */
     "requires": [
-        "font-awesome"
+        "font-awesome",
+	"ux"
     ],
 
     /**
@@ -558,5 +560,5 @@
      * Uniquely generated id for this application, used as prefix for localStorage keys.
      * Normally you should never change this value.
      */
-    "id": "64346ffa-8492-4278-848d-5f343bc92e32"
+    "id": "44c15d08-5950-4d43-aac2-14cfb0609064"
 }
