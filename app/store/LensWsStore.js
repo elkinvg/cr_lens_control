@@ -1,3 +1,5 @@
+//var prop = Ext.create('Common_d.Property');
+
 Ext.define('LensControl.store.LensWsStore', {
     extend: 'Ext.data.Store',
     alias: 'store.lenswsstore',
@@ -11,13 +13,15 @@ Ext.define('LensControl.store.LensWsStore', {
         'volt_level',
         'curr_level'
     ],
-    storeId: 'myStore',
+
+    storeId: 'lensStore',
+    
     proxy: {
         type: 'websocket',
-        storeId: 'myStore',
-        //store: 'LensControl.store.LensWsStore',
-        //url: 'ws://127.0.0.1:7890?login=tango&password=tango',
-        url: 'ws://elkin-jinr.ddns.net:7890?login=tango&password=tango',
+        storeId: 'lensStore',
+        // получение адреса ws
+        // логин и пароль должны храниться в localStorage
+        url: 'ws://' + Ext.create('Common_d.Property').getWsforlens() + 'login=' + localStorage.getItem("login") + '&password=' + localStorage.getItem("password"),
         reader: {
             type: 'json',
             rootProperty: 'data'

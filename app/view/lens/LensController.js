@@ -1,13 +1,17 @@
 Ext.define('LensControl.view.lens.LensController', {
     extend: 'Ext.app.ViewController',
     alias: 'controller.lens',
+    
     init: function () {
         console.log('TestwsController');
-        var me= this;
-        
-        var ws = Ext.create('Ext.ux.WebSocket', {
-            url: 'ws://elkin-jinr.ddns.net:7890?login=tango&password=tango',
-            autoReconnect: true ,
+
+        var me = this;
+
+        this.ws = Ext.create('Ext.ux.WebSocket', {
+            // получение адреса ws
+            // логин и пароль должны храниться в localStorage
+            url: 'ws://' + Ext.create('Common_d.Property').getWsforlens() + 'login=' + localStorage.getItem("login") + '&password=' + localStorage.getItem("password"),
+            autoReconnect: true,
             autoReconnectInterval: 1000,
             //url: prop.getUrlwstest(),
             listeners: {
@@ -19,15 +23,15 @@ Ext.define('LensControl.view.lens.LensController', {
                     me.getData(data);
                 },
                 close: function (ws) {
-                    console.log ('The websocket is closed!');
+                    console.log('The websocket is closed!');
                 },
                 error: function (ws, error) {
-                    Ext.Error.raise (error);
-                } ,
+                    Ext.Error.raise(error);
+                },
             }
         });
 //        
-        Ext.ux.WebSocketManager.register(ws);
+        Ext.ux.WebSocketManager.register(this.ws);
 //        Ext.ux.WebSocketManager.listen ('system shutdown', function (ws, data) {
 //            var aaa = data;
 //            console.log ('system shutdown!');
@@ -55,14 +59,37 @@ Ext.define('LensControl.view.lens.LensController', {
     cellClickProc: function (grid, td, cellIndex, record, tr, rowIndex, e, eOpts)
     {
         // получение номера источника и свойства id для колонок
+        var me = this;
         var id = record.id;
         var dataIndex = grid.headerCt.getGridColumns()[cellIndex].dataIndex;
         if (dataIndex === 'volt_level')
             console.log('volt_level');
         if (dataIndex === 'curr_level')
             console.log('curr_level');
-        if (dataIndex === 'device_state')
-            console.log('device_state');
+        if (dataIndex === 'device_state') {
+            Ext.Msg.show({
+                title: 'Состояние источника',
+                message: 'Источник выключен, вы хотите его включить?',
+                //buttons: Ext.Msg.YESNO,
+                icon: Ext.Msg.QUESTION,
+                fn: function (btn) {
+                    if (btn === 'yes') {
+                        me.ws.send('{"command":"OnForAll"}');
+                        console.log('Yes pressed');
+                    } else if (btn === 'no') {
+                        console.log('No pressed');
+                    }
+                }
+            });
+//            console.log('device_state');
+//            var command = new Object();
+//            command.command = "OnForAll";
+//            //this.ws.send('{"command":"OnForAll"}');
+//            var com = Ext.util.JSON.encode(command);
+//            this.ws.send(com);
+            //Ext.ux.WebSocketManager.send('command');
+        }
+
     },
     //
     //

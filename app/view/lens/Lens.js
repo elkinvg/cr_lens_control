@@ -35,7 +35,7 @@ Ext.define('LensControl.view.lens.Lens', {
     controller: 'lens',
     items: [
         {
-            title: 'Установка значаний',
+            title: 'Установка значeний',
             region: 'west',
             floatable: false,
             margin: '5 0 0 0',
