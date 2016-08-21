@@ -39,10 +39,95 @@ Ext.define('LensControl.view.lens.Lens', {
             region: 'west',
             floatable: false,
             margin: '5 0 0 0',
-            //width: 125,
-            minWidth: 400,
+            width: 470,
+            minWidth: 470,
             maxWidth: 600,
-            //html: '<p>Secondary content like navigation links could go here</p>'
+            layout: {
+                type: 'vbox',
+                align: 'stretch',
+            },
+            items: [
+                {
+                    xtype: 'fieldcontainer',
+                    itemId: 'currId',
+                    fieldLabel: '<b>Порог тока для всех</b>',
+                    labelWidth: 120,
+                    combineErrors: false,
+                    defaults: {
+                        hideLabel: true,
+                        margin: '0 20 0 0',
+                    },
+                    layout: {
+                        type: 'hbox',
+                    },
+                    items: [
+                        {
+                            // задание тока
+                            name: 'currforall',
+                            itemId: 'currforall',
+                            xtype: 'numberfield',
+                            minValue: 0,
+                            allowBlank: false,
+                            maxValue: 60000,
+                            maxLenght: 5,
+                            step: 10,
+                            width: 120
+                        },
+                        {
+                            xtype: 'displayfield',
+                            value: '<b>мА',
+                            width: 30
+                        },
+                        {
+                            xtype: 'button',
+                            width: 130,
+                            text: 'Установить',
+                            handler: 'sendNewValue'
+                        }
+                    ]
+
+                },
+                {
+                    xtype: 'fieldcontainer',
+                    fieldLabel: '<b>Порог напряжения для всех</b>',
+                    itemId: 'voltageId',
+                    labelWidth: 120,
+                    combineErrors: false,
+                    defaults: {
+                        hideLabel: true,
+                        margin: '0 20 0 0',
+                    },
+                    layout: {
+                        type: 'hbox',
+                    },
+                    items: [
+                        {
+                            // задание напряжения
+                            name: 'voltforall',
+                            itemId: 'voltforall',
+                            xtype: 'numberfield',
+                            minValue: 0,
+                            allowBlank: false,
+                            maxValue: 60,
+                            maxLenght: 5,
+                            step: 10,
+                            width: 120
+                        },
+                        {
+                            xtype: 'displayfield',
+                            value: '<b>В',
+                            width: 30
+                        },
+                        {
+                            xtype: 'button',
+                            width: 130,
+                            text: 'Установить',
+                            handler: 'sendNewValue'
+                        }
+                    ]
+
+                }
+            ]
         },
         {
             title: 'Источники питания',
@@ -87,7 +172,7 @@ Ext.define('LensControl.view.lens.Lens', {
                         {
                             text: 'Id', dataIndex: 'id',
                             renderer: 'bold',
-                            flex: 1
+                            flex: 0.5
                         },
                         {
                             text: 'Напряжение (В)', dataIndex: 'volt_measure',

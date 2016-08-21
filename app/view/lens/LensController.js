@@ -56,31 +56,150 @@ Ext.define('LensControl.view.lens.LensController', {
     //
     //
     //
+//    sendNewValue: function (value, commandIn) {
+    sendNewValue: function (button) {
+        // отправить на сервер новые значения пороговых тока или напряжения 
+        // для всех подключённых источников
+        var me = this;
+        var myView = button.up('container');
+        if (myView === undefined)
+            return;
+        var gettingItemId = myView.getItemId();
+        var command = new Object();
+        if (gettingItemId === 'currId') {
+            var valueField = myView.getComponent('currforall').getValue();
+            if (valueField === null)
+                return;
+            console.log("sendNewValue " + valueField + " from currId");
+            command.command = "";
+        } else if (gettingItemId === 'voltageId') {
+            var valueField = myView.getComponent('voltforall').getValue();
+            if (valueField === null)
+                return;
+            console.log("sendNewValue " + valueField + " from voltageId");
+            command.command = "";
+        } else
+            return;
+        
+        command.argin = valueField;
+        //var valueField = myView.getComponent('voltforall');
+//        var valueField2 = myView.getView();//.getForm();//findField('voltforall');
+        
+        //var abc = Ext.ComponentQuery.query('[name=voltforall]');
+        //var getVal = abc[0].getValue();
+//        var win = a.up('window'),
+//        form = win.down('form');
+//        var tmp = me.getView().getForm();//.findField(reg);
+        //console.log("sendNewValue");
+//        var command = new Object();
+//        command.command = commandIn;
+//        command.argin = value;
+//        var comJson = Ext.util.JSON.encode(command);
+//        me.ws.send(comJson);
+    },
+    //
+    //
+    //
     cellClickProc: function (grid, td, cellIndex, record, tr, rowIndex, e, eOpts)
     {
         // получение номера источника и свойства id для колонок
+
+        //var msgbox = new NumberPrompt().prompt('Quantity', 'Enter a number', function (btn, text) {});
+        
         var me = this;
         var id = record.id;
+        var device = record.data.device_name;
         var dataIndex = grid.headerCt.getGridColumns()[cellIndex].dataIndex;
-        if (dataIndex === 'volt_level')
+        if (dataIndex === 'volt_level') {
             console.log('volt_level');
-        if (dataIndex === 'curr_level')
+        }            
+        if (dataIndex === 'curr_level') {
             console.log('curr_level');
-        if (dataIndex === 'device_state') {
             Ext.Msg.show({
-                title: 'Состояние источника',
-                message: 'Источник выключен, вы хотите его включить?',
-                //buttons: Ext.Msg.YESNO,
-                icon: Ext.Msg.QUESTION,
-                fn: function (btn) {
-                    if (btn === 'yes') {
-                        me.ws.send('{"command":"OnForAll"}');
-                        console.log('Yes pressed');
-                    } else if (btn === 'no') {
-                        console.log('No pressed');
-                    }
-                }
+                title: 'Изменить порог<br>напряжения источника' + id,
+                msg: 'Введите новое значение',
+                buttons: Ext.Msg.YESNO,
+                buttonText: {
+                    yes: "Изменить",
+                    no: "Нет"
+                },
             });
+            
+            //Ext.Msg.prompt('Изменить порог<br>напряжения источника' + id, 'Введите новое значение', function (btn, text) {
+//                if (btn == 'ok') {
+//                    // process text value and close...
+//                }
+//            });
+        }            
+        if (dataIndex === 'device_state') {
+            var state = record.data.device_state;
+
+            var statFunc = function (state, id, device) {
+                if (state === 'ON') {
+                    console.log('STATUS ON');
+                    var messageIn = 'Источник включён, вы хотите его выключить?';
+                    var buttonIn = Ext.Msg.YESNO;
+                    var command = new Object();
+                    command.command = "OffForDevice";
+                    command.argin = device;
+                    var buttonIn = Ext.Msg.YESNO;
+                    var icon = Ext.Msg.QUESTION;
+                    var butText = {
+                        yes: "Да",
+                        no: "Нет"
+                    }
+                } else if (state === 'OFF') {
+                    console.log('STATUS OFF');
+                    var messageIn = 'Источник выключен, вы хотите его включить?';
+                    var buttonIn = Ext.Msg.YESNO;
+                    var command = new Object();
+                    command.command = "OnForDevice";
+                    command.argin = device;
+                    var buttonIn = Ext.Msg.YESNO;
+                    var icon = Ext.Msg.QUESTION;
+                    var butText = {
+                        yes: "Да",
+                        no: "Нет"
+                    }
+                } else if (state === 'FAULT') {
+                    console.log('STATUS FAULT');
+                    var messageIn = 'связь с Источником ' + id + ' нарушена';
+                    var buttonIn = Ext.Msg.OK;
+                    var icon = Ext.Msg.ERROR;
+                    //return;
+                }
+                Ext.Msg.show({
+                    title: 'Состояние источника ' + id,
+                    message: messageIn,
+                    buttons: buttonIn,
+                    icon: icon,
+                    buttonText: butText,
+                    fn: function (btn) {
+                        if (btn === 'yes') {
+                            var comJson = Ext.util.JSON.encode(command);
+                            me.ws.send(comJson);
+                            console.log('Yes pressed');
+                        } else if (btn === 'no') {
+                            console.log('No pressed');
+                        }
+                    }
+                });
+            }
+            statFunc(state,id);
+//            Ext.Msg.show({
+//                title: 'Состояние источника ' + id,
+//                message: 'Источник выключен, вы хотите его включить?',
+//                buttons: Ext.Msg.YESNO,
+//                icon: Ext.Msg.QUESTION,
+//                fn: function (btn) {
+//                    if (btn === 'yes') {
+//                        me.ws.send('{"command":"OnForAll"}');
+//                        console.log('Yes pressed');
+//                    } else if (btn === 'no') {
+//                        console.log('No pressed');
+//                    }
+//                }
+//            });
 //            console.log('device_state');
 //            var command = new Object();
 //            command.command = "OnForAll";
@@ -144,3 +263,33 @@ Ext.define('LensControl.view.lens.LensController', {
 
 });
 
+/*
+ // for message win
+             win = new Ext.Window({
+                width: 300
+                , height: 150
+                , draggable: false
+                , border: false
+                , modal: true
+                , resizable: false
+                , items: [
+                    {
+                        xtype: 'textfield',
+                        fieldLabel: 'Text One'
+                    },
+                    {
+                        xtype: 'textfield',
+                        fieldLabel: 'Text Two'
+                    },
+                    {
+                        xtype: 'button',
+                        name: 'sampleButton',
+                        text: 'Click me',
+                        style: 'margin:15px',
+                        width: 50
+                    }
+                ]
+            })
+            win.show();
+ 
+ */
