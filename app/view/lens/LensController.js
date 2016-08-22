@@ -71,31 +71,27 @@ Ext.define('LensControl.view.lens.LensController', {
             if (valueField === null)
                 return;
             console.log("sendNewValue " + valueField + " from currId");
-            command.command = "";
+            command.command = "SetCurrentLevelForAll";
         } else if (gettingItemId === 'voltageId') {
             var valueField = myView.getComponent('voltforall').getValue();
             if (valueField === null)
                 return;
             console.log("sendNewValue " + valueField + " from voltageId");
-            command.command = "";
+            command.command = "SetVoltageLevelForAll";
         } else
             return;
         
         command.argin = valueField;
-        //var valueField = myView.getComponent('voltforall');
-//        var valueField2 = myView.getView();//.getForm();//findField('voltforall');
+        var comJson = Ext.util.JSON.encode(command);
+        me.ws.send(comJson);
         
+        //var valueField = myView.getComponent('voltforall');
+//        var valueField2 = myView.getView();//.getForm();//findField('voltforall');     
         //var abc = Ext.ComponentQuery.query('[name=voltforall]');
         //var getVal = abc[0].getValue();
 //        var win = a.up('window'),
 //        form = win.down('form');
 //        var tmp = me.getView().getForm();//.findField(reg);
-        //console.log("sendNewValue");
-//        var command = new Object();
-//        command.command = commandIn;
-//        command.argin = value;
-//        var comJson = Ext.util.JSON.encode(command);
-//        me.ws.send(comJson);
     },
     //
     //
@@ -111,25 +107,39 @@ Ext.define('LensControl.view.lens.LensController', {
         var device = record.data.device_name;
         var dataIndex = grid.headerCt.getGridColumns()[cellIndex].dataIndex;
         if (dataIndex === 'volt_level') {
+            var inputData = new Object();
+            
+            inputData.id = id;
+            inputData.device = device;
+            inputData.title = 'Порог напряжения источника ' + id;
+            inputData.titleForValue = '<b>В';
+            inputData.forFieldLabel = '<b>Порог напряжения</b>';
+            inputData.value = record.data.volt_level;
+            inputData.maxValue = 40;
+            inputData.minValue = 0;
+            inputData.step = 0.5;
+            inputData.command = "SetVoltageLevelForDevice";
+            
+            me.changeLevel(inputData);
             console.log('volt_level');
         }            
         if (dataIndex === 'curr_level') {
-            console.log('curr_level');
-            Ext.Msg.show({
-                title: 'Изменить порог<br>напряжения источника' + id,
-                msg: 'Введите новое значение',
-                buttons: Ext.Msg.YESNO,
-                buttonText: {
-                    yes: "Изменить",
-                    no: "Нет"
-                },
-            });
             
-            //Ext.Msg.prompt('Изменить порог<br>напряжения источника' + id, 'Введите новое значение', function (btn, text) {
-//                if (btn == 'ok') {
-//                    // process text value and close...
-//                }
-//            });
+            var inputData = new Object();
+            
+            inputData.id = id;
+            inputData.device = device;
+            inputData.title = 'Порог тока источника ' + id;
+            inputData.titleForValue = '<b>мА';
+            inputData.forFieldLabel = '<b>Порог тока</b>';
+            inputData.value = record.data.curr_level;
+            inputData.maxValue = 80;
+            inputData.minValue = 0;
+            inputData.step = 1;
+            inputData.command = "SetCurrentLevelForDevice";
+            
+            me.changeLevel(inputData);
+            console.log('curr_level');
         }            
         if (dataIndex === 'device_state') {
             var state = record.data.device_state;
@@ -140,7 +150,7 @@ Ext.define('LensControl.view.lens.LensController', {
                     var messageIn = 'Источник включён, вы хотите его выключить?';
                     var buttonIn = Ext.Msg.YESNO;
                     var command = new Object();
-                    command.command = "OffForDevice";
+                    command.command = "OffDevice";
                     command.argin = device;
                     var buttonIn = Ext.Msg.YESNO;
                     var icon = Ext.Msg.QUESTION;
@@ -153,7 +163,7 @@ Ext.define('LensControl.view.lens.LensController', {
                     var messageIn = 'Источник выключен, вы хотите его включить?';
                     var buttonIn = Ext.Msg.YESNO;
                     var command = new Object();
-                    command.command = "OnForDevice";
+                    command.command = "OnDevice";
                     command.argin = device;
                     var buttonIn = Ext.Msg.YESNO;
                     var icon = Ext.Msg.QUESTION;
@@ -184,29 +194,8 @@ Ext.define('LensControl.view.lens.LensController', {
                         }
                     }
                 });
-            }
-            statFunc(state,id);
-//            Ext.Msg.show({
-//                title: 'Состояние источника ' + id,
-//                message: 'Источник выключен, вы хотите его включить?',
-//                buttons: Ext.Msg.YESNO,
-//                icon: Ext.Msg.QUESTION,
-//                fn: function (btn) {
-//                    if (btn === 'yes') {
-//                        me.ws.send('{"command":"OnForAll"}');
-//                        console.log('Yes pressed');
-//                    } else if (btn === 'no') {
-//                        console.log('No pressed');
-//                    }
-//                }
-//            });
-//            console.log('device_state');
-//            var command = new Object();
-//            command.command = "OnForAll";
-//            //this.ws.send('{"command":"OnForAll"}');
-//            var com = Ext.util.JSON.encode(command);
-//            this.ws.send(com);
-            //Ext.ux.WebSocketManager.send('command');
+            };
+            statFunc(state,id,device);
         }
 
     },
@@ -223,11 +212,28 @@ Ext.define('LensControl.view.lens.LensController', {
     setStatusColor: function (val) {
         // установка цветового индикатора статуса
         if (val === "FAULT")
-            return '<span style="color:red; font-size:200%"> &#9899; </span>';
+            return '<span style="color:red; font-size:150%"> &#9899; </span>';
         if (val === "ON")
             return '<span style="color:green; font-size:150%"> &#9899; </span>';
         if (val === "OFF")
             return '<span style="color:orange; font-size:150%"> &#9899; </span>';
+    },
+    //
+    //
+    //
+    onOrOffAllDevice: function (button) {
+        var commandtype = button.commandtype;
+        var command = new Object();
+        if (commandtype === 'on') {
+            command.command = 'OnForAll';
+        } else if (commandtype === 'off') {
+            command.command = 'OffForAll';
+        } else
+            return;
+        
+        var comJson = Ext.util.JSON.encode(command);
+        this.ws.send(comJson);
+        
     },
     //
     //
@@ -259,6 +265,81 @@ Ext.define('LensControl.view.lens.LensController', {
         Ext.ux.WebSocketManager.broadcast('system shutdown', dataAM);
 
         console.log('You clicked the button!');
+    },
+    //
+    //
+    //
+    changeLevel: function(inputData) {
+        var me = this;
+        var win = new Ext.Window({    
+            width: 300
+            , height: 170
+            , title: inputData.title
+            , draggable: false
+            , border: false
+            , modal: true
+            , resizable: false
+            //, layout: 'vbox'
+            , layout: {
+                type: 'vbox',
+                align: 'center'
+            }
+            , items: [
+                {
+                    xtype: 'fieldcontainer',
+                    fieldLabel: inputData.forFieldLabel,
+                    labelWidth: 120,
+                    combineErrors: false,
+                    defaults: {
+                        hideLabel: true,
+                        margin: '10 0 0 10',
+                    },
+                    layout: {
+                        type: 'hbox',
+                    },
+                    items: [
+                        {
+                            xtype: 'numberfield',
+                            reference: 'testField',
+                            minValue: inputData.minValue,
+                            allowBlank: false,
+                            value: inputData.value,
+                            maxValue: inputData.maxValue,
+                            maxLenght: 5,
+                            step: inputData.step,
+                            maxWidth: 100
+                        },
+                        {
+                            xtype: 'displayfield',
+                            value: inputData.titleForValue,
+                            width: 30
+                        }
+                    ]
+                },
+                {
+                    xtype: 'button',
+                    name: 'sampleButton',
+                    text: 'Установить',
+                    style: 'margin:15px',
+                    maxWidth: 150,
+                    handler: function() {
+                        var view = win.down('numberfield');
+                        var newvalue = view.getValue();
+                        var command = new Object();
+                        command.command = inputData.command;
+                        var argin = new Array();
+                        argin.push(inputData.device);
+                        argin.push(newvalue);
+                        command.argin = argin;
+                        var comJson = Ext.util.JSON.encode(command);
+                        me.ws.send(comJson);
+                        win.close();
+                        console.log("changed Level");
+                    }
+                }
+            ]
+        });
+        win.show();
     },
 
 });

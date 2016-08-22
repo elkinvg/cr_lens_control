@@ -68,9 +68,10 @@ Ext.define('LensControl.view.lens.Lens', {
                             xtype: 'numberfield',
                             minValue: 0,
                             allowBlank: false,
-                            maxValue: 60000,
+                            value: 5.5,
+                            maxValue: 80,
                             maxLenght: 5,
-                            step: 10,
+                            step: 0.5,
                             width: 120
                         },
                         {
@@ -109,8 +110,9 @@ Ext.define('LensControl.view.lens.Lens', {
                             minValue: 0,
                             allowBlank: false,
                             maxValue: 60,
+                            value: 9.5,
                             maxLenght: 5,
-                            step: 10,
+                            step: 0.5,
                             width: 120
                         },
                         {
@@ -125,7 +127,37 @@ Ext.define('LensControl.view.lens.Lens', {
                             handler: 'sendNewValue'
                         }
                     ]
-
+                },
+                {
+                    xtype: 'container',
+                    //margin: '10 10 10 10',
+                    //flex: 1,
+                    //height: 100,
+                    layout: {
+                        type: 'hbox',
+                        align: 'stretch'
+                    },
+                    defaults: {
+                        margin: '10 10 10 10', 
+                    },
+                    items: [
+                        {
+                            xtype: 'button',
+                            commandtype: 'on',
+                            width: 130,
+                            text: 'Включить все',
+                            handler: 'onOrOffAllDevice'
+                            //handler: 'sendNewValue'
+                        },
+                        {
+                            xtype: 'button',
+                            commandtype: 'off',
+                            width: 130,
+                            text: 'Выключить все',
+                            handler: 'onOrOffAllDevice'
+                            //handler: 'sendNewValue'
+                        }
+                    ]
                 }
             ]
         },
@@ -138,23 +170,7 @@ Ext.define('LensControl.view.lens.Lens', {
                 {
                     xtype: 'grid',
                     reference: 'mainGrid',
-//            width: "60%",
-                    //width: '70%',
-                    //width: '50%',
-                    //collapsible: true,
-//            selModel: {
-//    selType: 'cellmodel',
-//    mode   : 'MULTI'
-//},
-//            store: Ext.data.StoreManager.lookup('lensStore'),
-                    //store: Ext.data.StoreManager.lookup('lenswsstore'),
-                    //store: 'lensStore',
-                    //store: 'myStore',
-                    //store: store1,
-//            listeners: {
-//                resize: 'resizeLensPanel',
-//                cellclick: 'cellClickProc'
-//            },
+
                     listeners: {
                         cellclick: 'cellClickProc',
                         resize: function (a, b, c, d, e, f) {
