@@ -48,121 +48,249 @@ Ext.define('LensControl.view.lens.Lens', {
             },
             items: [
                 {
-                    xtype: 'fieldcontainer',
-                    itemId: 'currId',
-                    fieldLabel: '<b>Порог тока для всех</b>',
-                    labelWidth: 120,
-                    combineErrors: false,
-                    defaults: {
-                        hideLabel: true,
-                        margin: '0 20 0 0',
-                    },
+//            xtype: 'panel',
+                    xtype: 'fieldset',
+                    //reference: 'panelForAll',
+                    style: 'background-color: #fafafa;',
+                    title: 'Включение/выключение  системы',
+                    reference: 'onOffPanel',
+                    width: '100%',
                     layout: {
-                        type: 'hbox',
+                        type: 'vbox',
+                        align: 'stretch',
                     },
                     items: [
                         {
-                            // задание тока
-                            name: 'currforall',
-                            itemId: 'currforall',
-                            xtype: 'numberfield',
-                            minValue: 0,
-                            allowBlank: false,
-                            value: 5.5,
-                            maxValue: 80,
-                            maxLenght: 5,
-                            step: 0.5,
-                            width: 120
-                        },
-                        {
-                            xtype: 'displayfield',
-                            value: '<b>мА',
-                            width: 30
-                        },
-                        {
-                            xtype: 'button',
-                            width: 130,
-                            text: 'Установить',
-                            handler: 'sendNewValue'
-                        }
-                    ]
+                            xtype: 'fieldcontainer',
+                            itemId: 'currId',
+                            fieldLabel: '<b>Порог тока для всех</b>',
+                            labelWidth: 120,
+                            combineErrors: false,
+                            defaults: {
+                                hideLabel: true,
+                                margin: '0 20 0 0',
+                            },
+                            layout: {
+                                type: 'hbox',
+                            },
+                            items: [
+                                {
+                                    // задание тока
+                                    name: 'currforall',
+                                    itemId: 'currforall',
+                                    xtype: 'numberfield',
+                                    minValue: 0,
+                                    allowBlank: false,
+                                    value: 5.5,
+                                    maxValue: 80,
+                                    maxLenght: 5,
+                                    step: 0.5,
+                                    width: 100
+                                },
+                                {
+                                    xtype: 'displayfield',
+                                    value: '<b>мА',
+                                    width: 30
+                                },
+                                {
+                                    xtype: 'button',
+                                    width: 130,
+                                    text: 'Установить',
+                                    handler: 'sendNewValue'
+                                }
+                            ]
 
-                },
-                {
-                    xtype: 'fieldcontainer',
-                    fieldLabel: '<b>Порог напряжения для всех</b>',
-                    itemId: 'voltageId',
-                    labelWidth: 120,
-                    combineErrors: false,
-                    defaults: {
-                        hideLabel: true,
-                        margin: '0 20 0 0',
-                    },
-                    layout: {
-                        type: 'hbox',
-                    },
-                    items: [
-                        {
-                            // задание напряжения
-                            name: 'voltforall',
-                            itemId: 'voltforall',
-                            xtype: 'numberfield',
-                            minValue: 0,
-                            allowBlank: false,
-                            maxValue: 60,
-                            value: 9.5,
-                            maxLenght: 5,
-                            step: 0.5,
-                            width: 120
                         },
                         {
-                            xtype: 'displayfield',
-                            value: '<b>В',
-                            width: 30
+                            xtype: 'fieldcontainer',
+                            fieldLabel: '<b>Порог напряжения для всех</b>',
+                            itemId: 'voltageId',
+                            labelWidth: 120,
+                            combineErrors: false,
+                            defaults: {
+                                hideLabel: true,
+                                margin: '0 20 0 0',
+                            },
+                            layout: {
+                                type: 'hbox',
+                            },
+                            items: [
+                                {
+                                    // задание напряжения
+                                    name: 'voltforall',
+                                    itemId: 'voltforall',
+                                    xtype: 'numberfield',
+                                    minValue: 0,
+                                    allowBlank: false,
+                                    maxValue: 60,
+                                    value: 9.5,
+                                    maxLenght: 5,
+                                    step: 0.5,
+                                    width: 100
+                                },
+                                {
+                                    xtype: 'displayfield',
+                                    value: '<b>В',
+                                    width: 30
+                                },
+                                {
+                                    xtype: 'button',
+                                    width: 130,
+                                    text: 'Установить',
+                                    handler: 'sendNewValue'
+                                }
+                            ]
                         },
                         {
-                            xtype: 'button',
-                            width: 130,
-                            text: 'Установить',
-                            handler: 'sendNewValue'
+                            xtype: 'container',
+                            //margin: '10 10 10 10',
+                            //flex: 1,
+                            //height: 100,
+                            layout: {
+                                type: 'hbox',
+                                align: 'stretch'
+                            },
+                            defaults: {
+                                margin: '10 10 10 10',
+                            },
+                            items: [
+                                {
+                                    xtype: 'button',
+                                    commandtype: 'on',
+                                    width: 130,
+                                    text: 'Включить все',
+                                    handler: 'onOrOffAllDevice'
+                                            //handler: 'sendNewValue'
+                                },
+                                {
+                                    xtype: 'button',
+                                    commandtype: 'off',
+                                    width: 130,
+                                    text: 'Выключить все',
+                                    handler: 'onOrOffAllDevice'
+                                            //handler: 'sendNewValue'
+                                }
+                            ]
                         }
                     ]
                 },
-                {
-                    xtype: 'container',
-                    //margin: '10 10 10 10',
-                    //flex: 1,
-                    //height: 100,
-                    layout: {
-                        type: 'hbox',
-                        align: 'stretch'
-                    },
-                    defaults: {
-                        margin: '10 10 10 10', 
-                    },
-                    items: [
-                        {
-                            xtype: 'button',
-                            commandtype: 'on',
-                            width: 130,
-                            text: 'Включить все',
-                            handler: 'onOrOffAllDevice'
-                            //handler: 'sendNewValue'
-                        },
-                        {
-                            xtype: 'button',
-                            commandtype: 'off',
-                            width: 130,
-                            text: 'Выключить все',
-                            handler: 'onOrOffAllDevice'
-                            //handler: 'sendNewValue'
-                        }
-                    ]
-                }
+//                {
+//                    xtype: 'fieldcontainer',
+//                    itemId: 'currId',
+//                    fieldLabel: '<b>Порог тока для всех</b>',
+//                    labelWidth: 120,
+//                    combineErrors: false,
+//                    defaults: {
+//                        hideLabel: true,
+//                        margin: '0 20 0 0',
+//                    },
+//                    layout: {
+//                        type: 'hbox',
+//                    },
+//                    items: [
+//                        {
+//                            // задание тока
+//                            name: 'currforall',
+//                            itemId: 'currforall',
+//                            xtype: 'numberfield',
+//                            minValue: 0,
+//                            allowBlank: false,
+//                            value: 5.5,
+//                            maxValue: 80,
+//                            maxLenght: 5,
+//                            step: 0.5,
+//                            width: 120
+//                        },
+//                        {
+//                            xtype: 'displayfield',
+//                            value: '<b>мА',
+//                            width: 30
+//                        },
+//                        {
+//                            xtype: 'button',
+//                            width: 130,
+//                            text: 'Установить',
+//                            handler: 'sendNewValue'
+//                        }
+//                    ]
+//
+//                },
+//                {
+//                    xtype: 'fieldcontainer',
+//                    fieldLabel: '<b>Порог напряжения для всех</b>',
+//                    itemId: 'voltageId',
+//                    labelWidth: 120,
+//                    combineErrors: false,
+//                    defaults: {
+//                        hideLabel: true,
+//                        margin: '0 20 0 0',
+//                    },
+//                    layout: {
+//                        type: 'hbox',
+//                    },
+//                    items: [
+//                        {
+//                            // задание напряжения
+//                            name: 'voltforall',
+//                            itemId: 'voltforall',
+//                            xtype: 'numberfield',
+//                            minValue: 0,
+//                            allowBlank: false,
+//                            maxValue: 60,
+//                            value: 9.5,
+//                            maxLenght: 5,
+//                            step: 0.5,
+//                            width: 120
+//                        },
+//                        {
+//                            xtype: 'displayfield',
+//                            value: '<b>В',
+//                            width: 30
+//                        },
+//                        {
+//                            xtype: 'button',
+//                            width: 130,
+//                            text: 'Установить',
+//                            handler: 'sendNewValue'
+//                        }
+//                    ]
+//                },
+//                {
+//                    xtype: 'container',
+//                    //margin: '10 10 10 10',
+//                    //flex: 1,
+//                    //height: 100,
+//                    layout: {
+//                        type: 'hbox',
+//                        align: 'stretch'
+//                    },
+//                    defaults: {
+//                        margin: '10 10 10 10', 
+//                    },
+//                    items: [
+//                        {
+//                            xtype: 'button',
+//                            commandtype: 'on',
+//                            width: 130,
+//                            text: 'Включить все',
+//                            handler: 'onOrOffAllDevice'
+//                            //handler: 'sendNewValue'
+//                        },
+//                        {
+//                            xtype: 'button',
+//                            commandtype: 'off',
+//                            width: 130,
+//                            text: 'Выключить все',
+//                            handler: 'onOrOffAllDevice'
+//                            //handler: 'sendNewValue'
+//                        }
+//                    ]
+//                }
             ]
         },
         {
             title: 'Источники питания',
+            reference: 'powersupplies',
             collapsible: false,
             region: 'center',
             margin: '5 0 0 0',

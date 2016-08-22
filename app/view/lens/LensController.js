@@ -106,6 +106,11 @@ Ext.define('LensControl.view.lens.LensController', {
         var id = record.id;
         var device = record.data.device_name;
         var dataIndex = grid.headerCt.getGridColumns()[cellIndex].dataIndex;
+        var state = record.data.device_state;
+        if (state === "FAULT") {
+            statFunc(state,id,device);
+            return;
+        }
         if (dataIndex === 'volt_level') {
             var inputData = new Object();
             
@@ -142,61 +147,61 @@ Ext.define('LensControl.view.lens.LensController', {
             console.log('curr_level');
         }            
         if (dataIndex === 'device_state') {
-            var state = record.data.device_state;
-
-            var statFunc = function (state, id, device) {
-                if (state === 'ON') {
-                    console.log('STATUS ON');
-                    var messageIn = 'Источник включён, вы хотите его выключить?';
-                    var buttonIn = Ext.Msg.YESNO;
-                    var command = new Object();
-                    command.command = "OffDevice";
-                    command.argin = device;
-                    var buttonIn = Ext.Msg.YESNO;
-                    var icon = Ext.Msg.QUESTION;
-                    var butText = {
-                        yes: "Да",
-                        no: "Нет"
-                    }
-                } else if (state === 'OFF') {
-                    console.log('STATUS OFF');
-                    var messageIn = 'Источник выключен, вы хотите его включить?';
-                    var buttonIn = Ext.Msg.YESNO;
-                    var command = new Object();
-                    command.command = "OnDevice";
-                    command.argin = device;
-                    var buttonIn = Ext.Msg.YESNO;
-                    var icon = Ext.Msg.QUESTION;
-                    var butText = {
-                        yes: "Да",
-                        no: "Нет"
-                    }
-                } else if (state === 'FAULT') {
-                    console.log('STATUS FAULT');
-                    var messageIn = 'связь с Источником ' + id + ' нарушена';
-                    var buttonIn = Ext.Msg.OK;
-                    var icon = Ext.Msg.ERROR;
-                    //return;
-                }
-                Ext.Msg.show({
-                    title: 'Состояние источника ' + id,
-                    message: messageIn,
-                    buttons: buttonIn,
-                    icon: icon,
-                    buttonText: butText,
-                    fn: function (btn) {
-                        if (btn === 'yes') {
-                            var comJson = Ext.util.JSON.encode(command);
-                            me.ws.send(comJson);
-                            console.log('Yes pressed');
-                        } else if (btn === 'no') {
-                            console.log('No pressed');
-                        }
-                    }
-                });
-            };
+            //var state = record.data.device_state;
             statFunc(state,id,device);
         }
+        
+        function statFunc(state, id, device) {
+            if (state === 'ON') {
+                console.log('STATUS ON');
+                var messageIn = 'Источник включён, вы хотите его выключить?';
+                var buttonIn = Ext.Msg.YESNO;
+                var command = new Object();
+                command.command = "OffDevice";
+                command.argin = device;
+                var buttonIn = Ext.Msg.YESNO;
+                var icon = Ext.Msg.QUESTION;
+                var butText = {
+                    yes: "Да",
+                    no: "Нет"
+                }
+            } else if (state === 'OFF') {
+                console.log('STATUS OFF');
+                var messageIn = 'Источник выключен, вы хотите его включить?';
+                var buttonIn = Ext.Msg.YESNO;
+                var command = new Object();
+                command.command = "OnDevice";
+                command.argin = device;
+                var buttonIn = Ext.Msg.YESNO;
+                var icon = Ext.Msg.QUESTION;
+                var butText = {
+                    yes: "Да",
+                    no: "Нет"
+                }
+            } else if (state === 'FAULT') {
+                console.log('STATUS FAULT');
+                var messageIn = 'связь с Источником ' + id + ' нарушена';
+                var buttonIn = Ext.Msg.OK;
+                var icon = Ext.Msg.ERROR;
+                //return;
+            }
+            Ext.Msg.show({
+                title: 'Состояние источника ' + id,
+                message: messageIn,
+                buttons: buttonIn,
+                icon: icon,
+                buttonText: butText,
+                fn: function (btn) {
+                    if (btn === 'yes') {
+                        var comJson = Ext.util.JSON.encode(command);
+                        me.ws.send(comJson);
+                        console.log('Yes pressed');
+                    } else if (btn === 'no') {
+                        console.log('No pressed');
+                    }
+                }
+            });
+        };
 
     },
     //
@@ -239,15 +244,49 @@ Ext.define('LensControl.view.lens.LensController', {
     //
     //
     getData: function(data) {
-//        var dataFromPs = Ext.JSON.decode(data);
-//        var decodedString = Ext.decode(data);
-        var mainGrid = this.lookupReference('mainGrid');
-        var dataIn = [];
-        dataIn.push(["a","b","c","d","e","f"]);
-        var sss = mainGrid.getStore();
-        //sss.insert(0,dataIn);
-        //mainGrid.data = dataIn;
-        //mainGrid.data = ;
+        var me = this;
+        var tmp = data;
+        if (data.event = "read") {
+            var size = data.data.length;
+            function isFault(number) {
+                if (number.device_state === 'FAULT')
+                    return true;
+                else
+                    return false;
+            };
+            function isOff(number) {
+                if (number.device_state === 'OFF')
+                    return true;
+                else
+                    return false;
+            };
+            // Выставляет красный индикатор в Title если хотя бы один Fault
+            var isSomeFault = data.data.some(isFault);
+            
+            var stateOv = me.lookupReference('powersupplies');
+            var ttt = me.lookupReference('onOffPanel');
+            
+            var isAllFault = data.data.every(isFault);
+            if (isAllFault)
+                ttt.disable();
+            else
+                ttt.enable();
+            
+            if (isSomeFault) {
+                stateOv.setTitle("Источники питания. " + '<span style="color:red; font-size:200%"> &#9899; </span>');
+                return;
+            }
+            var isSomeOff = data.data.some(isFault);
+            if (isOff) {
+                stateOv.setTitle("Источники питания. " + '<span style="color:orange; font-size:200%"> &#9899; </span>');
+                return;
+            }
+            
+            // здесь если все источники имеют состояние ставится зелёный идикатор
+            stateOv.setTitle("Источники питания. " + '<span style="color:green; font-size:200%"> &#9899; </span>');
+            
+            
+        }
     },
     //
     //
