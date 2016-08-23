@@ -7,6 +7,8 @@ Ext.define('LensControl.view.lens.LensController', {
 
         var me = this;
 
+        // генерация дополнительного экземпляра для веб-сокета
+        // один используется в LensWsStore. 
         this.ws = Ext.create('Ext.ux.WebSocket', {
             // получение адреса ws
             // логин и пароль должны храниться в localStorage
@@ -19,7 +21,7 @@ Ext.define('LensControl.view.lens.LensController', {
                     if(typeof dbg !== 'undefined') console.log('websocket Open');
                 },
                 message: function (ws, data) {
-                    //console.log('getting data');
+                    //здесь принимаются данные с сервера
                     me.getData(data);
                 },
                 close: function (ws) {
@@ -31,13 +33,13 @@ Ext.define('LensControl.view.lens.LensController', {
             }
         });
 //        
-        Ext.ux.WebSocketManager.register(this.ws);
+        //Ext.ux.WebSocketManager.register(this.ws);
 //        Ext.ux.WebSocketManager.listen ('system shutdown', function (ws, data) {
 //            var aaa = data;
 //            console.log ('system shutdown!');
 //        });
     },
-    resizeLensPanel: function () {
+    resizeLensPanel: function (out,width,height) {
         // Изменить размер главной страницы с таблицами.
         // Изменется в начале, когда добавляются таблицы.
         // Также возможны необратимые измененения при зуминге
@@ -46,10 +48,12 @@ Ext.define('LensControl.view.lens.LensController', {
             if(typeof dbg !== 'undefined') console.log('lensGet.length NULL!');
             return;
         }
-        var lensGetHeight = lensGet[0].getHeight();
+        var lensGetHeight = out.getHeight();
+        
+        //console.log("lensGet[0].maxheightGrid " + lensGet[0].maxheightGrid);
 
         if (lensGet[0].maxheightGrid < lensGetHeight) {
-            lensGet[0].maxheightGrid = lensGetHeight;
+            lensGet[0].maxheightGrid = lensGetHeight + 100;
             lensGet[0].setMinHeight(lensGet[0].maxheightGrid);
         }
     },    
@@ -245,8 +249,20 @@ Ext.define('LensControl.view.lens.LensController', {
     //
     getData: function(data) {
         var me = this;
-
-        if (data.event = "read") {
+        
+        if (typeof data === 'string') {            
+            try {
+                var decodedData = Ext.util.JSON.decode(data);
+            }
+            catch (e) {return;}
+            
+            if (decodedData.error !== undefined) {
+                if(typeof dbg !== 'undefined') console.log("Error: " + decodedData.error);
+            }
+            return;
+        }
+        
+        if (data.event === "read") {
             var size = data.data.length;
             function isFault(number) {
                 if (number.device_state === 'FAULT')
@@ -264,13 +280,13 @@ Ext.define('LensControl.view.lens.LensController', {
             var isSomeFault = data.data.some(isFault);
             
             var stateOv = me.lookupReference('powersupplies');
-            var ttt = me.lookupReference('onOffPanel');
+            var onOffPanel = me.lookupReference('onOffPanel');
             
             var isAllFault = data.data.every(isFault);
             if (isAllFault)
-                ttt.disable();
+                onOffPanel.disable();
             else
-                ttt.enable();
+                onOffPanel.enable();
             
             if (isSomeFault) {
                 stateOv.setTitle("Источники питания. " + '<span style="color:red; font-size:200%"> &#9899; </span>');
@@ -287,23 +303,6 @@ Ext.define('LensControl.view.lens.LensController', {
             
             
         }
-    },
-    //
-    //
-    //
-    ventilatorClick: function (aa, bb, cc) {
-        var dataIn = [];
-        dataIn.push(["a", "b", "c", "d", "e", "f"]);
-        var dataAM = new Object();
-        dataAM.as = "sadsd";
-        dataAM.ss = "fsdljsdf";
-        dataAM.qw = "qwerty";
-        dataAM.her = dataIn;
-//                Ext.ux.WebSocketManager.broadcast('system shutdown', 'BROADCAST: the system will shutdown in few minutes.');
-//                Ext.ux.WebSocketManager.broadcast('system shutdown',dataIn);
-        Ext.ux.WebSocketManager.broadcast('system shutdown', dataAM);
-
-        if(typeof dbg !== 'undefined') console.log('You clicked the button!');
     },
     //
     //
@@ -382,34 +381,3 @@ Ext.define('LensControl.view.lens.LensController', {
     },
 
 });
-
-/*
- // for message win
-             win = new Ext.Window({
-                width: 300
-                , height: 150
-                , draggable: false
-                , border: false
-                , modal: true
-                , resizable: false
-                , items: [
-                    {
-                        xtype: 'textfield',
-                        fieldLabel: 'Text One'
-                    },
-                    {
-                        xtype: 'textfield',
-                        fieldLabel: 'Text Two'
-                    },
-                    {
-                        xtype: 'button',
-                        name: 'sampleButton',
-                        text: 'Click me',
-                        style: 'margin:15px',
-                        width: 50
-                    }
-                ]
-            })
-            win.show();
- 
- */

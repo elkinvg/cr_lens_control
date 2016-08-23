@@ -178,6 +178,7 @@ Ext.define('LensControl.view.lens.Lens', {
         {
             title: 'Источники питания',
             reference: 'powersupplies',
+            itemId: 'powersupplies',
             collapsible: false,
             region: 'center',
             margin: '5 0 0 0',
@@ -185,16 +186,11 @@ Ext.define('LensControl.view.lens.Lens', {
                 {
                     xtype: 'grid',
                     reference: 'mainGrid',
+                    itemId: 'powersuppliesGrid',
 
                     listeners: {
                         cellclick: 'cellClickProc',
-                        resize: function (a, b, c, d, e, f) {
-                            var ass = this;
-                            //console.log("RESIZEEE = " + c);
-                            var lensGet = Ext.ComponentQuery.query('lens');
-                            var lensGetHeight = lensGet[0].getHeight();
-                            lensGet[0].setMinHeight(c+100);
-                        }
+                        resize: 'resizeLensPanel',
                     },
                     store: {
                         type: 'lenswsstore'
