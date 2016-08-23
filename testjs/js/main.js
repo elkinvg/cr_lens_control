@@ -21,8 +21,8 @@ $("#test_butt").click(function () {
   //socket.send("HELLLLOOOOOOOO");
   var sender = JSON.stringify(argin);
   socket.send(sender);
-  console.log("but clicked");
-  console.log("id= " + id);
+  if(typeof dbg !== 'undefined') console.log("but clicked");
+  if(typeof dbg !== 'undefined') console.log("id= " + id);
     id++;
 });
 
@@ -43,8 +43,8 @@ $("#massive_butt").click(function () {
   //argin.id = id;
   var sender = JSON.stringify(argin);
   socket.send(sender);
-  console.log("but clicked");
-  console.log("id= " + id);
+  if(typeof dbg !== 'undefined') console.log("but clicked");
+  if(typeof dbg !== 'undefined') console.log("id= " + id);
   id++;
 });
 

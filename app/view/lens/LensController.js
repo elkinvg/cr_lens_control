@@ -3,7 +3,7 @@ Ext.define('LensControl.view.lens.LensController', {
     alias: 'controller.lens',
     
     init: function () {
-        console.log('TestwsController');
+        if(typeof dbg !== 'undefined') console.log('TestwsController');
 
         var me = this;
 
@@ -16,14 +16,14 @@ Ext.define('LensControl.view.lens.LensController', {
             //url: prop.getUrlwstest(),
             listeners: {
                 open: function (ws) {
-                    console.log('websocket Open');
+                    if(typeof dbg !== 'undefined') console.log('websocket Open');
                 },
                 message: function (ws, data) {
                     //console.log('getting data');
                     me.getData(data);
                 },
                 close: function (ws) {
-                    console.log('The websocket is closed!');
+                    if(typeof dbg !== 'undefined') console.log('The websocket is closed!');
                 },
                 error: function (ws, error) {
                     Ext.Error.raise(error);
@@ -43,7 +43,7 @@ Ext.define('LensControl.view.lens.LensController', {
         // Также возможны необратимые измененения при зуминге
         var lensGet = Ext.ComponentQuery.query('lens');
         if (lensGet.length === 0) {
-            console.log('lensGet.length NULL!');
+            if(typeof dbg !== 'undefined') console.log('lensGet.length NULL!');
             return;
         }
         var lensGetHeight = lensGet[0].getHeight();
@@ -70,13 +70,13 @@ Ext.define('LensControl.view.lens.LensController', {
             var valueField = myView.getComponent('currforall').getValue();
             if (valueField === null)
                 return;
-            console.log("sendNewValue " + valueField + " from currId");
+            if(typeof dbg !== 'undefined') console.log("sendNewValue " + valueField + " from currId");
             command.command = "SetCurrentLevelForAll";
         } else if (gettingItemId === 'voltageId') {
             var valueField = myView.getComponent('voltforall').getValue();
             if (valueField === null)
                 return;
-            console.log("sendNewValue " + valueField + " from voltageId");
+            if(typeof dbg !== 'undefined') console.log("sendNewValue " + valueField + " from voltageId");
             command.command = "SetVoltageLevelForAll";
         } else
             return;
@@ -126,7 +126,7 @@ Ext.define('LensControl.view.lens.LensController', {
             inputData.command = "SetVoltageLevelForDevice";
             
             me.changeLevel(inputData);
-            console.log('volt_level');
+            if(typeof dbg !== 'undefined') console.log('volt_level');
         }            
         if (dataIndex === 'curr_level') {
             
@@ -144,7 +144,7 @@ Ext.define('LensControl.view.lens.LensController', {
             inputData.command = "SetCurrentLevelForDevice";
             
             me.changeLevel(inputData);
-            console.log('curr_level');
+            if(typeof dbg !== 'undefined') console.log('curr_level');
         }            
         if (dataIndex === 'device_state') {
             //var state = record.data.device_state;
@@ -153,7 +153,7 @@ Ext.define('LensControl.view.lens.LensController', {
         
         function statFunc(state, id, device) {
             if (state === 'ON') {
-                console.log('STATUS ON');
+                if(typeof dbg !== 'undefined') console.log('STATUS ON');
                 var messageIn = 'Источник включён, вы хотите его выключить?';
                 var buttonIn = Ext.Msg.YESNO;
                 var command = new Object();
@@ -166,7 +166,7 @@ Ext.define('LensControl.view.lens.LensController', {
                     no: "Нет"
                 }
             } else if (state === 'OFF') {
-                console.log('STATUS OFF');
+                if(typeof dbg !== 'undefined') console.log('STATUS OFF');
                 var messageIn = 'Источник выключен, вы хотите его включить?';
                 var buttonIn = Ext.Msg.YESNO;
                 var command = new Object();
@@ -179,7 +179,7 @@ Ext.define('LensControl.view.lens.LensController', {
                     no: "Нет"
                 }
             } else if (state === 'FAULT') {
-                console.log('STATUS FAULT');
+                if(typeof dbg !== 'undefined') console.log('STATUS FAULT');
                 var messageIn = 'связь с Источником ' + id + ' нарушена';
                 var buttonIn = Ext.Msg.OK;
                 var icon = Ext.Msg.ERROR;
@@ -195,9 +195,9 @@ Ext.define('LensControl.view.lens.LensController', {
                     if (btn === 'yes') {
                         var comJson = Ext.util.JSON.encode(command);
                         me.ws.send(comJson);
-                        console.log('Yes pressed');
+                        if(typeof dbg !== 'undefined') console.log('Yes pressed');
                     } else if (btn === 'no') {
-                        console.log('No pressed');
+                        if(typeof dbg !== 'undefined') console.log('No pressed');
                     }
                 }
             });
@@ -303,7 +303,7 @@ Ext.define('LensControl.view.lens.LensController', {
 //                Ext.ux.WebSocketManager.broadcast('system shutdown',dataIn);
         Ext.ux.WebSocketManager.broadcast('system shutdown', dataAM);
 
-        console.log('You clicked the button!');
+        if(typeof dbg !== 'undefined') console.log('You clicked the button!');
     },
     //
     //
@@ -373,7 +373,7 @@ Ext.define('LensControl.view.lens.LensController', {
                         var comJson = Ext.util.JSON.encode(command);
                         me.ws.send(comJson);
                         win.close();
-                        console.log("changed Level");
+                        if(typeof dbg !== 'undefined') console.log("changed Level");
                     }
                 }
             ]

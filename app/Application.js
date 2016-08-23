@@ -3,6 +3,7 @@
  * calls Ext.application(). This is the ideal place to handle application launch and
  * initialization details.
  */
+dbg = "";
 Ext.define('LensControl.Application', {
     extend: 'Ext.app.Application',
     
@@ -35,7 +36,7 @@ Ext.define('LensControl.Application', {
     },
     
     init: function () {
-        console.log("communication");
+        if(typeof dbg !== 'undefined') console.log("communication");
     },
 
     onAppUpdate: function () {

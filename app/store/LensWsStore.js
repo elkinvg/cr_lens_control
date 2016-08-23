@@ -29,7 +29,7 @@ Ext.define('LensControl.store.LensWsStore', {
     },
     listeners: {
         load: function (store, n) {
-                console.log("Data loaded. ");
+                if(typeof dbg !== 'undefined') console.log("Data loaded. ");
         },
         
     }    

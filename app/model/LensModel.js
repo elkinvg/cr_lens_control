@@ -33,9 +33,9 @@ Ext.define('LensControl.model.LensModel', {
         listeners: {
         load: function (records, store, success) {
             if (success) {
-                console.log("Data loaded. ");
+                if(typeof dbg !== 'undefined') console.log("Data loaded. ");
             } else {
-                console.log("not success!!!");
+                if(typeof dbg !== 'undefined') console.log("not success!!!");
             }
         }
     }

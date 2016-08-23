@@ -16,7 +16,7 @@ Ext.define('LensControl.view.lens.Lens', {
     ],
     listeners: {
         resize: function (a, b, c, d, e, f) {
-            console.log("form resize h= " + c);
+            if(typeof dbg !== 'undefined') console.log("form resize h= " + c);
         }
     },
     bodyBorder: false,
