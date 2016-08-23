@@ -51,7 +51,7 @@ Ext.define('LensControl.view.lens.Lens', {
                     xtype: 'fieldset',
                     //reference: 'panelForAll',
                     style: 'background-color: #fafafa;',
-                    title: 'Включение/выключение  системы',
+                    title: 'Управление всеми источниками',
                     reference: 'onOffPanel',
                     width: '100%',
                     layout: {

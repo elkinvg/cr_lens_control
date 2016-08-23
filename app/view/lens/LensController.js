@@ -245,7 +245,7 @@ Ext.define('LensControl.view.lens.LensController', {
     //
     getData: function(data) {
         var me = this;
-        var tmp = data;
+
         if (data.event = "read") {
             var size = data.data.length;
             function isFault(number) {
