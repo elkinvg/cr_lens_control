@@ -292,8 +292,8 @@ Ext.define('LensControl.view.lens.LensController', {
                 stateOv.setTitle("Источники питания. " + '<span style="color:red; font-size:200%"> &#9899; </span>');
                 return;
             }
-            var isSomeOff = data.data.some(isFault);
-            if (isOff) {
+            var isSomeOff = data.data.some(isOff);
+            if (isSomeOff) {
                 stateOv.setTitle("Источники питания. " + '<span style="color:orange; font-size:200%"> &#9899; </span>');
                 return;
             }
