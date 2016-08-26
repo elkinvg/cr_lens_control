@@ -88,7 +88,7 @@ Ext.define('LensControl.view.lens.Lens', {
                                 },
                                 {
                                     xtype: 'displayfield',
-                                    value: '<b>мА',
+                                    value: '<b>А',
                                     width: 30
                                 },
                                 {

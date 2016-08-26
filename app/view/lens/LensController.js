@@ -139,12 +139,12 @@ Ext.define('LensControl.view.lens.LensController', {
             inputData.id = id;
             inputData.device = device;
             inputData.title = 'Порог тока источника ' + id;
-            inputData.titleForValue = '<b>мА';
+            inputData.titleForValue = '<b>А';
             inputData.forFieldLabel = '<b>Порог тока</b>';
             inputData.value = record.data.curr_level;
             inputData.maxValue = 80;
             inputData.minValue = 0;
-            inputData.step = 1;
+            inputData.step = 0.5;
             inputData.command = "SetCurrentLevelForDevice";
             
             me.changeLevel(inputData);
