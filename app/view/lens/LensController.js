@@ -257,7 +257,18 @@ Ext.define('LensControl.view.lens.LensController', {
             catch (e) {return;}
             
             if (decodedData.error !== undefined) {
-                if(typeof dbg !== 'undefined') console.log("Error: " + decodedData.error);
+                if (typeof dbg !== 'undefined')
+                    console.log("Error: " + decodedData.error);
+                if (decodedData.error === "Permission denied") {
+                    var user = localStorage.getItem("login");
+                    var errMsg = "У пользователя " + user + " нет прав \n на выполнение этой операции.<br>Для получение прав свяжитесь с администратором"
+                    Ext.Msg.show({
+                        title: decodedData.error,
+                        message: errMsg,
+                        icon: Ext.Msg.ERROR,
+                        buttons: Ext.Msg.OK,
+                    });
+                }
             }
             return;
         }
