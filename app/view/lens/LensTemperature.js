@@ -6,6 +6,7 @@ Ext.define('LensControl.view.lens.LensTemperature', {
         'Ext.data.Store',
         'LensControl.view.lens.LensTemperatureController',
         'LensControl.store.LensTemperatureStore',
+        'Ext.chart.*'
     ],
 //    store: {
 //        type: 'lenstempstore'
@@ -19,8 +20,9 @@ items: [{
             type: 'lenstempstore'
         },
         axes: [{
+            title: 'Температура',
             type: 'numeric',
-            fields: ['value_r' ],
+            fields: ['value_r'],
             position: 'left',
             grid: true,
             minimum: 0,
@@ -36,6 +38,14 @@ items: [{
                 }
             }
         }],
+         series: [{
+            type: 'line',
+            xField: 'data_time',
+            yField: 'value_r',
+            style: {
+                lineWidth: 4
+            },}],
+
         
         }],
 //    items: [
