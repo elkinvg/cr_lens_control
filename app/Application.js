@@ -15,11 +15,17 @@ Ext.define('LensControl.Application', {
     //requires: [
     views: [
         'Login.view.login.LoginCheck',
-        'LensControl.view.main.Main'
+        'LensControl.view.main.Main',
+        'LensControl.view.lens.LensTemperature',
+        'LensControl.view.lens.Lens'
     ],
+//    requires: [
+//        'LensControl.store.LensTemperatureStore',
+//    ],
 
     stores: [
         // TODO: add global / shared stores here
+        'LensTemperatureStore'
     ],
     
     launch: function () {
