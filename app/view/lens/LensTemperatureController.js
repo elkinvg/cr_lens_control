@@ -6,8 +6,13 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
         console.log("init LensTemperatureController");
         
         var dStore = Ext.data.StoreManager.lookup('lenstempStore');
-        var a=2;
+        var ref = this.lookupReference('chart');
+        var axes0 = ref.axes[0];
+//        axes0.setMinimum(-5);
+//        axes0.setMaximum(100);
+
         dStore.load();
+
         //myStore.load();
         
 //        var task = {

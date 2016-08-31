@@ -16,6 +16,8 @@ items: [{
         reference: 'chart',
         width: '100%',
         height: 500,
+
+        
         store: {
             type: 'lenstempstore'
         },
@@ -38,6 +40,10 @@ items: [{
                     grid: true,
                     //minimum: 0,
                     //renderer: 'onAxisLabelRender'
+                    listeners: {
+                        rangechange: function (axis, range, eOpts) {
+                        },
+                    },
                 }, {
                     type: 'category',
                     fields: 'data_time',
@@ -48,7 +54,8 @@ items: [{
                             degrees: -45
                         }
                     }
-                }],
+                },
+            ],
             series: [
                 {
                     type: 'line',
@@ -91,9 +98,8 @@ items: [{
                     },
                 },
             ],
-
-        
-        }],
+        }
+    ],
 //    items: [
 //        {
 //            xtype: 'gridpanel',
@@ -110,3 +116,20 @@ items: [{
 //        }
 //    ],
 });
+
+//            listeners: {
+//                initialize: function (me, eOpts) {
+//                    console.log("INIIIT");
+//                    Ext.getStore('lenstempStore').load({
+//                        callback: function (records, operation, success) {
+//                            console.log("init charts");
+////                            var data = records[0].data;
+////                            var axes = me.getAxes();
+////                            var SampleValuesAxis = axes[0];
+////                            SampleValuesAxis.setMinimum(data.minimum);
+////                            SampleValuesAxis.setMaximum(data.maximum);
+//                        },
+//                        scope: this
+//                    });
+//                }
+//            },
