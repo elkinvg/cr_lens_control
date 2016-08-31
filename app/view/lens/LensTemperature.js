@@ -19,32 +19,78 @@ items: [{
         store: {
             type: 'lenstempstore'
         },
-        axes: [{
-            title: 'Температура',
-            type: 'numeric',
-            fields: ['value_r'],
-            position: 'left',
-            grid: true,
-            minimum: 0,
-            //renderer: 'onAxisLabelRender'
-        }, {
-            type: 'category',
-            fields: 'data_time',
-            position: 'bottom',
-            grid: true,
-            label: {
-                rotate: {
-                    degrees: -45
-                }
-            }
-        }],
-         series: [{
-            type: 'line',
-            xField: 'data_time',
-            yField: 'value_r',
-            style: {
-                lineWidth: 4
-            },}],
+            legend: {
+                docked: 'right'
+            },
+            axes: [{
+                    title: 'Температура',
+                    type: 'numeric',
+                    fields: [
+                        'value_r_7', 
+                        'value_r_8',
+                        'value_r_9',
+                        'value_r_10',
+                        'value_r_11',
+                    ],
+                    //minimum: 18,
+                    //maximum: 21,
+                    position: 'left',
+                    grid: true,
+                    //minimum: 0,
+                    //renderer: 'onAxisLabelRender'
+                }, {
+                    type: 'category',
+                    fields: 'data_time',
+                    position: 'bottom',
+                    grid: true,
+                    label: {
+                        rotate: {
+                            degrees: -45
+                        }
+                    }
+                }],
+            series: [
+                {
+                    type: 'line',
+                    xField: 'data_time',
+                    yField: 'value_r_7',
+                    style: {
+                        lineWidth: 4
+                    },
+                },
+                {
+                    type: 'line',
+                    xField: 'data_time',
+                    yField: 'value_r_8',
+                    style: {
+                        lineWidth: 4
+                    },
+                },
+                {
+                    type: 'line',
+                    xField: 'data_time',
+                    yField: 'value_r_9',
+                    style: {
+                        lineWidth: 4
+                    },
+                },
+                {
+                    type: 'line',
+                    xField: 'data_time',
+                    yField: 'value_r_10',
+                    style: {
+                        lineWidth: 4
+                    },
+                },
+                {
+                    type: 'line',
+                    xField: 'data_time',
+                    yField: 'value_r_11',
+                    style: {
+                        lineWidth: 4
+                    },
+                },
+            ],
 
         
         }],

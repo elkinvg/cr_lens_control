@@ -7,13 +7,14 @@ Ext.define('LensControl.store.LensTemperatureStore', {
 //    },
     storeId: 'lenstempStore',
     fields: [
-        'att_conf_id',
+        //'att_conf_id',
         'data_time',
-        'recv_time',
-        'insert_time',
-        'value_r',
-        'quality',
-        'error_desc'
+        //'recv_time','insert_time',
+        'value_r_7','quality_7','error_desc_7',
+        'value_r_8','quality_8','error_desc_8',
+        'value_r_9','quality_9','error_desc_9',
+        'value_r_10','quality_10','error_desc_10',
+        'value_r_11','quality_11','error_desc_11',
     ],
     autoload: true,
     proxy: {
