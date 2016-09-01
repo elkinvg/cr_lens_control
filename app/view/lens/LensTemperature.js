@@ -28,11 +28,11 @@ items: [{
                     title: 'Температура',
                     type: 'numeric',
                     fields: [
-                        'value_r_7', 
-                        'value_r_8',
-                        'value_r_9',
-                        'value_r_10',
-                        'value_r_11',
+                        'T_1', 
+                        'T_2',
+                        'T_3',
+                        'T_4',
+                        'T_5',
                     ],
                     //minimum: 18,
                     //maximum: 21,
@@ -46,7 +46,7 @@ items: [{
                     },
                 }, {
                     type: 'category',
-                    fields: 'data_time',
+                    fields: 'time',
                     position: 'bottom',
                     grid: true,
                     label: {
@@ -59,40 +59,40 @@ items: [{
             series: [
                 {
                     type: 'line',
-                    xField: 'data_time',
-                    yField: 'value_r_7',
+                    xField: 'time',
+                    yField: 'T_1',
                     style: {
                         lineWidth: 4
                     },
                 },
                 {
                     type: 'line',
-                    xField: 'data_time',
-                    yField: 'value_r_8',
+                    xField: 'time',
+                    yField: 'T_2',
                     style: {
                         lineWidth: 4
                     },
                 },
                 {
                     type: 'line',
-                    xField: 'data_time',
-                    yField: 'value_r_9',
+                    xField: 'time',
+                    yField: 'T_3',
                     style: {
                         lineWidth: 4
                     },
                 },
                 {
                     type: 'line',
-                    xField: 'data_time',
-                    yField: 'value_r_10',
+                    xField: 'time',
+                    yField: 'T_4',
                     style: {
                         lineWidth: 4
                     },
                 },
                 {
                     type: 'line',
-                    xField: 'data_time',
-                    yField: 'value_r_11',
+                    xField: 'time',
+                    yField: 'T_5',
                     style: {
                         lineWidth: 4
                     },
@@ -100,21 +100,6 @@ items: [{
             ],
         }
     ],
-//    items: [
-//        {
-//            xtype: 'gridpanel',
-//            collapsible: true,
-//            //store: ['lenstempstore'],
-////            store: {
-////                type: 'lenstempstore'
-////            },
-//            columns: [
-//                {text: 'Регистр/Флаг', flex: 0.3, dataIndex: 'att_conf_id'},
-//                {text: 'Значение', flex: 0.3, dataIndex: 'insert_time'},
-//                {text: 'Описание', flex: 1, dataIndex: 'error_desc'}
-//            ]
-//        }
-//    ],
 });
 
 //            listeners: {
