@@ -79,7 +79,8 @@ Ext.define('LensControl.view.main.Main', {
         }
     },
     
-    items: [{
+    items: [
+        {
             title: 'Линзы',
             iconCls: 'fa-plug',
             scrollable: true,
