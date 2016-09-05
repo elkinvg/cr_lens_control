@@ -79,7 +79,7 @@ Ext.define('LensControl.view.main.Main', {
         }
     },
     
-    items: [{title: 'Журнал',iconCls: 'fa-file-text-o',items: [{xtype: 'log'}]},
+    items: [{title: 'Журнал',scrollable: true,iconCls: 'fa-file-text-o',items: [{xtype: 'log'}]},
         {
             title: 'Линзы',
             iconCls: 'fa-plug',

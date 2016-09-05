@@ -25,7 +25,7 @@ Ext.define('LensControl.Application', {
 
     stores: [
         // TODO: add global / shared stores here
-        'LensTemperatureStore'
+        'LensTemperatureStore','LogStore'
     ],
     
     launch: function () {
