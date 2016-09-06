@@ -218,14 +218,20 @@ Ext.define('LensControl.view.lens.LensController', {
     //
     //
     //
-    setStatusColor: function (val) {
+    setStatusColor: function (val, meta) {
         // установка цветового индикатора статуса
         if (val === "FAULT")
-            return '<span style="color:red; font-size:150%"> &#9899; </span>';
+            meta.style = "background-color:red;";
+            //return '<span style="color:red; font-size:150%"> &#9899; </span>';
         if (val === "ON")
-            return '<span style="color:green; font-size:150%"> &#9899; </span>';
+            meta.style = "background-color:green;";
+            //return '<span style="color:green; font-size:150%"> &#9899; </span>';
         if (val === "OFF")
-            return '<span style="color:orange; font-size:150%"> &#9899; </span>';
+            meta.style = "background-color:orange;";
+            //return '<span style="color:orange; font-size:150%"> &#9899; </span>';
+        
+        return "";
+    
     },
     //
     //

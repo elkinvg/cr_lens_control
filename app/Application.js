@@ -29,6 +29,11 @@ Ext.define('LensControl.Application', {
     ],
     
     launch: function () {
+        // Для смены сепаратора чисел. Стоит русская локализация, 
+        // для неё по умолчанию ','
+        
+        Ext.util.Format.decimalSeparator = '.';
+
         // TODO - Launch the application
         // launch - вызывается, когда application подгружает все необходимые классы
         if (this.login === null || this.passw === null) {

@@ -80,11 +80,11 @@ Ext.define('LensControl.view.lens.Lens', {
                                     xtype: 'numberfield',
                                     minValue: 0,
                                     allowBlank: false,
-                                    value: 5.5,
+                                    value: 0.0,//value: 5.5,
                                     maxValue: 80,
                                     maxLenght: 5,
-                                    step: 0.5,
-                                    width: 100
+                                    step: 0.1,//step: 0.5,
+                                    width: 100,
                                 },
                                 {
                                     xtype: 'displayfield',
@@ -122,9 +122,9 @@ Ext.define('LensControl.view.lens.Lens', {
                                     minValue: 0,
                                     allowBlank: false,
                                     maxValue: 60,
-                                    value: 9.5,
+                                    value: 0,//value: 9.5,
                                     maxLenght: 5,
-                                    step: 0.5,
+                                    step: 1,
                                     width: 100
                                 },
                                 {
