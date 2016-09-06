@@ -10,14 +10,20 @@ Ext.define('LensControl.store.LogStore', {
         {name: 'status_bool'}
     ],
     proxy: {
-        method: 'GET',
+        method: 'POST',
         url: '/cr_conf/log_from_lens_control.php',
         type: 'ajax',
+        autoLoad: true,
+        actionMethods : {
+            read    : 'POST'
+        },
+        //paramsAsJson:true,
+        
         reader: {
             rootProperty: 'data',
             successProperty: 'success',
-            type: 'json'
-        }
+            type: 'json',
+        },
     },
 });
     

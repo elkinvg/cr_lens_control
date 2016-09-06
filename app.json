@@ -70,9 +70,10 @@
     "requires": [
         "font-awesome",
 	"ux",
-	"charts"
+	"charts",
+        "ext-locale"
     ],
-
+    "locale": "ru",
     /**
      * Fashion build configuration properties.
      */
