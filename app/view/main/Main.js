@@ -96,6 +96,14 @@ Ext.define('LensControl.view.main.Main', {
                     xtype: 'lenstemp'
                 }]
         },
+        {
+            title: 'Журнал',
+            scrollable: true,
+            iconCls: 'fa-file-text-o',
+            items: [{
+                    xtype: 'log'
+                }]
+        },
     ]
 
 //    items: [{
