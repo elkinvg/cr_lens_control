@@ -184,6 +184,13 @@ Ext.define('LensControl.view.lens.Lens', {
             margin: '5 0 0 0',
             items: [
                 {
+                    xtype: 'displayfield',
+                    fieldLabel: '<b>Последнее обновление</b>',
+                    //title: 'X <b>секунд назад</b>',
+                    value: '<b>X</b> секунд назад',
+                    reference: 'updateTime'
+                },
+                {
                     xtype: 'grid',
                     reference: 'mainGrid',
                     itemId: 'powersuppliesGrid',

@@ -32,6 +32,37 @@ Ext.define('LensControl.view.lens.LensController', {
                 },
             }
         });
+        
+        var taskTime = {
+            run: function () {
+                // Для оповещения об обрыве соединения, или обновления данных
+                // с вэбсокета
+                // timeUpdWs объявленf глобально в Application.js
+                // timeUpdWs обновляется при загрузке данных с Вэбсокета
+                // timeUpdCom обновляется здесь
+                var timeUpdCom = new Date().getTime() / 1000 | 0;
+                var timeDiff = timeUpdCom - timeUpdWs;
+                var newVal = '';
+
+                var displayUpd = me.lookupReference('updateTime');
+
+                if (timeDiff > 10) {
+                    displayUpd.show();
+                    newVal = '<span style="color:red; font-size:200%"><b>' +
+                            timeDiff + '</b></span>';
+                } else
+                    displayUpd.hide();
+
+                newVal = newVal + ' секунд назад';
+                var displayUpd = me.lookupReference('updateTime');
+                displayUpd.setValue(newVal);
+//                console.log("timeUpdCom: " + timeUpdCom + " | timeUpdWs: " + timeUpdWs);
+            },
+            interval: 10000 // 10 seconds
+        };
+        
+        var runner = new Ext.util.TaskRunner();
+        runner.start(taskTime);
 //        
         //Ext.ux.WebSocketManager.register(this.ws);
 //        Ext.ux.WebSocketManager.listen ('system shutdown', function (ws, data) {
@@ -281,6 +312,7 @@ Ext.define('LensControl.view.lens.LensController', {
         
         if (data.event === "read") {
             var size = data.data.length;
+            timeUpdWs = new Date().getTime()/1000 | 0;
             function isFault(number) {
                 if (number.device_state === 'FAULT')
                     return true;

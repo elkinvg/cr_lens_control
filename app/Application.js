@@ -48,6 +48,8 @@ Ext.define('LensControl.Application', {
     
     init: function () {
         if(typeof dbg !== 'undefined') console.log("communication");
+        var dt = new Date();
+        timeUpdWs = dt.getTime()/1000 | 0;
     },
 
     onAppUpdate: function () {
