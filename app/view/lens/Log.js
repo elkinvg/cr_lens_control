@@ -2,7 +2,7 @@ Ext.define('LensControl.view.lens.Log', {
     xtype: 'log',
     extend: 'Ext.panel.Panel',
     layout: 'vbox',
-    requires : [
+    requires: [
         'LensControl.store.LogStore'
     ],
     items: [
@@ -99,8 +99,12 @@ Ext.define('LensControl.view.lens.Log', {
                         var cont = th.up('#timeContainer');
                         var startComp = cont.down('#startDateId').value.getTime() / 1000;
                         var stopComp = cont.down('#stopDateId').value.getTime() / 1000;
+                        var otherCont = Ext.ComponentQuery.query('[name=otherCont]')[0];
+                        var usLogin = otherCont.down('#userLoginId').value;
+                        var statusSel = otherCont.down('#statusSelId').value;
 
                         var dStore = Ext.data.StoreManager.lookup('logStore');
+
 
 //                        var startComp = Ext.ComponentQuery.query('[name=startDate]')[0]
 //                                .value.getTime()/1000;
@@ -109,6 +113,11 @@ Ext.define('LensControl.view.lens.Log', {
                         var argin = {};
                         argin.starttime = startComp;
                         argin.stoptime = stopComp;
+                        if (usLogin.length>0)
+                            argin.user = usLogin;
+                        if (statusSel!==null && 
+                                (statusSel==='Ok' || statusSel==='Fault'))
+                            argin.status = statusSel;
                         dStore.load({
                             params: {
                                 argin: Ext.encode(argin)
@@ -124,83 +133,118 @@ Ext.define('LensControl.view.lens.Log', {
                 }
             ]
         },
-    {
-        title: 'Записи журнала',
-        collapsible: false,width: '100%',
-        margin: '5 0 0 0',
-        items: [
-            {
-            xtype: 'grid',
-            //reference: 'mainGrid',
-            //itemId: 'powersuppliesGrid',
-            store: {
-                type: 'logstore'
-            },
-            columns: [
+        {
+            xtype: 'fieldcontainer',
+            name: 'otherCont',
+            fieldLabel: 'Другое',
+            layout: 'hbox',
+            items: [
                 {
-                    text: 'Время исполнения',
-                    dataIndex: 'comm_timestamp',
-                    renderer: Ext.util.Format.dateRenderer('d/M/Y H:i'),
-                    width    : 160,
-                    //flex: 1
+                    xtype: 'textfield',
+                    itemId: 'userLoginId',
+                    fieldLabel: 'Пользователь',
+                    width: 200,
+                    margin: '0 30 0 0'
                 },
                 {
-                    text: 'Пользователь',
-                    dataIndex: 'username',
-                    width    : 120,
-                    //flex: 1
-                },
+                            xtype: 'displayfield',
+                            value: 'Статус',
+                            width: 30,
+                            margin: '0 20 0 10'
+                        },
                 {
-                    text: 'IP-адрес',
-                    dataIndex: 'user_ip',
-                    width    : 120,
-                    //flex: 1
-                },
+                    xtype: 'combo',
+                    itemId: 'statusSelId',
+                    width: 100,
+                    store: {
+                        type: 'array',
+                        fields: ['status'],
+                        data: [
+                            ['Ok'],
+                            ['Fault']
+                        ]
+                    },
+                    displayField: 'status',
+                
+            }
+            ]
+        },
+        {
+            title: 'Записи журнала',
+            collapsible: false, width: '100%',
+            margin: '5 0 0 0',
+            items: [
                 {
-                    text: 'команда',
-                    dataIndex: 'command_json',
-                    flex: 1,
-                    renderer: function (val) {
-                        var decodedString = Ext.decode(val);
-                        if (decodedString.command !== undefined) {
-                            var argin = decodedString.argin;
-                            var command = decodedString.command;
-                            if (command==='OffDevice')
-                                var out = 'Выключить';
-                            else if (command==='OnDevice')
-                                var out = 'Включить';
-                            else if (command==='OffForAll')
-                                var out = 'Выключить все';
-                            else if (command==='OnForAll')
-                                var out = 'Включить все';
-                            else
-                                var out = command;
-                            
-                            if (argin!== undefined)
-                                out += (' : <b>' + argin + '</b>');
-                            return out;
+                    xtype: 'grid',
+                    //reference: 'mainGrid',
+                    //itemId: 'powersuppliesGrid',
+                    store: {
+                        type: 'logstore'
+                    },
+                    columns: [
+                        {
+                            text: 'Время исполнения',
+                            dataIndex: 'comm_timestamp',
+                            renderer: Ext.util.Format.dateRenderer('d/M/Y H:i'),
+                            width: 160,
+                            //flex: 1
+                        },
+                        {
+                            text: 'Пользователь',
+                            dataIndex: 'username',
+                            width: 120,
+                            //flex: 1
+                        },
+                        {
+                            text: 'IP-адрес',
+                            dataIndex: 'user_ip',
+                            width: 120,
+                            //flex: 1
+                        },
+                        {
+                            text: 'команда',
+                            dataIndex: 'command_json',
+                            flex: 1,
+                            renderer: function (val) {
+                                var decodedString = Ext.decode(val);
+                                if (decodedString.command !== undefined) {
+                                    var argin = decodedString.argin;
+                                    var command = decodedString.command;
+                                    if (command === 'OffDevice')
+                                        var out = 'Выключить';
+                                    else if (command === 'OnDevice')
+                                        var out = 'Включить';
+                                    else if (command === 'OffForAll')
+                                        var out = 'Выключить все';
+                                    else if (command === 'OnForAll')
+                                        var out = 'Включить все';
+                                    else
+                                        var out = command;
+
+                                    if (argin !== undefined)
+                                        out += (' : <b>' + argin + '</b>');
+                                    return out;
+                                } else
+                                    return "unknown formate";
+                            }
+                        },
+                        {
+                            text: 'статус',
+                            dataIndex: 'status_bool',
+                            width: 100,
+                            //flex: 1,
+                            renderer: function (val) {
+                                if (val === "1")
+                                    return '<span style="color:green; font-size:150%"> &#9899; </span>';
+                                else
+                                    return '<span style="color:red; font-size:150%"> &#9899; </span>';
+
+                            }
                         }
-                        else
-                            return "unknown formate";
-                    }
-                },
-                {
-                    text: 'статус',
-                    dataIndex: 'status_bool',
-                    width    : 100,
-                    //flex: 1,
-                    renderer: function (val) {
-                        if (val === "1")
-                            return '<span style="color:green; font-size:150%"> &#9899; </span>';
-                        else
-                            return '<span style="color:red; font-size:150%"> &#9899; </span>';
-                        
-                    }
+                    ]
                 }
             ]
         }
-        ]
-    }
     ]
 }
 );
