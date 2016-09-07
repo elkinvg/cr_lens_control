@@ -55,6 +55,7 @@ Ext.define('LensControl.view.lens.LensTemperature', {
         },
         {
             xtype: 'button',
+            reference: 'graphbut',
             width: 150,
             text: 'Показать график',
             handler: 'getTemperatureChart',

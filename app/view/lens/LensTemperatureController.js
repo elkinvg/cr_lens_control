@@ -62,6 +62,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
         // При Выводе графика без запроса вылезает глюк, если в течении
         // 30 секунд не перейти на вкладку
         var me = this;
+
         var win = new Ext.Window({
             width: '100%'
             , title: 'Изменение температур системы охлаждения'
@@ -72,41 +73,9 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
             , resizable: false
             , items: [
                 {
-                    initComponent: function () {
-                        var dStore = Ext.data.StoreManager.lookup('lenstempStore');
-                        var ref = this;
-                        dStore.load(
-                                {
-                                    callback: function (records, operation, success) {
-                                        if (success) {
-                                            var axes0 = ref.axes[0];
-                                            if (typeof dbg !== 'undefined')
-                                                console.log("store with Temperature Loaded!");
-                                            var ss = records[records.length - 1];
-                                            var dataFrom = ss.data;
-                                            if (dataFrom === undefined) {
-                                                console.log("Store: dataFrom===undefined");
-                                                return;
-                                            }
-                                            // Устанавливаются минимум и максимум для
-                                            // ординаты, для лучшего отбражения графика
-                                            // по умолчанию, не всегда добавляется пробел
-                                            var minT = dataFrom['min_T'];
-                                            var maxT = dataFrom['max_T'];
-                                            if (minT === undefined || maxT === undefined) {
-                                                return;
-                                            }
-
-                                            axes0.setMaximum(parseFloat(maxT) + 2);
-                                            if (minT !== 0) {
-                                                axes0.setMinimum(parseFloat(minT) - 2);
-                                            }
-                                        }
-                                    }
-                                });
-                    },
                     xtype: 'cartesian',
-                    reference: 'chart',
+                    reference: 'chart', 
+                    name: 'chart',
                     width: '100%',
                     height: 500,
                     store: {
@@ -192,7 +161,45 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                 },
             ]
         });
-        win.show();
+        // установить disable для кнопки, пока не загрузятся данные
+        var graphbut = me.lookupReference('graphbut');
+        graphbut.disable();
+
+        var dStore = Ext.data.StoreManager.lookup('lenstempStore');
+
+        var ref = Ext.ComponentQuery.query('[name=chart]')[0];
+        // График показывается только пи успешной загрузке store
+        dStore.load(
+                {
+                    callback: function (records, operation, success) {
+                        if (success) {
+                            var axes0 = ref.axes[0];
+                            if (typeof dbg !== 'undefined')
+                                console.log("store with Temperature Loaded!");
+                            var ss = records[records.length - 1];
+                            var dataFrom = ss.data;
+                            if (dataFrom === undefined) {
+                                console.log("Store: dataFrom===undefined");
+                                return;
+                            }
+                            // Устанавливаются минимум и максимум для
+                            // ординаты, для лучшего отбражения графика
+                            // по умолчанию, не всегда добавляется пробел
+                            var minT = dataFrom['min_T'];
+                            var maxT = dataFrom['max_T'];
+                            if (minT === undefined || maxT === undefined) {
+                                return;
+                            }
+
+                            axes0.setMaximum(parseFloat(maxT) + 2);
+                            if (minT !== 0) {
+                                axes0.setMinimum(parseFloat(minT) - 2);
+                            }
+                            win.show();
+                        }
+                        graphbut.enable();
+                    }
+                });
     }
 
 });
