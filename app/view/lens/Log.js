@@ -123,6 +123,7 @@ Ext.define('LensControl.view.lens.Log', {
                                 argin: Ext.encode(argin)
                             },
                             callback: function (records, operation, success) {
+                                console.log("1");
                             }
                         }
                         );
@@ -207,6 +208,7 @@ Ext.define('LensControl.view.lens.Log', {
                             flex: 1,
                             renderer: function (val) {
                                 var decodedString = Ext.decode(val);
+                                var postf = "";
                                 if (decodedString.command !== undefined) {
                                     var argin = decodedString.argin;
                                     var command = decodedString.command;
@@ -218,11 +220,36 @@ Ext.define('LensControl.view.lens.Log', {
                                         var out = 'Выключить все';
                                     else if (command === 'OnForAll')
                                         var out = 'Включить все';
+                                    else if (command === 'SetCurrentLevelForAll') {
+                                        var out = 'Установить порог тока для всех';
+                                        postf = " В";
+                                    }
+                                    else if (command === 'SetVoltageLevelForAll') {
+                                        var out = 'Установить порог напряжения для всех';
+                                        postf = " А";
+                                    }
+                                    else if (command === 'SetCurrentLevelForDevice') {
+                                        postf = " А";
+                                        var out = 'Установить порог тока для ';                                        
+                                    }
+                                    else if (command === 'SetVoltageLevelForDevice') {
+                                        postf = " В";
+                                        var out = 'Установить порог напряжения для ';                                        
+                                    }
                                     else
                                         var out = command;
 
-                                    if (argin !== undefined)
-                                        out += (' : <b>' + argin + '</b>');
+                                    if (argin !== undefined) {
+                                        if (argin.length === 1)
+                                            out += (' : <b>' + argin + postf + '</b>');
+                                        if (argin.length === 2) {
+                                            out += (argin[0] + '  <b>' + argin[1] + postf + '</b>' );
+                                        }
+                                        if (typeof argin === 'string') {
+                                            out += ('  <b>' + argin + '</b>' );
+                                        }
+                                    }
+                                        
                                     return out;
                                 } else
                                     return "unknown formate";

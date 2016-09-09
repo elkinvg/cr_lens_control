@@ -157,7 +157,7 @@ Ext.define('LensControl.view.lens.LensController', {
             inputData.value = record.data.volt_level;
             inputData.maxValue = 40;
             inputData.minValue = 0;
-            inputData.step = 0.5;
+            inputData.step = 1.0;
             inputData.command = "SetVoltageLevelForDevice";
             
             me.changeLevel(inputData);
@@ -175,7 +175,7 @@ Ext.define('LensControl.view.lens.LensController', {
             inputData.value = record.data.curr_level;
             inputData.maxValue = 80;
             inputData.minValue = 0;
-            inputData.step = 0.5;
+            inputData.step = 0.1;
             inputData.command = "SetCurrentLevelForDevice";
             
             me.changeLevel(inputData);
@@ -330,6 +330,11 @@ Ext.define('LensControl.view.lens.LensController', {
             
             var stateOv = me.lookupReference('powersupplies');
             var onOffPanel = me.lookupReference('onOffPanel');
+            
+            if (size===0) {
+                stateOv.setTitle("Источники питания. " + '<span style="color:red; font-size:200%"> &#9899; </span>' + " Данных нет");
+                return;
+            }
             
             var isAllFault = data.data.every(isFault);
             if (isAllFault)

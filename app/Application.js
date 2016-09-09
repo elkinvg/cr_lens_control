@@ -53,7 +53,7 @@ Ext.define('LensControl.Application', {
     },
 
     onAppUpdate: function () {
-        Ext.Msg.confirm('Application Update', 'This application has an update, reload?',
+        Ext.Msg.confirm('Приложение обновилось', 'Приложение обновилось на сервере, перезагрузить?',
             function (choice) {
                 if (choice === 'yes') {
                     window.location.reload();
