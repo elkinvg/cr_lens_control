@@ -227,6 +227,7 @@ Ext.define('LensControl.view.lens.Log', {
                                     else if (command === 'SetVoltageLevelForAll') {
                                         var out = 'Установить порог напряжения для всех';
                                         postf = " А";
+                                        
                                     }
                                     else if (command === 'SetCurrentLevelForDevice') {
                                         postf = " А";
@@ -247,6 +248,9 @@ Ext.define('LensControl.view.lens.Log', {
                                         }
                                         if (typeof argin === 'string') {
                                             out += ('  <b>' + argin + '</b>' );
+                                        }
+                                        if (typeof argin === 'number') {
+                                            out += ('  <b>' + argin + ' ' + postf +  '</b>' );
                                         }
                                     }
                                         
