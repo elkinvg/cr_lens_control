@@ -159,6 +159,15 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                         },
                     ],
                 },
+                {
+                    xtype: 'button',
+                    text: 'Закрыть',
+                    margin: '0 0 0 100',
+                    width: 150,
+                    handler: function() {
+                        win.close();
+                    }
+                }
             ]
         });
         // установить disable для кнопки, пока не загрузятся данные
