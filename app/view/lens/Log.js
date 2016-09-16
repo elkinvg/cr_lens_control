@@ -2,8 +2,11 @@ Ext.define('LensControl.view.lens.Log', {
     xtype: 'log',
     extend: 'Ext.panel.Panel',
     layout: 'vbox',
+    controller: 'log',
+
     requires: [
-        'LensControl.store.LogStore'
+        'LensControl.store.LogStore',
+        'LensControl.view.lens.LogController'
     ],
     items: [
         {
@@ -113,6 +116,9 @@ Ext.define('LensControl.view.lens.Log', {
                         var argin = {};
                         argin.starttime = startComp;
                         argin.stoptime = stopComp;
+                        argin.login = localStorage.getItem("login");
+                        if (argin.login===null)
+                            argin.login = 'anon';
                         if (usLogin.length>0)
                             argin.user = usLogin;
                         if (statusSel!==null && 
@@ -177,7 +183,7 @@ Ext.define('LensControl.view.lens.Log', {
             items: [
                 {
                     xtype: 'grid',
-                    //reference: 'mainGrid',
+                    reference: 'logGrid',
                     //itemId: 'powersuppliesGrid',
                     store: {
                         type: 'logstore'
