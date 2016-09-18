@@ -41,8 +41,8 @@ Ext.define('LensControl.view.lens.Log', {
 
                                 // Get a current minutes and add with date.
                                 //date.setMinutes(currentTime.getMinutes());
-                                console.log("H: " + currentTime.getHours() + "min: " + currentTime.getMinutes());
-                                console.log("dt: " + date);
+                                if(typeof dbg !== 'undefined') console.log("H: " + currentTime.getHours() + "min: " + currentTime.getMinutes());
+                                if(typeof dbg !== 'undefined') console.log("dt: " + date);
                                 //var dtDateTimeValue = date.dateFormat('dd/MM/yyyy HH:mm');
                                 dtpIssueDate.setValue(date);
                             } catch (e) {
@@ -54,7 +54,6 @@ Ext.define('LensControl.view.lens.Log', {
                             dt.setDate(dt.getDate() - 7);
                             dt.setHours(0, 0);
                             th.setValue(dt);
-                            console.log("render");
                         }
 
                     }
@@ -75,8 +74,8 @@ Ext.define('LensControl.view.lens.Log', {
 
                                 // Get a current minutes and add with date.
                                 //date.setMinutes(currentTime.getMinutes());
-                                console.log("H: " + currentTime.getHours() + "min: " + currentTime.getMinutes());
-                                console.log("dt: " + date);
+                                if(typeof dbg !== 'undefined') console.log("H: " + currentTime.getHours() + "min: " + currentTime.getMinutes());
+                                if(typeof dbg !== 'undefined') console.log("dt: " + date);
                                 //var dtDateTimeValue = date.dateFormat('dd/MM/yyyy HH:mm');
                                 dtpIssueDate.setValue(date);
                             } catch (e) {
@@ -89,7 +88,7 @@ Ext.define('LensControl.view.lens.Log', {
                             dt.setHours(23, 59);
                             dt.toLocaleTimeString();
                             th.setValue(dt);
-                            console.log("render " + dt.toLocaleString('ru'));
+                            if(typeof dbg !== 'undefined') console.log("render " + dt.toLocaleString('ru'));
                         }
                     }
                 },
@@ -98,43 +97,7 @@ Ext.define('LensControl.view.lens.Log', {
                     width: 130,
                     text: 'Выбрать',
                     margin: '0 5 0 10',
-                    handler: function (th) {
-                        var cont = th.up('#timeContainer');
-                        var startComp = cont.down('#startDateId').value.getTime() / 1000;
-                        var stopComp = cont.down('#stopDateId').value.getTime() / 1000;
-                        var otherCont = Ext.ComponentQuery.query('[name=otherCont]')[0];
-                        var usLogin = otherCont.down('#userLoginId').value;
-                        var statusSel = otherCont.down('#statusSelId').value;
-
-                        var dStore = Ext.data.StoreManager.lookup('logStore');
-
-
-//                        var startComp = Ext.ComponentQuery.query('[name=startDate]')[0]
-//                                .value.getTime()/1000;
-//                        var stopComp = Ext.ComponentQuery.query('[name=stopDate]')[0]
-//                                .value/1000;
-                        var argin = {};
-                        argin.starttime = startComp;
-                        argin.stoptime = stopComp;
-                        argin.login = localStorage.getItem("login");
-                        if (argin.login===null)
-                            argin.login = 'anon';
-                        if (usLogin.length>0)
-                            argin.user = usLogin;
-                        if (statusSel!==null && 
-                                (statusSel==='Ok' || statusSel==='Fault'))
-                            argin.status = statusSel;
-                        dStore.load({
-                            params: {
-                                argin: Ext.encode(argin)
-                            },
-                            callback: function (records, operation, success) {
-                                console.log("1");
-                            }
-                        }
-                        );
-
-                    },
+                    handler: 'button_log_handler'
                     //reference: 'heatButton',
                     //handler: 'heatClick'
                 }
@@ -212,71 +175,14 @@ Ext.define('LensControl.view.lens.Log', {
                             text: 'команда',
                             dataIndex: 'command_json',
                             flex: 1,
-                            renderer: function (val) {
-                                var decodedString = Ext.decode(val);
-                                var postf = "";
-                                if (decodedString.command !== undefined) {
-                                    var argin = decodedString.argin;
-                                    var command = decodedString.command;
-                                    if (command === 'OffDevice')
-                                        var out = 'Выключить';
-                                    else if (command === 'OnDevice')
-                                        var out = 'Включить';
-                                    else if (command === 'OffForAll')
-                                        var out = 'Выключить все';
-                                    else if (command === 'OnForAll')
-                                        var out = 'Включить все';
-                                    else if (command === 'SetCurrentLevelForAll') {
-                                        var out = 'Установить порог тока для всех';
-                                        postf = " В";
-                                    }
-                                    else if (command === 'SetVoltageLevelForAll') {
-                                        var out = 'Установить порог напряжения для всех';
-                                        postf = " А";
-                                        
-                                    }
-                                    else if (command === 'SetCurrentLevelForDevice') {
-                                        postf = " А";
-                                        var out = 'Установить порог тока для ';                                        
-                                    }
-                                    else if (command === 'SetVoltageLevelForDevice') {
-                                        postf = " В";
-                                        var out = 'Установить порог напряжения для ';                                        
-                                    }
-                                    else
-                                        var out = command;
-
-                                    if (argin !== undefined) {
-                                        if (argin.length === 1)
-                                            out += (' : <b>' + argin + postf + '</b>');
-                                        if (argin.length === 2) {
-                                            out += (argin[0] + '  <b>' + argin[1] + postf + '</b>' );
-                                        }
-                                        if (typeof argin === 'string') {
-                                            out += ('  <b>' + argin + '</b>' );
-                                        }
-                                        if (typeof argin === 'number') {
-                                            out += ('  <b>' + argin + ' ' + postf +  '</b>' );
-                                        }
-                                    }
-                                        
-                                    return out;
-                                } else
-                                    return "unknown formate";
-                            }
+                            renderer: 'command_json_renderer'
                         },
                         {
                             text: 'статус',
                             dataIndex: 'status_bool',
                             width: 100,
                             //flex: 1,
-                            renderer: function (val) {
-                                if (val === "1")
-                                    return '<span style="color:green; font-size:150%"> &#9899; </span>';
-                                else
-                                    return '<span style="color:red; font-size:150%"> &#9899; </span>';
-
-                            }
+                            renderer: 'status_bool_renderer'
                         }
                     ]
                 }
