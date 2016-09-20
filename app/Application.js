@@ -11,10 +11,13 @@ Ext.define('LensControl.Application', {
     
     login: localStorage.getItem("login"),
     passw: localStorage.getItem("password"),
+    randident: localStorage.getItem("rand_ident"),
+    userandident: localStorage.getItem("use_rand_ident"),
     
     //requires: [
     views: [
         'Login.view.login.LoginCheck',
+        'Login.view.login.RandIdentCheck',
         'LensControl.view.main.Main',
         'LensControl.view.lens.LensTemperature',
         'LensControl.view.lens.Lens'
@@ -39,7 +42,13 @@ Ext.define('LensControl.Application', {
         if (this.login === null || this.passw === null) {
             var app = 'logincheck';
         } else {
-            var app = 'app-main';
+            if (parseInt(this.userandident) === 1) {
+                if (this.randident === null)
+                    var app = 'randidentcheck';
+                else
+                    var app = 'app-main';
+            } else
+                var app = 'app-main';
         }
         Ext.create({
             xtype: app
