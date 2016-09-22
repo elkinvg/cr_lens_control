@@ -6,11 +6,16 @@ Ext.define('LensControl.view.lens.LensController', {
         if(typeof dbg !== 'undefined') console.log('TestwsController');
 
         var me = this;
-
-        // генерация дополнительного экземпляра для веб-сокета
-        // один используется в LensWsStore. 
+        // store сейчас определяется как memory.
+        // Заменено type: 'websocket' на type: 'memory'
+        // type: 'websocket' брался из 'Ext.ux.WebSocketManager'
+        // При определении store как websocket приходилось открывать два сокета
+        // Один для заполнения таблиц, другой для отправления команд на сервер
+        var storeMem = Ext.data.StoreManager.get("lensStore");
+        
+        
         this.ws = Ext.create('Ext.ux.WebSocket', {
-            // получение адреса ws
+            // получение адреса websocket
             // логин и пароль должны храниться в localStorage
             url: 'ws://' + Ext.create('Common_d.Property').getWsforlens() + 'login=' + localStorage.getItem("login") + '&password=' + localStorage.getItem("password"),
             autoReconnect: true,
@@ -21,14 +26,26 @@ Ext.define('LensControl.view.lens.LensController', {
                     if(typeof dbg !== 'undefined') console.log('websocket Open');
                 },
                 message: function (ws, data) {
-                    //здесь принимаются данные с сервера
+                    //здесь принимаются данные с сервера и записываются в Store
+                    var dataForStore = data.data;
+                    if (dataForStore !== undefined ) {
+                        if(typeof dbg !== 'undefined') console.log("Data from powersupplies loaded. ");
+                        storeMem.loadData(dataForStore);
+                    } else {
+                        if(typeof dbg !== 'undefined') console.log("No data from powersupplies. ");
+                    }                    
                     me.getData(data);
                 },
                 close: function (ws) {
                     if(typeof dbg !== 'undefined') console.log('The websocket is closed!');
                 },
                 error: function (ws, error) {
-                    Ext.Error.raise(error);
+                    if (Array.isArray(error)) {
+                        error.arr.forEach(function(item, i, arr) {
+                            if(typeof dbg !== 'undefined') console.log(item);
+                        });
+                    }
+                    //Ext.Error.raise(error);
                 },
             }
         });

@@ -3,7 +3,13 @@
  * calls Ext.application(). This is the ideal place to handle application launch and
  * initialization details.
  */
-dbg = "";
+// Для вывода debug
+// GET-> adddress/?dbg=1
+var get_params = Ext.urlDecode(location.search.substring(1));
+if (get_params.dbg === '1') {
+    dbg = "";
+}
+
 Ext.define('LensControl.Application', {
     extend: 'Ext.app.Application',
     

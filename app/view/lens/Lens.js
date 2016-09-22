@@ -8,7 +8,7 @@ Ext.define('LensControl.view.lens.Lens', {
     requires: [
         'LensControl.view.lens.LensController',
         'Ext.ux.WebSocket',
-        'Ext.ux.WebSocketManager',
+//        'Ext.ux.WebSocketManager',
         'Ext.ux.data.proxy.WebSocket',
         'LensControl.store.LensWsStore',
         'LensControl.model.LensModel',
