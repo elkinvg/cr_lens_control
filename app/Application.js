@@ -6,6 +6,13 @@
 // Для вывода debug
 // GET-> adddress/?dbg=1
 var get_params = Ext.urlDecode(location.search.substring(1));
+window.onunload = function()
+{
+//    return confirm('Вы хотите покинуть сайт?')
+}
+window.onbeforeunload = function(){
+//    return confirm('Точно хотите выйти?');
+}
 if (get_params.dbg === '1') {
     dbg = "";
 }
