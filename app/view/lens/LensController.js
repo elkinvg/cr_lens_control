@@ -124,18 +124,37 @@ Ext.define('LensControl.view.lens.LensController', {
                 return;
             if(typeof dbg !== 'undefined') console.log("sendNewValue " + valueField + " from currId");
             command.command = "SetCurrentLevelForAll";
+            var titleMsg = "Установка порогового значения тока";
+            var messageIn = "Установить порог для всех источников в " + valueField + " A?";
         } else if (gettingItemId === 'voltageId') {
             var valueField = myView.getComponent('voltforall').getValue();
             if (valueField === null)
                 return;
             if(typeof dbg !== 'undefined') console.log("sendNewValue " + valueField + " from voltageId");
             command.command = "SetVoltageLevelForAll";
+            var messageIn = "Установить порог для всех источников в " + valueField + " В?";
+            var titleMsg = "Установка порогового значения напряжения";
         } else
             return;
         
         command.argin = valueField;
         var comJson = Ext.util.JSON.encode(command);
-        me.ws.send(comJson);
+        
+        Ext.Msg.show({
+            title: titleMsg,
+            icon: Ext.Msg.QUESTION,
+            buttons: Ext.Msg.YESNO,
+            message: messageIn,
+            buttonText: { yes: "Да", no: "Нет"},
+            fn: function (btn) {
+                if (btn === 'yes') {
+                    me.ws.send(comJson);
+                }
+            }
+            
+        });
+        
+//        me.ws.send(comJson);
         
         //var valueField = myView.getComponent('voltforall');
 //        var valueField2 = myView.getView();//.getForm();//findField('voltforall');     
@@ -285,17 +304,35 @@ Ext.define('LensControl.view.lens.LensController', {
     //
     //
     onOrOffAllDevice: function (button) {
+        var me = this;
         var commandtype = button.commandtype;
         var command = new Object();
         if (commandtype === 'on') {
             command.command = 'OnForAll';
+            var messageIn = "Вы хотите включить нагрузку на всех источниках?";
         } else if (commandtype === 'off') {
             command.command = 'OffForAll';
+            var messageIn = "Вы хотите выключить нагрузку на всех источниках?";
         } else
             return;
         
         var comJson = Ext.util.JSON.encode(command);
-        this.ws.send(comJson);
+        
+        Ext.Msg.show({
+            title: "Включение/выключение всех источников",
+            icon: Ext.Msg.QUESTION,
+            buttons: Ext.Msg.YESNO,
+            message: messageIn,
+            buttonText: {yes: "Да", no: "Нет"},
+            fn: function (btn) {
+                if (btn === 'yes') {
+                    me.ws.send(comJson);
+                }
+            }
+
+        });
+        
+//        this.ws.send(comJson);
         
     },
     //

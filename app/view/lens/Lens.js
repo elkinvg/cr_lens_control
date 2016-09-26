@@ -6,6 +6,7 @@ Ext.define('LensControl.view.lens.Lens', {
 //    title: 'Источники питания',
     maxheightGrid: 0,
     requires: [
+        'Common_d.Property',
         'LensControl.view.lens.LensController',
         'Ext.ux.WebSocket',
 //        'Ext.ux.WebSocketManager',
@@ -37,10 +38,11 @@ Ext.define('LensControl.view.lens.Lens', {
             title: 'Установка значeний',
             region: 'west',
             floatable: false,
-            margin: '5 0 0 0',
-            width: 470,
-            minWidth: 470,
-            maxWidth: 600,
+            //margin: '0 0 0 0',
+            width: 500,minWidth: 500,maxWidth: 500,
+//            width: 470,
+//            minWidth: 470,
+//            maxWidth: 600,
             layout: {
                 type: 'vbox',
                 align: 'stretch',
@@ -173,6 +175,16 @@ Ext.define('LensControl.view.lens.Lens', {
                         }
                     ]
                 },
+                // {
+                //     xtype: 'fieldset',
+                //     style: 'background-color: #fafafa;',
+                //     title: 'Дополнительные настройки',
+                //     width: '100%',
+                //     layout: {
+                //         type: 'vbox',
+                //         align: 'stretch',
+                //     },
+                // }
             ]
         },
         {
