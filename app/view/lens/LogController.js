@@ -82,6 +82,10 @@ Ext.define('LensControl.view.lens.LogController', {
     //
     //
     status_bool_renderer: function (val) {
+        // набор символов http://unicode-table.com/ru/#26D4
+        // &#9899; - закрашенный круг
+        // &#9940; - знак стоп
+        
         if (val === "1")
             return '<span style="color:green; font-size:150%"> &#9899; </span>';
         else

@@ -385,6 +385,10 @@ Ext.define('LensControl.view.lens.LensController', {
             var stateOv = me.lookupReference('powersupplies');
             var onOffPanel = me.lookupReference('onOffPanel');
             
+            // набор символов http://unicode-table.com/ru/#26D4
+            // &#9899; - закрашенный круг
+            // &#9940; - знак стоп
+            
             if (size===0) {
                 stateOv.setTitle("Источники питания. " + '<span style="color:red; font-size:200%"> &#9899; </span>' + " Данных нет");
                 return;
@@ -397,7 +401,7 @@ Ext.define('LensControl.view.lens.LensController', {
                 onOffPanel.enable();
             
             if (isSomeFault) {
-                stateOv.setTitle("Источники питания. " + '<span style="color:red; font-size:200%"> &#9899; </span>');
+                stateOv.setTitle("Источники питания. " + '<span style="color:red; font-size:200%"> &#9899; </span>'); // &#9899 || &#9940;
                 return;
             }
             var isSomeOff = data.data.some(isOff);
