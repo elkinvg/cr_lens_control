@@ -17,7 +17,8 @@ Ext.define('LensControl.view.lens.LensController', {
         this.ws = Ext.create('Ext.ux.WebSocket', {
             // получение адреса websocket
             // логин и пароль должны храниться в localStorage
-            url: 'ws://' + Ext.create('Common_d.Property').getWsforlens() + 'login=' + localStorage.getItem("login") + '&password=' + localStorage.getItem("password"),
+            //url: 'ws://' + Ext.create('Common_d.Property').getWsforlens() + 'login=' + localStorage.getItem("login") + '&password=' + localStorage.getItem("password"),
+            url: 'ws://' + Ext.create('Common_d.Property').getWsforlens(),
             autoReconnect: true,
             autoReconnectInterval: 1000,
             //url: prop.getUrlwstest(),
@@ -491,5 +492,63 @@ Ext.define('LensControl.view.lens.LensController', {
         });
         win.show();
     },
+    //
+    //
+    //
+    saveLevels: function () {
+        var me = this;
+        console.log('save levels');
+        var mainGrid = me.lookupReference('mainGrid');
+        var store = mainGrid.getStore();
+        
+        var undef = false;
+        var hasFault = false; // Есть ли девайсы с состоянием FAULT
+        var hasNotFault = false; // Есть ли хотя бы один с состоянием не FAULT
+        
+        var valueOfLevels = new Array();
+
+        store.data.each(function (item, index, totalItems) {
+            var dataFrom =  item.data;
+            if (dataFrom === undefined) {
+                undef = true;
+                return;
+            }
+            var gdata = {};
+            gdata.device_name = dataFrom.device_name;
+            gdata.device_state = dataFrom.device_state;
+            gdata.volt_level = dataFrom.volt_level;
+            gdata.curr_level = dataFrom.curr_level;
+            if (gdata.device_state === "FAULT") {
+                hasFault = true;
+            }
+            if (gdata.device_state === "ON" || gdata.device_state === "OFF") {
+                hasNotFault = true;
+            }
+            valueOfLevels.push(gdata);
+        });
+        
+        
+        if (!hasNotFault) {
+            Ext.Msg.show({
+                title: 'Ошибка',
+                icon: Ext.Msg.ERROR,
+                buttons: Ext.Msg.OK,
+                message: 'Нет соединения ни с одним источником'
+            });
+            return;
+        }
+        
+        if (hasFault) {
+            Ext.Msg.show({
+                title: 'Ошибка',
+                icon: Ext.Msg.QUESTION,
+                buttons: Ext.Msg.YESNO,
+                message: 'Имеются не подключенные источники.<br> Записать значения с имеющихся,'
+            });
+        }
+        var positiveArr = valueOfLevels.filter(function (dt) {
+            return (dt.device_state !== "FAULT") ? true : false;
+        });
+    }
 
 });

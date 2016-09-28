@@ -175,16 +175,42 @@ Ext.define('LensControl.view.lens.Lens', {
                         }
                     ]
                 },
-                // {
-                //     xtype: 'fieldset',
-                //     style: 'background-color: #fafafa;',
-                //     title: 'Дополнительные настройки',
-                //     width: '100%',
-                //     layout: {
-                //         type: 'vbox',
-                //         align: 'stretch',
-                //     },
-                // }
+                {
+                    xtype: 'fieldset',
+                    style: 'background-color: #fafafa;',
+                    title: 'Дополнительные настройки',
+                    width: '100%',
+                    layout: {
+                        type: 'vbox',
+                        align: 'stretch',
+                    },
+                    items: [
+                        {
+                            xtype: 'container',
+                                                layout: {
+                        type: 'hbox',
+                        align: 'stretch',
+                    },
+                    defaults: {
+                        margin: '0 10 0 10',
+                        //flex: 1,
+                    },
+                            items: [
+                                {
+                                    xtype: 'label',
+                                    text: 'Сохранить установленные пороги:'
+                                },
+                                {
+                                    xtype: 'button',
+                                    width: 130,
+                                    text: 'Сохранить',
+                                    handler: 'saveLevels'
+                                }
+                            ]
+                            
+                        }
+                    ]
+                }
             ]
         },
         {
