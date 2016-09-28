@@ -187,17 +187,20 @@ Ext.define('LensControl.view.lens.Lens', {
                     items: [
                         {
                             xtype: 'container',
-                                                layout: {
-                        type: 'hbox',
-                        align: 'stretch',
-                    },
-                    defaults: {
-                        margin: '0 10 0 10',
-                        //flex: 1,
-                    },
+                            layout: {
+                                type: 'hbox',
+                                align: 'stretch',
+                            },
+                            defaults: {
+                                margin: '0 10 0 10',
+                                //flex: 1,
+                            },
                             items: [
                                 {
                                     xtype: 'label',
+                                    style: {
+                                        paddingTop: '8px'
+                                    },
                                     text: 'Сохранить установленные пороги:'
                                 },
                                 {
@@ -207,7 +210,7 @@ Ext.define('LensControl.view.lens.Lens', {
                                     handler: 'saveLevels'
                                 }
                             ]
-                            
+
                         }
                     ]
                 }

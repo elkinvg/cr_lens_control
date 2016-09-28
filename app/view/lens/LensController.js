@@ -518,6 +518,13 @@ Ext.define('LensControl.view.lens.LensController', {
             gdata.device_state = dataFrom.device_state;
             gdata.volt_level = dataFrom.volt_level;
             gdata.curr_level = dataFrom.curr_level;
+            
+            
+            Ext.iterate( gdata ,function(key, value){
+                if (value === undefined)
+                    undef = true;
+            });
+
             if (gdata.device_state === "FAULT") {
                 hasFault = true;
             }
@@ -527,14 +534,14 @@ Ext.define('LensControl.view.lens.LensController', {
             valueOfLevels.push(gdata);
         });
         
+        if (undef) {
+            messageErrorShow("Ошибка при чтении данных с таблицы");
+            return;
+        }
+        
         
         if (!hasNotFault) {
-            Ext.Msg.show({
-                title: 'Ошибка',
-                icon: Ext.Msg.ERROR,
-                buttons: Ext.Msg.OK,
-                message: 'Нет соединения ни с одним источником'
-            });
+            messageErrorShow('Нет соединения ни с одним источником');
             return;
         }
         
@@ -543,12 +550,35 @@ Ext.define('LensControl.view.lens.LensController', {
                 title: 'Ошибка',
                 icon: Ext.Msg.QUESTION,
                 buttons: Ext.Msg.YESNO,
-                message: 'Имеются не подключенные источники.<br> Записать значения с имеющихся,'
+                message: 'Имеются не подключенные источники.<br> Записать значения с имеющихся,',
+                buttonText: {yes: "Да", no: "Нет"},
+                fn: function (btn) {
+                    if (btn === 'no') {
+                        return;
+                    }
+                }
             });
         }
         var positiveArr = valueOfLevels.filter(function (dt) {
             return (dt.device_state !== "FAULT") ? true : false;
         });
+        
+        var jsonInp = Ext.JSON.encode(positiveArr);
+        
+        // Добавить Ext.Ajax.request({})
+        // Возможно также попробовать сохранение не в БД,а в файл, или файлы
+        // Тогда при чтении будет считываться json файл
+
+        
+        
+        function messageErrorShow(message) {
+            Ext.Msg.show({
+                title: 'Ошибка',
+                icon: Ext.Msg.ERROR,
+                buttons: Ext.Msg.OK,
+                message: message
+            });
+        }
     }
 
 });
