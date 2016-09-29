@@ -564,11 +564,26 @@ Ext.define('LensControl.view.lens.LensController', {
         });
         
         var jsonInp = Ext.JSON.encode(positiveArr);
+        Ext.Ajax.request({
+            url: '/cr_conf/lens_control_save_levels.php',
+            method: 'POST',
+            params: {
+                login: 'tango',
+                values_json: jsonInp
+            },
+            success: function (transport) {
+                console.log("save_levels success");
+            },
+            failure: function (transport) {
+                console.log("save_levels failure");
+            }
+        });
         
         // Добавить Ext.Ajax.request({})
         // Возможно также попробовать сохранение не в БД,а в файл, или файлы
         // Тогда при чтении будет считываться json файл
-
+        
+        
         
         
         function messageErrorShow(message) {
@@ -579,6 +594,27 @@ Ext.define('LensControl.view.lens.LensController', {
                 message: message
             });
         }
+    },
+    //
+    //
+    //
+    loadLevels: function () {
+        var me = this;
+        console.log('loadLevels');
+        Ext.Ajax.request({
+            url: '/cr_conf/lens_control_save_levels.php',
+            method: 'POST',
+            params: {
+                login: 'tango',
+                action: 'get_confs'
+            },
+            success: function (transport) {
+                console.log("get_levels success");
+            },
+            failure: function (transport) {
+                console.log("get_levels failure");
+            }
+        });
     }
 
 });

@@ -182,9 +182,37 @@ Ext.define('LensControl.view.lens.Lens', {
                     width: '100%',
                     layout: {
                         type: 'vbox',
-                        align: 'stretch',
+                        align: 'stretch'                        
                     },
                     items: [
+                        {
+                            xtype: 'container',
+                            layout: {
+                                type: 'hbox',
+                                align: 'stretch',
+                            },
+                            defaults: {
+                                margin: '10 10 10 10',
+                                //flex: 1,
+                            },
+                            items: [
+                                {
+                                    xtype: 'label',
+                                    width: 250, // ????
+                                    style: {
+                                        paddingTop: '8px'
+                                    },
+                                    text: 'Сохранить установленные пороги:'
+                                },
+                                {
+                                    xtype: 'button',
+                                    width: 130,
+                                    text: 'Сохранить',
+                                    handler: 'saveLevels'
+                                }
+                            ]
+
+                        },
                         {
                             xtype: 'container',
                             layout: {
@@ -198,16 +226,17 @@ Ext.define('LensControl.view.lens.Lens', {
                             items: [
                                 {
                                     xtype: 'label',
+                                    width: 250, // ????
                                     style: {
                                         paddingTop: '8px'
                                     },
-                                    text: 'Сохранить установленные пороги:'
+                                    text: 'Загрузить сохранённые пороги:'
                                 },
                                 {
                                     xtype: 'button',
                                     width: 130,
-                                    text: 'Сохранить',
-                                    handler: 'saveLevels'
+                                    text: 'Загрузить',
+                                    handler: 'loadLevels'
                                 }
                             ]
 
