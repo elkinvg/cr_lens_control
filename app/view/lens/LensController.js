@@ -17,8 +17,8 @@ Ext.define('LensControl.view.lens.LensController', {
         this.ws = Ext.create('Ext.ux.WebSocket', {
             // получение адреса websocket
             // логин и пароль должны храниться в localStorage
-            //url: 'ws://' + Ext.create('Common_d.Property').getWsforlens() + 'login=' + localStorage.getItem("login") + '&password=' + localStorage.getItem("password"),
-            url: 'ws://' + Ext.create('Common_d.Property').getWsforlens(),
+            url: 'ws://' + Ext.create('Common_d.Property').getWsforlens() + 'login=' + localStorage.getItem("login") + '&password=' + localStorage.getItem("password"),
+            //url: 'ws://' + Ext.create('Common_d.Property').getWsforlens(),
             autoReconnect: true,
             autoReconnectInterval: 1000,
             //url: prop.getUrlwstest(),
@@ -535,19 +535,19 @@ Ext.define('LensControl.view.lens.LensController', {
         });
         
         if (undef) {
-            messageErrorShow("Ошибка при чтении данных с таблицы");
+            me.messageErrorShow("Ошибка при чтении данных с таблицы");
             return;
         }
         
         
         if (!hasNotFault) {
-            messageErrorShow('Нет соединения ни с одним источником');
+            me.messageErrorShow('Нет соединения ни с одним источником');
             return;
         }
         
         if (hasFault) {
             Ext.Msg.show({
-                title: 'Ошибка',
+                title: 'Предупреждение',
                 icon: Ext.Msg.QUESTION,
                 buttons: Ext.Msg.YESNO,
                 message: 'Имеются не подключенные источники.<br> Записать значения с имеющихся,',
@@ -562,6 +562,10 @@ Ext.define('LensControl.view.lens.LensController', {
         var positiveArr = valueOfLevels.filter(function (dt) {
             return (dt.device_state !== "FAULT") ? true : false;
         });
+        
+        // Добавлен Ext.Ajax.request({})
+        // Возможно также попробовать сохранение не в БД,а в файл, или файлы
+        // Тогда при чтении будет считываться json файл
         
         var jsonInp = Ext.JSON.encode(positiveArr);
         var user = localStorage.getItem("login");
@@ -580,21 +584,7 @@ Ext.define('LensControl.view.lens.LensController', {
             }
         });
         
-        // Добавить Ext.Ajax.request({})
-        // Возможно также попробовать сохранение не в БД,а в файл, или файлы
-        // Тогда при чтении будет считываться json файл
-        
-        
-        
-        
-        function messageErrorShow(message) {
-            Ext.Msg.show({
-                title: 'Ошибка',
-                icon: Ext.Msg.ERROR,
-                buttons: Ext.Msg.OK,
-                message: message
-            });
-        }
+
     },
     //
     //
@@ -613,10 +603,191 @@ Ext.define('LensControl.view.lens.LensController', {
             },
             success: function (ans) {
                 console.log("get_levels success");
+                try {
+                    var respText = Ext.JSON.decode(ans.responseText);
+                }
+                catch (e) {
+                    return;
+                }
+                var arr = new Array();
+                Ext.iterate(respText, function (item, index, totalItems) {
+                    if (index.indexOf(".json") !== -1) {
+                        var inpArr = new Array();
+                        inpArr.push(item);
+                        inpArr.push(index);
+                        arr.push(inpArr);
+                    }
+                });
+                if (arr.length === 0 ) {
+                    Ext.Msg.show({
+                        title: 'Сообщение',
+                        //icon: Ext.Msg.ALERT,
+                        buttons: Ext.Msg.OK,
+                        message: 'Нет сохранённых значений на сервере'
+                    });
+                    return;
+                }
+                var win = new Ext.Window({
+                    width: 500,
+                    title: 'test',
+                    modal: true,
+                    resizable: false,
+                    layout: {
+                        type: 'vbox',
+                        align: 'center'
+                    },
+                    
+                    items: [
+                        {
+                            xtype: 'container',
+                            layout: 'hbox',
+                            margin: '10 0 10 0',
+                            name: 'savingCont',
+                            items: [
+                                {
+                                    margin: '0 10 0 0',
+                                    xtype: 'displayfield',
+                                    value: '<b>Список сохранённых:</b>',
+                                    width: 150                                    
+                                },
+                                {
+                                    xtype: 'combo',
+                                    itemId: 'savingLevels',
+                                    width: 250,
+                                    store: {
+                                        type: 'array',
+                                        fields: ['id', 'jsonfiles'],
+                                        data: arr,
+//                                data: [
+//                                    ['Ok'],
+//                                    ['Fault']
+//                                ]
+                                    },
+                                    valueField: 'id',
+                                    displayField: 'jsonfiles',
+                                }
+                            ]
+                        },
+                        {
+                            margin: '10 0 10 0',
+                            layout: {
+                                //pack: 'end',
+                                type: 'hbox'
+                            },
+                            items: [
+                                {
+                                    margin: '0 5 0 5',
+                                    width: 120,
+                                    xtype: 'button',
+                                    text: 'Отмена',
+                                    itemId: 'cancel',
+                                    iconCls: 'cancel',
+                                    handler: function () {
+                                        win.close();
+                                    }
+                                },
+                                {
+                                    margin: '0 5 0 5',
+                                    width: 120,
+                                    xtype: 'button',
+                                    text: 'Загрузить',
+                                    itemId: 'save',
+                                    iconCls: 'save',
+                                    handler: function () {
+                                        var otherCont = Ext.ComponentQuery.query('[name=savingCont]')[0];
+                                        var savingLevels = otherCont.down('#savingLevels').rawValue;
+                                        win.close();
+                                        
+                                        if (savingLevels.length === 0)
+                                            return;
+                                        var user = localStorage.getItem("login");
+                                        Ext.Ajax.request({
+                                            url: '/cr_conf/lens_control_save_levels.php',
+                                            method: 'POST',
+                                            params: {
+                                                login: user,
+                                                action: 'load_confs',
+                                                json_file: savingLevels,
+                                            },
+                                            success: function (ans) {
+                                                console.log("true");
+                                                try {
+                                                    var respText = Ext.JSON.decode(ans.responseText);
+                                                } catch (e) {
+                                                    return;
+                                                }
+                                            },
+                                            failure: function (ans) {
+                                                console.log("false");
+                                            }
+                                        });
+                                        
+                                        //var file = 
+                                        
+                                        var generatedHtml = "";
+
+//                                        var win2 = new Ext.Window({
+//                                            width: 500,
+//                                            height: 500,
+//                                            title: 'test2',
+//                                            modal: true,
+//                                            resizable: true,
+//                                            layout: {
+//                                                type: 'vbox',
+//                                                align: 'center'
+//                                            },
+//                                            html: "lasdhafsdfdfsdsf\n\
+//dsf\n\
+//ds\n\
+//fdsf\n\
+//dsf\n\
+//dsf\n\
+//sd\n\
+//fds\n\
+//fsd\n\
+//fsd\n\
+//f\n\
+//sdf\n\
+//dsf\n\
+//dsf\n\
+//"
+//                                        });
+//                                        win2.show();
+                                    }
+                                }
+                            ]
+                        }
+                        
+                    ]
+                });
+                win.show();
+                var fff = 2;
             },
             failure: function (ans) {
                 console.log("get_levels failure");
+                try {
+                    var respText = Ext.JSON.decode(ans.responseText);
+                    var outMes = respText.reason;
+                    if (outMes === undefined)
+                       outMes = "Неизвестная ошибка";
+                }
+                catch (e) {
+                    var outMes = "Неизвестная ошибка";
+                }
+                me.messageErrorShow(outMes);
+                
             }
+        });
+    },
+    //
+    //
+    //
+    messageErrorShow: function (message) {
+        Ext.Msg.show({
+            title: 'Ошибка',
+            icon: Ext.Msg.ERROR,
+            buttons: Ext.Msg.OK,
+            message: message
         });
     }
 
