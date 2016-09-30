@@ -611,12 +611,14 @@ Ext.define('LensControl.view.lens.LensController', {
                 }
                 var arr = new Array();
                 Ext.iterate(respText, function (item, index, totalItems) {
-                    if (index.indexOf(".json") !== -1) {
-                        var inpArr = new Array();
-                        inpArr.push(item);
-                        inpArr.push(index);
-                        arr.push(inpArr);
-                    }
+                    try {
+                        if (index.indexOf(".json") !== -1) {
+                            var inpArr = new Array();
+                            inpArr.push(item);
+                            inpArr.push(index);
+                            arr.push(inpArr);
+                        }
+                    } catch (e) {}
                 });
                 if (arr.length === 0 ) {
                     Ext.Msg.show({
@@ -658,10 +660,6 @@ Ext.define('LensControl.view.lens.LensController', {
                                         type: 'array',
                                         fields: ['id', 'jsonfiles'],
                                         data: arr,
-//                                data: [
-//                                    ['Ok'],
-//                                    ['Fault']
-//                                ]
                                     },
                                     valueField: 'id',
                                     displayField: 'jsonfiles',
@@ -680,8 +678,8 @@ Ext.define('LensControl.view.lens.LensController', {
                                     width: 120,
                                     xtype: 'button',
                                     text: 'Отмена',
-                                    itemId: 'cancel',
-                                    iconCls: 'cancel',
+                                    //itemId: 'cancel',
+                                    //iconCls: 'cancel',
                                     handler: function () {
                                         win.close();
                                     }
@@ -691,8 +689,8 @@ Ext.define('LensControl.view.lens.LensController', {
                                     width: 120,
                                     xtype: 'button',
                                     text: 'Загрузить',
-                                    itemId: 'save',
-                                    iconCls: 'save',
+                                    //itemId: 'save',
+                                    //iconCls: 'save',
                                     handler: function () {
                                         var otherCont = Ext.ComponentQuery.query('[name=savingCont]')[0];
                                         var savingLevels = otherCont.down('#savingLevels').rawValue;
@@ -711,48 +709,68 @@ Ext.define('LensControl.view.lens.LensController', {
                                             },
                                             success: function (ans) {
                                                 console.log("true");
+                                                var respHtml = "";
                                                 try {
-                                                    var respText = Ext.JSON.decode(ans.responseText);
+                                                    var respData = Ext.JSON.decode(ans.responseText);
+                                                    
+                                                    
                                                 } catch (e) {
                                                     return;
                                                 }
+                                                var space = '&nbsp;&nbsp;&nbsp;';
+                                                Ext.each(respData, function(fromDevice, index) {
+                                                    var device_name = fromDevice.device_name;
+                                                    var volt_level = fromDevice.volt_level;
+                                                    var curr_level = fromDevice.curr_level;
+                                                    if (device_name === undefined
+                                                            || volt_level === undefined
+                                                            || curr_level === undefined)
+                                                        return;
+                                                    respHtml += "<b>Источник:</b><span style='color:blue;'>" + space + device_name + space 
+                                                            + "</span> <b>Порог для напряжения:  </b>  <span style='color:blue;'>" + space + volt_level + space
+                                                            + "</span>" + " <b>Порог для тока:  </b>   <span style='color:blue;'>" + space + curr_level + space + "</span><br>";
+                                                });
+                                                var win2 = new Ext.Window({
+                                                    width: 600,
+                                                    height: 500,
+                                                    bodyPadding: 10,
+                                                    title: 'test2',
+                                                    modal: true,
+                                                    //resizable: false,
+                                                    scrollable: true,
+                                                    html: respHtml,
+                                                    tbar: [
+                                                        {
+                                                            margin: '0 35 0 35',
+                                                            width: 120,
+                                                            xtype: 'button',
+                                                            text: 'Отмена',
+                                                            //itemId: 'cancel',
+                                                            //iconCls: 'cancel',
+                                                            handler: function () {
+                                                                win2.close();
+                                                            }
+                                                        },
+                                                        {
+                                                            margin: '0 35 0 35',
+                                                            width: 120,
+                                                            xtype: 'button',
+                                                            text: 'Установить',
+                                                            //itemId: 'save',
+                                                            //iconCls: 'save',
+                                                            handler: function () {
+
+                                                            }
+                                                        }
+                                                    ],
+
+                                                });
+                                                win2.show();
                                             },
                                             failure: function (ans) {
                                                 console.log("false");
                                             }
                                         });
-                                        
-                                        //var file = 
-                                        
-                                        var generatedHtml = "";
-
-//                                        var win2 = new Ext.Window({
-//                                            width: 500,
-//                                            height: 500,
-//                                            title: 'test2',
-//                                            modal: true,
-//                                            resizable: true,
-//                                            layout: {
-//                                                type: 'vbox',
-//                                                align: 'center'
-//                                            },
-//                                            html: "lasdhafsdfdfsdsf\n\
-//dsf\n\
-//ds\n\
-//fdsf\n\
-//dsf\n\
-//dsf\n\
-//sd\n\
-//fds\n\
-//fsd\n\
-//fsd\n\
-//f\n\
-//sdf\n\
-//dsf\n\
-//dsf\n\
-//"
-//                                        });
-//                                        win2.show();
                                     }
                                 }
                             ]
