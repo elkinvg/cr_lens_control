@@ -564,17 +564,18 @@ Ext.define('LensControl.view.lens.LensController', {
         });
         
         var jsonInp = Ext.JSON.encode(positiveArr);
+        var user = localStorage.getItem("login");
         Ext.Ajax.request({
             url: '/cr_conf/lens_control_save_levels.php',
             method: 'POST',
             params: {
-                login: 'tango',
+                login: user,
                 values_json: jsonInp
             },
-            success: function (transport) {
+            success: function (ans) {
                 console.log("save_levels success");
             },
-            failure: function (transport) {
+            failure: function (ans) {
                 console.log("save_levels failure");
             }
         });
@@ -601,17 +602,19 @@ Ext.define('LensControl.view.lens.LensController', {
     loadLevels: function () {
         var me = this;
         console.log('loadLevels');
+        var user = localStorage.getItem("login");
+        
         Ext.Ajax.request({
             url: '/cr_conf/lens_control_save_levels.php',
             method: 'POST',
             params: {
-                login: 'tango',
+                login: user,
                 action: 'get_confs'
             },
-            success: function (transport) {
+            success: function (ans) {
                 console.log("get_levels success");
             },
-            failure: function (transport) {
+            failure: function (ans) {
                 console.log("get_levels failure");
             }
         });
