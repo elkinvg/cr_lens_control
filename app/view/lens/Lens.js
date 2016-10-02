@@ -177,6 +177,7 @@ Ext.define('LensControl.view.lens.Lens', {
                 },
                 {
                     xtype: 'fieldset',
+                    reference: 'otherSettPanel',
                     style: 'background-color: #fafafa;',
                     title: 'Дополнительные настройки',
                     width: '100%',

@@ -385,6 +385,7 @@ Ext.define('LensControl.view.lens.LensController', {
             
             var stateOv = me.lookupReference('powersupplies');
             var onOffPanel = me.lookupReference('onOffPanel');
+            var otherSettPanel = me.lookupReference('otherSettPanel');
             
             // набор символов http://unicode-table.com/ru/#26D4
             // &#9899; - закрашенный круг
@@ -396,10 +397,14 @@ Ext.define('LensControl.view.lens.LensController', {
             }
             
             var isAllFault = data.data.every(isFault);
-            if (isAllFault)
+            if (isAllFault) {
                 onOffPanel.disable();
-            else
+                otherSettPanel.disable();
+            }
+            else {
                 onOffPanel.enable();
+                otherSettPanel.enable();
+            }
             
             if (isSomeFault) {
                 stateOv.setTitle("Источники питания. " + '<span style="color:red; font-size:200%"> &#9899; </span>'); // &#9899 || &#9940;
@@ -496,8 +501,12 @@ Ext.define('LensControl.view.lens.LensController', {
     //
     //
     saveLevels: function () {
+        // Сохранение установленных порогов
+        // Данные сохраняются на сервере в формате json
+        
         var me = this;
-        console.log('save levels');
+        if(typeof dbg !== 'undefined') console.log('save levels');
+        
         var mainGrid = me.lookupReference('mainGrid');
         var store = mainGrid.getStore();
         
@@ -559,6 +568,8 @@ Ext.define('LensControl.view.lens.LensController', {
                 }
             });
         }
+        
+        // Включение в массив данных только с подключённых истоников
         var positiveArr = valueOfLevels.filter(function (dt) {
             return (dt.device_state !== "FAULT") ? true : false;
         });
@@ -577,10 +588,10 @@ Ext.define('LensControl.view.lens.LensController', {
                 values_json: jsonInp
             },
             success: function (ans) {
-                console.log("save_levels success");
+                if(typeof dbg !== 'undefined') console.log("save_levels success");
             },
             failure: function (ans) {
-                console.log("save_levels failure");
+                if(typeof dbg !== 'undefined') console.log("save_levels failure");
             }
         });
         
@@ -590,8 +601,9 @@ Ext.define('LensControl.view.lens.LensController', {
     //
     //
     loadLevels: function () {
+        // Загрузка установленных порогов
         var me = this;
-        console.log('loadLevels');
+        if(typeof dbg !== 'undefined') console.log('loadLevels');
         var user = localStorage.getItem("login");
         
         Ext.Ajax.request({
@@ -602,7 +614,7 @@ Ext.define('LensControl.view.lens.LensController', {
                 action: 'get_confs'
             },
             success: function (ans) {
-                console.log("get_levels success");
+                if(typeof dbg !== 'undefined') console.log("get_levels success");
                 try {
                     var respText = Ext.JSON.decode(ans.responseText);
                 }
@@ -611,15 +623,30 @@ Ext.define('LensControl.view.lens.LensController', {
                 }
                 var arr = new Array();
                 Ext.iterate(respText, function (item, index, totalItems) {
+                    // Здесь используется два варианта для разных выводов из php
+                    // Второй добавлен после добавления в php сортировки массива
+                    // по имени файла, и по количеству элементов
                     try {
                         if (index.indexOf(".json") !== -1) {
-                            var inpArr = new Array();
-                            inpArr.push(item);
-                            inpArr.push(index);
-                            arr.push(inpArr);
+                            forIndOf(item, index);
                         }
-                    } catch (e) {}
+                    } catch (e) {
+                        try {
+                            if (item.indexOf(".json") !== -1) {
+                                forIndOf(index, item);
+                            }
+                        } catch (e) {}
+                    }
+                    
+                    function forIndOf(ind, filename) {
+                        var inpArr = new Array();
+                        inpArr.push(ind);
+                        inpArr.push(filename);
+                        arr.push(inpArr);
+                    }
+                    
                 });
+                
                 if (arr.length === 0 ) {
                     Ext.Msg.show({
                         title: 'Сообщение',
@@ -629,33 +656,38 @@ Ext.define('LensControl.view.lens.LensController', {
                     });
                     return;
                 }
-                var win = new Ext.Window({
-                    width: 500,
-                    title: 'test',
+                
+                // Если данные загрузились открывается новое окно с перечнем 
+                // сохранённых json-файлов
+                // А также содержанием этих файлов
+                var win2 = new Ext.Window({
+                    //reference: 'winLevelsMes',
+                    name: 'winLevelsMes',
+                    width: 600,
+                    height: 500,
+                    bodyPadding: 10,
+                    title: 'Установка сохранённых значений для порогов',
                     modal: true,
-                    resizable: false,
-                    layout: {
-                        type: 'vbox',
-                        align: 'center'
-                    },
-                    
-                    items: [
+                    //resizable: false,
+                    scrollable: true,
+                    //html: respHtml,
+                    tbar: [
                         {
                             xtype: 'container',
                             layout: 'hbox',
-                            margin: '10 0 10 0',
+                            //margin: '10 0 10 0',
                             name: 'savingCont',
                             items: [
                                 {
-                                    margin: '0 10 0 0',
+                                    //margin: '0 10 0 0',
                                     xtype: 'displayfield',
                                     value: '<b>Список сохранённых:</b>',
-                                    width: 150                                    
+                                    width: 150
                                 },
                                 {
                                     xtype: 'combo',
                                     itemId: 'savingLevels',
-                                    width: 250,
+                                    width: 200,
                                     store: {
                                         type: 'array',
                                         fields: ['id', 'jsonfiles'],
@@ -663,126 +695,163 @@ Ext.define('LensControl.view.lens.LensController', {
                                     },
                                     valueField: 'id',
                                     displayField: 'jsonfiles',
+                                    listeners: {
+                                        select: function (th, selected) {
+                                            //console.log('select');
+                                            var user = localStorage.getItem("login");
+                                            var savingLevels = selected.data.jsonfiles;
+                                            Ext.Ajax.request({
+                                                url: '/cr_conf/lens_control_save_levels.php',
+                                                method: 'POST',
+                                                params: {
+                                                    login: user,
+                                                    action: 'load_confs',
+                                                    json_file: savingLevels,
+                                                },
+                                                success: function (ans) {
+                                                    //console.log("true");
+                                                    var winLevelsMes = Ext.ComponentQuery.query('[name=winLevelsMes]')[0];
+                                                    var respHtml = "";
+                                                    try {
+                                                        var respData = Ext.JSON.decode(ans.responseText);
+                                                    } catch (e) {
+                                                        winLevelsMes.update("No Data");
+                                                        return;
+                                                    }
+                                                    var space = '&nbsp;&nbsp;&nbsp;';
+                                                    
+                                                    var respDataObj = new Object();
+                                                    Ext.each(respData, function (fromDevice, index) {
+                                                        var device_name = fromDevice.device_name;
+                                                        var volt_level = fromDevice.volt_level;
+                                                        var curr_level = fromDevice.curr_level;
+                                                        if (device_name === undefined
+                                                                || volt_level === undefined
+                                                                || curr_level === undefined)
+                                                            return;
+                                                        respHtml += "<b>Источник:</b><span style='color:blue;'>" + space + device_name + space
+                                                                + "</span> <b>Порог для напряжения:  </b>  <span style='color:blue;'>" + space + volt_level + space
+                                                                + "</span>" + " <b>Порог для тока:  </b>   <span style='color:blue;'>" + space + curr_level + space + "</span><br>";
+                                                        var gdata = {};
+                                                        gdata.volt_level = volt_level;
+                                                        gdata.curr_level = curr_level;
+                                                        respDataObj[device_name] = gdata;
+                                                    
+                                                    });
+                                                    winLevelsMes.update(respHtml);
+//                                                    winLevelsMes.respData = respData;
+                                                    // Сохранение respDataObj для дальнейшего использования
+                                                    // При нажатии клавиши установить
+                                                    winLevelsMes.respDataObj = respDataObj;
+                                                    //winLevelsMes.html(respHtml);
+                                                },
+                                                failure: function (ans) {
+                                                    if(typeof dbg !== 'undefined') console.log("Failure from action=load_confs");
+                                                    //console.log("false");
+                                                }
+                                            });
+                                        }
+                                    }
                                 }
                             ]
                         },
                         {
-                            margin: '10 0 10 0',
-                            layout: {
-                                //pack: 'end',
-                                type: 'hbox'
-                            },
-                            items: [
-                                {
-                                    margin: '0 5 0 5',
-                                    width: 120,
-                                    xtype: 'button',
-                                    text: 'Отмена',
-                                    //itemId: 'cancel',
-                                    //iconCls: 'cancel',
-                                    handler: function () {
-                                        win.close();
+                            //margin: '0 5 0 5',
+                            width: 100,
+                            xtype: 'button',
+                            text: 'Установить',
+                            //itemId: 'save',
+                            //iconCls: 'save',
+                            handler: function () {
+                                var winLevelsMes = Ext.ComponentQuery.query('[name=winLevelsMes]')[0];
+//                                var respData = winLevelsMes.respData;
+                                var respDataObj = winLevelsMes.respDataObj;
+                                win2.close();
+                                
+                                var mainGrid = me.lookupReference('mainGrid');
+                                var store = mainGrid.getStore();
+                                var valueOfLevels = new Array();
+                                
+                                //var levels = {};
+                                
+                                // Дальше идёт получение значений установленных levels, для отбора 
+                                // только изменяемых. 
+                                store.data.each(function (item, index, totalItems) {
+                                    var dataFrom =  item.data;
+                                    if (dataFrom === undefined) {
+                                        undef = true;
+                                        return;
                                     }
-                                },
-                                {
-                                    margin: '0 5 0 5',
-                                    width: 120,
-                                    xtype: 'button',
-                                    text: 'Загрузить',
-                                    //itemId: 'save',
-                                    //iconCls: 'save',
-                                    handler: function () {
-                                        var otherCont = Ext.ComponentQuery.query('[name=savingCont]')[0];
-                                        var savingLevels = otherCont.down('#savingLevels').rawValue;
-                                        win.close();
-                                        
-                                        if (savingLevels.length === 0)
-                                            return;
-                                        var user = localStorage.getItem("login");
-                                        Ext.Ajax.request({
-                                            url: '/cr_conf/lens_control_save_levels.php',
-                                            method: 'POST',
-                                            params: {
-                                                login: user,
-                                                action: 'load_confs',
-                                                json_file: savingLevels,
-                                            },
-                                            success: function (ans) {
-                                                console.log("true");
-                                                var respHtml = "";
-                                                try {
-                                                    var respData = Ext.JSON.decode(ans.responseText);
-                                                    
-                                                    
-                                                } catch (e) {
-                                                    return;
-                                                }
-                                                var space = '&nbsp;&nbsp;&nbsp;';
-                                                Ext.each(respData, function(fromDevice, index) {
-                                                    var device_name = fromDevice.device_name;
-                                                    var volt_level = fromDevice.volt_level;
-                                                    var curr_level = fromDevice.curr_level;
-                                                    if (device_name === undefined
-                                                            || volt_level === undefined
-                                                            || curr_level === undefined)
-                                                        return;
-                                                    respHtml += "<b>Источник:</b><span style='color:blue;'>" + space + device_name + space 
-                                                            + "</span> <b>Порог для напряжения:  </b>  <span style='color:blue;'>" + space + volt_level + space
-                                                            + "</span>" + " <b>Порог для тока:  </b>   <span style='color:blue;'>" + space + curr_level + space + "</span><br>";
-                                                });
-                                                var win2 = new Ext.Window({
-                                                    width: 600,
-                                                    height: 500,
-                                                    bodyPadding: 10,
-                                                    title: 'test2',
-                                                    modal: true,
-                                                    //resizable: false,
-                                                    scrollable: true,
-                                                    html: respHtml,
-                                                    tbar: [
-                                                        {
-                                                            margin: '0 35 0 35',
-                                                            width: 120,
-                                                            xtype: 'button',
-                                                            text: 'Отмена',
-                                                            //itemId: 'cancel',
-                                                            //iconCls: 'cancel',
-                                                            handler: function () {
-                                                                win2.close();
-                                                            }
-                                                        },
-                                                        {
-                                                            margin: '0 35 0 35',
-                                                            width: 120,
-                                                            xtype: 'button',
-                                                            text: 'Установить',
-                                                            //itemId: 'save',
-                                                            //iconCls: 'save',
-                                                            handler: function () {
-
-                                                            }
-                                                        }
-                                                    ],
-
-                                                });
-                                                win2.show();
-                                            },
-                                            failure: function (ans) {
-                                                console.log("false");
-                                            }
-                                        });
-                                    }
-                                }
-                            ]
+                                    var d_n = dataFrom.device_name;
+                                    if (d_n === undefined )
+                                        return;
+                                    var gdata = {};
+                                    gdata.device_name = dataFrom.device_name;
+                                    gdata.volt_level = dataFrom.volt_level;
+                                    gdata.curr_level = dataFrom.curr_level;
+                                    
+                                    valueOfLevels.push(gdata);
+                                    //levels[dataFrom.device_name] = gdata;
+                                });
+                                
+//                                if (respData === undefined)
+//                                    return;
+                                
+                                if (respDataObj === undefined)
+                                    return;
+                                
+                                // Создания массива источников, в которых будут изменены значения
+                                var changedLevels = valueOfLevels.filter(function (dt) {
+                                    if (dt.volt_level === -1 || dt.curr_level === -1)
+                                        return false;
+                                    
+                                    if (dt.volt_level === undefined || dt.curr_level === undefined)
+                                        return false;
+                                    
+                                    var newValues = respDataObj[dt.device_name];
+                                    
+                                    if (newValues===undefined)
+                                        return false;
+                                    
+                                    // Проверка наличия volt_level,curr_level в установке новых значений
+                                    if (newValues.volt_level === undefined ||
+                                            newValues.curr_level === undefined)
+                                        return false;
+                                    
+                                    // Проверка старых значений, если все новые значения равны старым
+                                    // Сигнал источнику послан не будет
+                                    if (newValues.volt_level === dt.volt_level &&
+                                            newValues.curr_level === dt.curr_level)
+                                        return false;
+                                    
+                                    
+                                    return true;
+                                });
+                                
+                                if (changedLevels.length === 0)
+                                    return;
+                                
+                                // Если есть изменяемые значения отправить сигналы 
+                                // на источники с установкой новых порогов
+                            }
+                        },
+                        {
+                            //margin: '0 5 0 5',
+                            width: 100,
+                            xtype: 'button',
+                            text: 'Отмена',
+                            //itemId: 'cancel',
+                            //iconCls: 'cancel',
+                            handler: function () {
+                                win2.close();
+                            }
                         }
-                        
-                    ]
+                    ],
                 });
-                win.show();
-                var fff = 2;
+                win2.show();
             },
             failure: function (ans) {
-                console.log("get_levels failure");
+                //console.log("get_levels failure");
                 try {
                     var respText = Ext.JSON.decode(ans.responseText);
                     var outMes = respText.reason;
