@@ -824,6 +824,8 @@ Ext.define('LensControl.view.lens.LensController', {
                                             newValues.curr_level === dt.curr_level)
                                         return false;
                                     
+                                    dt.volt_level = newValues.volt_level;
+                                    dt.curr_level = newValues.curr_level;
                                     
                                     return true;
                                 });
@@ -833,6 +835,21 @@ Ext.define('LensControl.view.lens.LensController', {
                                 
                                 // Если есть изменяемые значения отправить сигналы 
                                 // на источники с установкой новых порогов
+                                var command = new Object();
+                                command.command = "SetCurrentVoltageLevelsForDevice";
+                                
+                                Ext.each(changedLevels, function (fromDevice, index) {
+                                    var inpArray = new Array();
+                                    //device name
+                                    inpArray.push(fromDevice.device_name);
+                                    // Current level
+                                    inpArray.push(fromDevice.curr_level);
+                                    // Voltage level
+                                    inpArray.push(fromDevice.volt_level);
+                                    command.argin = inpArray;
+                                    var comJson = Ext.util.JSON.encode(command);
+                                    me.ws.send(comJson);
+                                });
                             }
                         },
                         {

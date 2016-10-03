@@ -249,11 +249,22 @@ Ext.define('LensControl.view.lens.Lens', {
         {
             title: 'Источники питания',
             reference: 'powersupplies',
+            name: 'name_powersupplies',
             itemId: 'powersupplies',
             collapsible: false,
             region: 'center',
             margin: '5 0 0 0',
             items: [
+                {
+                    xtype: 'component',
+                    anchor: '100%',
+                    name: 'warning_mes',
+                    hidden: true,
+//                    html: [
+//                        '<h3><span style="color:red; font-size:200%"> Locally loaded data!!!</span></h3>',
+//                        '<p>This ComboBox uses local data from a JS array</p>'
+//                    ]
+                },
                 {
                     xtype: 'displayfield',
                     fieldLabel: '<b>Последнее обновление</b>',

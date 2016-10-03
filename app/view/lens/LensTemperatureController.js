@@ -18,16 +18,34 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                         {
                             callback: function (records, operation, success) {
                                 if (success) {
+                                    // Для проверки температуры
+                                    var isHeatTemp = false;
+                                    
+                                    // Максимальная температура.
+                                    // После превышения этой температуры выводится 
+                                    // Предупреждающее сообщение
+                                    var maxTemp = 40; 
+                                    
+                                    
                                     // Для вывода значения температуры на картинке
                                     function editTempOut(t, refOrText) {
                                         // Берутся значения из предпоследней итерации
                                         // так как в последней могут быть значения
                                         // не для всех датчиков
                                         var dataTemp = records[records.length - 3].data;
+                                        
 
                                         Ext.Object.each(t,
                                                 function (key, value) {
                                                     var temperature = dataTemp[key];
+                                                    var checkTmp = parseInt(temperature, 10);
+                                                    if (isNaN(checkTmp) !== true) {
+                                                        if (checkTmp > maxTemp) {
+                                                            isHeatTemp = true;
+                                                        }
+                                                    }
+                                                        
+                                                    
                                                     var text = '<span style="font-weight:bold; color:blue; font-size:300%">' + temperature + '</span>';
                                                     value.setText(text, false);
                                                 });
@@ -43,6 +61,17 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                                             Temp.T_5 = me.lookupReference('T_5');
                                     
                                     editTempOut(Temp,'T1');
+                                    var warning_message = '<h3><span style="color:red; font-size:150%"> Превышена допустимая температура!!!</span></h3>'
+                                            + '<p><b>Проверьте показания термодатчиков</b></p>';
+                                    var powersupplies = Ext.ComponentQuery.query('[name=name_powersupplies]')[0];
+                                    var warning_mes = Ext.ComponentQuery.query('[name=warning_mes]')[0];
+                                    if (isHeatTemp) {
+                                        warning_mes.setHidden(false);
+                                        warning_mes.update(warning_message);
+                                    } else {
+                                        warning_mes.setHidden(true);
+                                    }
+
                                 }
                             }
                         }
