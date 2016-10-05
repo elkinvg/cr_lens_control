@@ -14,6 +14,13 @@ Ext.define('LensControl.view.lens.LensTemperature', {
 //    },
     items: [
         {
+            xtype: 'component',
+            anchor: '100%',
+            name: 'warning_mes',
+            hidden: true,
+//                    html: []
+        },
+        {
             xtype: 'panel',
             width: 433,
             height: 562,

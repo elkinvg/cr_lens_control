@@ -398,6 +398,7 @@ Ext.define('LensControl.view.lens.LensController', {
             // набор символов http://unicode-table.com/ru/#26D4
             // &#9899; - закрашенный круг
             // &#9940; - знак стоп
+            // &#9606; - знак прямоугольник
             
             if (size===0) {
                 stateOv.setTitle("Источники питания. " + '<span style="color:red; font-size:200%"> &#9899; </span>' + " Данных нет");
@@ -415,7 +416,7 @@ Ext.define('LensControl.view.lens.LensController', {
             }
             
             if (isSomeFault) {
-                stateOv.setTitle("Источники питания. " + '<span style="color:red; font-size:200%"> &#9899; </span>'); // &#9899 || &#9940;
+                stateOv.setTitle("Источники питания. " + '<span style="color:red; font-size:200%"> &#9899; </span>'); // &#9899; || &#9940; || &#9679;
                 return;
             }
             var isSomeOff = data.data.some(isOff);
@@ -600,6 +601,7 @@ Ext.define('LensControl.view.lens.LensController', {
             },
             failure: function (ans) {
                 if(typeof dbg !== 'undefined') console.log("save_levels failure");
+                me.messageErrorShow('Не удалось сохранить');
             }
         });
         

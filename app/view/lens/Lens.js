@@ -260,10 +260,7 @@ Ext.define('LensControl.view.lens.Lens', {
                     anchor: '100%',
                     name: 'warning_mes',
                     hidden: true,
-//                    html: [
-//                        '<h3><span style="color:red; font-size:200%"> Locally loaded data!!!</span></h3>',
-//                        '<p>This ComboBox uses local data from a JS array</p>'
-//                    ]
+//                    html: []
                 },
                 {
                     xtype: 'displayfield',

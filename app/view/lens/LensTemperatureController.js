@@ -64,13 +64,49 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                                     var warning_message = '<h3><span style="color:red; font-size:150%"> Превышена допустимая температура!!!</span></h3>'
                                             + '<p><b>Проверьте показания термодатчиков</b></p>';
                                     var powersupplies = Ext.ComponentQuery.query('[name=name_powersupplies]')[0];
-                                    var warning_mes = Ext.ComponentQuery.query('[name=warning_mes]')[0];
-                                    if (isHeatTemp) {
-                                        warning_mes.setHidden(false);
-                                        warning_mes.update(warning_message);
-                                    } else {
-                                        warning_mes.setHidden(true);
+                                    // Вывод сообщения если превышена максимальная температура
+                                    
+                                    var warning_mes = Ext.ComponentQuery.query('[name=warning_mes]');
+                                    Ext.each(warning_mes, function (component, index) {
+                                        if (isHeatTemp) {
+                                            component.setHidden(false);
+                                            component.update(warning_message);
+                                        } else {
+                                            component.setHidden(true);
+                                        }
+                                    });
+                                    
+                                    // Дополнительные данные содержатся в store
+                                    // В последнем элементе массива records.length - 1
+                                    
+                                    var lastRec = records[records.length - 1];
+                                    var dataFrom = lastRec.data;
+                                    if (dataFrom === undefined) {
+                                        console.log("Store: dataFrom===undefined");
+                                        return;
                                     }
+                                    if (dataFrom.last_timestamp ===undefined || 
+                                            dataFrom.now_timestamp === undefined)
+                                        return;
+                                    
+                                    // Вывод сообщения если данные не обновлялись 
+                                    // больше time_dif_max секунд
+                                    var time_dif_max = 120;
+                                    var time_difference = dataFrom.now_timestamp - dataFrom.last_timestamp;
+                                    var time_warning_mes = Ext.ComponentQuery.query('[name=warning_mes]');
+                                    warning_message = '<h3><span style="color:red; font-size:150%"> Данные по температуре не обновлялись ' + time_difference + ' секунд</span></h3>';
+                                    
+                                    Ext.each(time_warning_mes, function (component, index) {
+                                        
+                                        if (time_difference > time_dif_max) {
+                                            component.setHidden(false);
+                                            component.update(warning_message);
+                                        } else {
+                                            if (!isHeatTemp) {
+                                                component.setHidden(true);
+                                            }
+                                        }
+                                    });
 
                                 }
                             }
