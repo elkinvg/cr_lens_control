@@ -287,27 +287,27 @@ Ext.define('LensControl.view.lens.Lens', {
                     columns: [
                         {
                             text: 'Id', dataIndex: 'id',
-                            renderer: 'bold',
+                            //renderer: 'bold',
                             flex: 0.5
                         },
                         {
                             text: 'Напряжение (В)', dataIndex: 'volt_measure',
-                            renderer: 'bold',
+                            renderer: 'boldnnum',
                             flex: 1
                         },
                         {
                             text: 'Ток (А)', dataIndex: 'curr_measure',
-                            renderer: 'bold',
+                            renderer: 'boldnnum',
                             flex: 1
                         },
                         {
                             text: 'Порог<br>напряжения (В)', dataIndex: 'volt_level',
-                            renderer: 'bold',
+                            //renderer: 'bold',
                             flex: 1
                         },
                         {
                             text: 'Порог<br>тока (А)', dataIndex: 'curr_level',
-                            renderer: 'bold',
+                            //renderer: 'bold',
                             flex: 1
                         },
                         {

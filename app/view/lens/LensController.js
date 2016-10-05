@@ -286,6 +286,13 @@ Ext.define('LensControl.view.lens.LensController', {
     //
     //
     //
+    boldnnum: function (val) {
+        // изменить жирность текста
+        return "<b>" + val.toFixed(3) + "</b>";
+    },
+    //
+    //
+    //
     setStatusColor: function (val, meta) {
         // установка цветового индикатора статуса
         if (val === "FAULT")
@@ -308,12 +315,13 @@ Ext.define('LensControl.view.lens.LensController', {
         var me = this;
         var commandtype = button.commandtype;
         var command = new Object();
+        var messageIn = "";
         if (commandtype === 'on') {
             command.command = 'OnForAll';
-            var messageIn = "Вы хотите включить нагрузку на всех источниках?";
+            messageIn = "Вы хотите включить нагрузку <br>на всех источниках? ";
         } else if (commandtype === 'off') {
             command.command = 'OffForAll';
-            var messageIn = "Вы хотите выключить нагрузку на всех источниках?";
+            messageIn = "Вы хотите выключить нагрузку <br>на всех источниках? ";
         } else
             return;
         
