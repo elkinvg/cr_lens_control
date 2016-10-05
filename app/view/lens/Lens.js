@@ -175,26 +175,96 @@ Ext.define('LensControl.view.lens.Lens', {
                         }
                     ]
                 },
-                // {
-                //     xtype: 'fieldset',
-                //     style: 'background-color: #fafafa;',
-                //     title: 'Дополнительные настройки',
-                //     width: '100%',
-                //     layout: {
-                //         type: 'vbox',
-                //         align: 'stretch',
-                //     },
-                // }
+                {
+                    xtype: 'fieldset',
+                    reference: 'otherSettPanel',
+                    style: 'background-color: #fafafa;',
+                    title: 'Дополнительные настройки',
+                    width: '100%',
+                    layout: {
+                        type: 'vbox',
+                        align: 'stretch'                        
+                    },
+                    items: [
+                        {
+                            xtype: 'container',
+                            layout: {
+                                type: 'hbox',
+                                align: 'stretch',
+                            },
+                            defaults: {
+                                margin: '10 10 10 10',
+                                //flex: 1,
+                            },
+                            items: [
+                                {
+                                    xtype: 'label',
+                                    width: 250, // ????
+                                    style: {
+                                        paddingTop: '8px'
+                                    },
+                                    text: 'Сохранить установленные пороги:'
+                                },
+                                {
+                                    xtype: 'button',
+                                    width: 130,
+                                    text: 'Сохранить',
+                                    handler: 'saveLevels'
+                                }
+                            ]
+
+                        },
+                        {
+                            xtype: 'container',
+                            layout: {
+                                type: 'hbox',
+                                align: 'stretch',
+                            },
+                            defaults: {
+                                margin: '0 10 0 10',
+                                //flex: 1,
+                            },
+                            items: [
+                                {
+                                    xtype: 'label',
+                                    width: 250, // ????
+                                    style: {
+                                        paddingTop: '8px'
+                                    },
+                                    text: 'Загрузить сохранённые пороги:'
+                                },
+                                {
+                                    xtype: 'button',
+                                    width: 130,
+                                    text: 'Загрузить',
+                                    handler: 'loadLevels'
+                                }
+                            ]
+
+                        }
+                    ]
+                }
             ]
         },
         {
             title: 'Источники питания',
             reference: 'powersupplies',
+            name: 'name_powersupplies',
             itemId: 'powersupplies',
             collapsible: false,
             region: 'center',
             margin: '5 0 0 0',
             items: [
+                {
+                    xtype: 'component',
+                    anchor: '100%',
+                    name: 'warning_mes',
+                    hidden: true,
+//                    html: [
+//                        '<h3><span style="color:red; font-size:200%"> Locally loaded data!!!</span></h3>',
+//                        '<p>This ComboBox uses local data from a JS array</p>'
+//                    ]
+                },
                 {
                     xtype: 'displayfield',
                     fieldLabel: '<b>Последнее обновление</b>',
@@ -217,27 +287,27 @@ Ext.define('LensControl.view.lens.Lens', {
                     columns: [
                         {
                             text: 'Id', dataIndex: 'id',
-                            renderer: 'bold',
+                            //renderer: 'bold',
                             flex: 0.5
                         },
                         {
                             text: 'Напряжение (В)', dataIndex: 'volt_measure',
-                            renderer: 'bold',
+                            renderer: 'boldnnum',
                             flex: 1
                         },
                         {
                             text: 'Ток (А)', dataIndex: 'curr_measure',
-                            renderer: 'bold',
+                            renderer: 'boldnnum',
                             flex: 1
                         },
                         {
                             text: 'Порог<br>напряжения (В)', dataIndex: 'volt_level',
-                            renderer: 'bold',
+                            //renderer: 'bold',
                             flex: 1
                         },
                         {
                             text: 'Порог<br>тока (А)', dataIndex: 'curr_level',
-                            renderer: 'bold',
+                            //renderer: 'bold',
                             flex: 1
                         },
                         {

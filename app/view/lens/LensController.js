@@ -18,6 +18,7 @@ Ext.define('LensControl.view.lens.LensController', {
             // получение адреса websocket
             // логин и пароль должны храниться в localStorage
             url: 'ws://' + Ext.create('Common_d.Property').getWsforlens() + 'login=' + localStorage.getItem("login") + '&password=' + localStorage.getItem("password"),
+            //url: 'ws://' + Ext.create('Common_d.Property').getWsforlens(),
             autoReconnect: true,
             autoReconnectInterval: 1000,
             //url: prop.getUrlwstest(),
@@ -285,6 +286,13 @@ Ext.define('LensControl.view.lens.LensController', {
     //
     //
     //
+    boldnnum: function (val) {
+        // изменить жирность текста
+        return "<b>" + val.toFixed(3) + "</b>";
+    },
+    //
+    //
+    //
     setStatusColor: function (val, meta) {
         // установка цветового индикатора статуса
         if (val === "FAULT")
@@ -307,12 +315,13 @@ Ext.define('LensControl.view.lens.LensController', {
         var me = this;
         var commandtype = button.commandtype;
         var command = new Object();
+        var messageIn = "";
         if (commandtype === 'on') {
             command.command = 'OnForAll';
-            var messageIn = "Вы хотите включить нагрузку на всех источниках?";
+            messageIn = "Вы хотите включить нагрузку <br>на всех источниках? ";
         } else if (commandtype === 'off') {
             command.command = 'OffForAll';
-            var messageIn = "Вы хотите выключить нагрузку на всех источниках?";
+            messageIn = "Вы хотите выключить нагрузку <br>на всех источниках? ";
         } else
             return;
         
@@ -384,6 +393,7 @@ Ext.define('LensControl.view.lens.LensController', {
             
             var stateOv = me.lookupReference('powersupplies');
             var onOffPanel = me.lookupReference('onOffPanel');
+            var otherSettPanel = me.lookupReference('otherSettPanel');
             
             // набор символов http://unicode-table.com/ru/#26D4
             // &#9899; - закрашенный круг
@@ -395,10 +405,14 @@ Ext.define('LensControl.view.lens.LensController', {
             }
             
             var isAllFault = data.data.every(isFault);
-            if (isAllFault)
+            if (isAllFault) {
                 onOffPanel.disable();
-            else
+                otherSettPanel.disable();
+            }
+            else {
                 onOffPanel.enable();
+                otherSettPanel.enable();
+            }
             
             if (isSomeFault) {
                 stateOv.setTitle("Источники питания. " + '<span style="color:red; font-size:200%"> &#9899; </span>'); // &#9899 || &#9940;
@@ -491,5 +505,402 @@ Ext.define('LensControl.view.lens.LensController', {
         });
         win.show();
     },
+    //
+    //
+    //
+    saveLevels: function () {
+        // Сохранение установленных порогов
+        // Данные сохраняются на сервере в формате json
+        
+        var me = this;
+        if(typeof dbg !== 'undefined') console.log('save levels');
+        
+        var mainGrid = me.lookupReference('mainGrid');
+        var store = mainGrid.getStore();
+        
+        var undef = false;
+        var hasFault = false; // Есть ли девайсы с состоянием FAULT
+        var hasNotFault = false; // Есть ли хотя бы один с состоянием не FAULT
+        
+        var valueOfLevels = new Array();
+
+        store.data.each(function (item, index, totalItems) {
+            var dataFrom =  item.data;
+            if (dataFrom === undefined) {
+                undef = true;
+                return;
+            }
+            var gdata = {};
+            gdata.device_name = dataFrom.device_name;
+            gdata.device_state = dataFrom.device_state;
+            gdata.volt_level = dataFrom.volt_level;
+            gdata.curr_level = dataFrom.curr_level;
+            
+            
+            Ext.iterate( gdata ,function(key, value){
+                if (value === undefined)
+                    undef = true;
+            });
+
+            if (gdata.device_state === "FAULT") {
+                hasFault = true;
+            }
+            if (gdata.device_state === "ON" || gdata.device_state === "OFF") {
+                hasNotFault = true;
+            }
+            valueOfLevels.push(gdata);
+        });
+        
+        if (undef) {
+            me.messageErrorShow("Ошибка при чтении данных с таблицы");
+            return;
+        }
+        
+        
+        if (!hasNotFault) {
+            me.messageErrorShow('Нет соединения ни с одним источником');
+            return;
+        }
+        
+        if (hasFault) {
+            Ext.Msg.show({
+                title: 'Предупреждение',
+                icon: Ext.Msg.QUESTION,
+                buttons: Ext.Msg.YESNO,
+                message: 'Имеются не подключенные источники.<br> Записать значения с имеющихся,',
+                buttonText: {yes: "Да", no: "Нет"},
+                fn: function (btn) {
+                    if (btn === 'no') {
+                        return;
+                    }
+                }
+            });
+        }
+        
+        // Включение в массив данных только с подключённых истоников
+        var positiveArr = valueOfLevels.filter(function (dt) {
+            return (dt.device_state !== "FAULT") ? true : false;
+        });
+        
+        // Добавлен Ext.Ajax.request({})
+        // Возможно также попробовать сохранение не в БД,а в файл, или файлы
+        // Тогда при чтении будет считываться json файл
+        
+        var jsonInp = Ext.JSON.encode(positiveArr);
+        var user = localStorage.getItem("login");
+        Ext.Ajax.request({
+            url: '/cr_conf/lens_control_save_levels.php',
+            method: 'POST',
+            params: {
+                login: user,
+                values_json: jsonInp
+            },
+            success: function (ans) {
+                if(typeof dbg !== 'undefined') console.log("save_levels success");
+            },
+            failure: function (ans) {
+                if(typeof dbg !== 'undefined') console.log("save_levels failure");
+            }
+        });
+        
+
+    },
+    //
+    //
+    //
+    loadLevels: function () {
+        // Загрузка установленных порогов
+        var me = this;
+        if(typeof dbg !== 'undefined') console.log('loadLevels');
+        var user = localStorage.getItem("login");
+        
+        Ext.Ajax.request({
+            url: '/cr_conf/lens_control_save_levels.php',
+            method: 'POST',
+            params: {
+                login: user,
+                action: 'get_confs'
+            },
+            success: function (ans) {
+                if(typeof dbg !== 'undefined') console.log("get_levels success");
+                try {
+                    var respText = Ext.JSON.decode(ans.responseText);
+                }
+                catch (e) {
+                    return;
+                }
+                var arr = new Array();
+                Ext.iterate(respText, function (item, index, totalItems) {
+                    // Здесь используется два варианта для разных выводов из php
+                    // Второй добавлен после добавления в php сортировки массива
+                    // по имени файла, и по количеству элементов
+                    try {
+                        if (index.indexOf(".json") !== -1) {
+                            forIndOf(item, index);
+                        }
+                    } catch (e) {
+                        try {
+                            if (item.indexOf(".json") !== -1) {
+                                forIndOf(index, item);
+                            }
+                        } catch (e) {}
+                    }
+                    
+                    function forIndOf(ind, filename) {
+                        var inpArr = new Array();
+                        inpArr.push(ind);
+                        inpArr.push(filename);
+                        arr.push(inpArr);
+                    }
+                    
+                });
+                
+                if (arr.length === 0 ) {
+                    Ext.Msg.show({
+                        title: 'Сообщение',
+                        //icon: Ext.Msg.ALERT,
+                        buttons: Ext.Msg.OK,
+                        message: 'Нет сохранённых значений на сервере'
+                    });
+                    return;
+                }
+                
+                // Если данные загрузились открывается новое окно с перечнем 
+                // сохранённых json-файлов
+                // А также содержанием этих файлов
+                var win2 = new Ext.Window({
+                    //reference: 'winLevelsMes',
+                    name: 'winLevelsMes',
+                    width: 600,
+                    height: 500,
+                    bodyPadding: 10,
+                    title: 'Установка сохранённых значений для порогов',
+                    modal: true,
+                    //resizable: false,
+                    scrollable: true,
+                    //html: respHtml,
+                    tbar: [
+                        {
+                            xtype: 'container',
+                            layout: 'hbox',
+                            //margin: '10 0 10 0',
+                            name: 'savingCont',
+                            items: [
+                                {
+                                    //margin: '0 10 0 0',
+                                    xtype: 'displayfield',
+                                    value: '<b>Список сохранённых:</b>',
+                                    width: 150
+                                },
+                                {
+                                    xtype: 'combo',
+                                    itemId: 'savingLevels',
+                                    width: 200,
+                                    store: {
+                                        type: 'array',
+                                        fields: ['id', 'jsonfiles'],
+                                        data: arr,
+                                    },
+                                    valueField: 'id',
+                                    displayField: 'jsonfiles',
+                                    listeners: {
+                                        select: function (th, selected) {
+                                            //console.log('select');
+                                            var user = localStorage.getItem("login");
+                                            var savingLevels = selected.data.jsonfiles;
+                                            Ext.Ajax.request({
+                                                url: '/cr_conf/lens_control_save_levels.php',
+                                                method: 'POST',
+                                                params: {
+                                                    login: user,
+                                                    action: 'load_confs',
+                                                    json_file: savingLevels,
+                                                },
+                                                success: function (ans) {
+                                                    //console.log("true");
+                                                    var winLevelsMes = Ext.ComponentQuery.query('[name=winLevelsMes]')[0];
+                                                    var respHtml = "";
+                                                    try {
+                                                        var respData = Ext.JSON.decode(ans.responseText);
+                                                    } catch (e) {
+                                                        winLevelsMes.update("No Data");
+                                                        return;
+                                                    }
+                                                    var space = '&nbsp;&nbsp;&nbsp;';
+                                                    
+                                                    var respDataObj = new Object();
+                                                    Ext.each(respData, function (fromDevice, index) {
+                                                        var device_name = fromDevice.device_name;
+                                                        var volt_level = fromDevice.volt_level;
+                                                        var curr_level = fromDevice.curr_level;
+                                                        if (device_name === undefined
+                                                                || volt_level === undefined
+                                                                || curr_level === undefined)
+                                                            return;
+                                                        respHtml += "<b>Источник:</b><span style='color:blue;'>" + space + device_name + space
+                                                                + "</span> <b>Порог для напряжения:  </b>  <span style='color:blue;'>" + space + volt_level + space
+                                                                + "</span>" + " <b>Порог для тока:  </b>   <span style='color:blue;'>" + space + curr_level + space + "</span><br>";
+                                                        var gdata = {};
+                                                        gdata.volt_level = volt_level;
+                                                        gdata.curr_level = curr_level;
+                                                        respDataObj[device_name] = gdata;
+                                                    
+                                                    });
+                                                    winLevelsMes.update(respHtml);
+//                                                    winLevelsMes.respData = respData;
+                                                    // Сохранение respDataObj для дальнейшего использования
+                                                    // При нажатии клавиши установить
+                                                    winLevelsMes.respDataObj = respDataObj;
+                                                    //winLevelsMes.html(respHtml);
+                                                },
+                                                failure: function (ans) {
+                                                    if(typeof dbg !== 'undefined') console.log("Failure from action=load_confs");
+                                                    //console.log("false");
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            //margin: '0 5 0 5',
+                            width: 100,
+                            xtype: 'button',
+                            text: 'Установить',
+                            //itemId: 'save',
+                            //iconCls: 'save',
+                            handler: function () {
+                                var winLevelsMes = Ext.ComponentQuery.query('[name=winLevelsMes]')[0];
+//                                var respData = winLevelsMes.respData;
+                                var respDataObj = winLevelsMes.respDataObj;
+                                win2.close();
+                                
+                                var mainGrid = me.lookupReference('mainGrid');
+                                var store = mainGrid.getStore();
+                                var valueOfLevels = new Array();
+                                
+                                //var levels = {};
+                                
+                                // Дальше идёт получение значений установленных levels, для отбора 
+                                // только изменяемых. 
+                                store.data.each(function (item, index, totalItems) {
+                                    var dataFrom =  item.data;
+                                    if (dataFrom === undefined) {
+                                        undef = true;
+                                        return;
+                                    }
+                                    var d_n = dataFrom.device_name;
+                                    if (d_n === undefined )
+                                        return;
+                                    var gdata = {};
+                                    gdata.device_name = dataFrom.device_name;
+                                    gdata.volt_level = dataFrom.volt_level;
+                                    gdata.curr_level = dataFrom.curr_level;
+                                    
+                                    valueOfLevels.push(gdata);
+                                    //levels[dataFrom.device_name] = gdata;
+                                });
+                                
+//                                if (respData === undefined)
+//                                    return;
+                                
+                                if (respDataObj === undefined)
+                                    return;
+                                
+                                // Создания массива источников, в которых будут изменены значения
+                                var changedLevels = valueOfLevels.filter(function (dt) {
+                                    if (dt.volt_level === -1 || dt.curr_level === -1)
+                                        return false;
+                                    
+                                    if (dt.volt_level === undefined || dt.curr_level === undefined)
+                                        return false;
+                                    
+                                    var newValues = respDataObj[dt.device_name];
+                                    
+                                    if (newValues===undefined)
+                                        return false;
+                                    
+                                    // Проверка наличия volt_level,curr_level в установке новых значений
+                                    if (newValues.volt_level === undefined ||
+                                            newValues.curr_level === undefined)
+                                        return false;
+                                    
+                                    // Проверка старых значений, если все новые значения равны старым
+                                    // Сигнал источнику послан не будет
+                                    if (newValues.volt_level === dt.volt_level &&
+                                            newValues.curr_level === dt.curr_level)
+                                        return false;
+                                    
+                                    dt.volt_level = newValues.volt_level;
+                                    dt.curr_level = newValues.curr_level;
+                                    
+                                    return true;
+                                });
+                                
+                                if (changedLevels.length === 0)
+                                    return;
+                                
+                                // Если есть изменяемые значения отправить сигналы 
+                                // на источники с установкой новых порогов
+                                var command = new Object();
+                                command.command = "SetCurrentVoltageLevelsForDevice";
+                                
+                                Ext.each(changedLevels, function (fromDevice, index) {
+                                    var inpArray = new Array();
+                                    //device name
+                                    inpArray.push(fromDevice.device_name);
+                                    // Current level
+                                    inpArray.push(fromDevice.curr_level);
+                                    // Voltage level
+                                    inpArray.push(fromDevice.volt_level);
+                                    command.argin = inpArray;
+                                    var comJson = Ext.util.JSON.encode(command);
+                                    me.ws.send(comJson);
+                                });
+                            }
+                        },
+                        {
+                            //margin: '0 5 0 5',
+                            width: 100,
+                            xtype: 'button',
+                            text: 'Отмена',
+                            //itemId: 'cancel',
+                            //iconCls: 'cancel',
+                            handler: function () {
+                                win2.close();
+                            }
+                        }
+                    ],
+                });
+                win2.show();
+            },
+            failure: function (ans) {
+                //console.log("get_levels failure");
+                try {
+                    var respText = Ext.JSON.decode(ans.responseText);
+                    var outMes = respText.reason;
+                    if (outMes === undefined)
+                       outMes = "Неизвестная ошибка";
+                }
+                catch (e) {
+                    var outMes = "Неизвестная ошибка";
+                }
+                me.messageErrorShow(outMes);
+                
+            }
+        });
+    },
+    //
+    //
+    //
+    messageErrorShow: function (message) {
+        Ext.Msg.show({
+            title: 'Ошибка',
+            icon: Ext.Msg.ERROR,
+            buttons: Ext.Msg.OK,
+            message: message
+        });
+    }
 
 });
