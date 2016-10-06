@@ -109,6 +109,15 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                                     });
 
                                 }
+                                else {
+                                    var time_warning_mes = Ext.ComponentQuery.query('[name=warning_mes]');
+                                    warning_message = '<h3><span style="color:red; font-size:150%"> Не удалось загрузить данные по температуре.</span></h3>';
+                                    
+                                    Ext.each(time_warning_mes, function (component, index) {
+                                        component.setHidden(false);
+                                        component.update(warning_message);
+                                    });
+                                }
                             }
                         }
                 );
