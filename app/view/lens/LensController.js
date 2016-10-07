@@ -756,9 +756,14 @@ Ext.define('LensControl.view.lens.LensController', {
                                                                 || volt_level === undefined
                                                                 || curr_level === undefined)
                                                             return;
-                                                        respHtml += "<b>Источник:</b><span style='color:blue;'>" + space + device_name + space
-                                                                + "</span> <b>Порог для напряжения:  </b>  <span style='color:blue;'>" + space + volt_level + space
-                                                                + "</span>" + " <b>Порог для тока:  </b>   <span style='color:blue;'>" + space + curr_level + space + "</span><br>";
+                                                        var device_name_shrt = device_name;
+                                                        var indOf = device_name.indexOf('_');
+                                                        if (indOf !== -1 )
+                                                            device_name_shrt = device_name.substring(indOf+1);
+                                                            
+                                                        respHtml += "<b>Источник:<span style='color:blue;'>" + space + device_name_shrt + space
+                                                                + "</span> Порог для напряжения:   <span style='color:blue;'>" + space + volt_level + space
+                                                                + "</span>" + " Порог для тока:    <span style='color:blue;'>" + space + curr_level + space + "</b></span><br>";
                                                         var gdata = {};
                                                         gdata.volt_level = volt_level;
                                                         gdata.curr_level = curr_level;
