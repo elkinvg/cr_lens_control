@@ -571,39 +571,56 @@ Ext.define('LensControl.view.lens.LensController', {
                 message: 'Имеются не подключенные источники.<br> Записать значения с имеющихся,',
                 buttonText: {yes: "Да", no: "Нет"},
                 fn: function (btn) {
-                    if (btn === 'no') {
-                        return;
-                    }
-                }
+                    clickSaveLevels(btn);
+                },
+            });
+        } else {
+            Ext.Msg.show({
+                title: 'Сохранение порогов',
+                icon: Ext.Msg.QUESTION,
+                buttons: Ext.Msg.YESNO,
+                message: 'Сохранить значения порогов со всех источников?',
+                buttonText: {yes: "Да", no: "Нет"},
+                fn: function (btn) {
+                    clickSaveLevels(btn);
+                },
             });
         }
         
-        // Включение в массив данных только с подключённых истоников
-        var positiveArr = valueOfLevels.filter(function (dt) {
-            return (dt.device_state !== "FAULT") ? true : false;
-        });
-        
-        // Добавлен Ext.Ajax.request({})
-        // Возможно также попробовать сохранение не в БД,а в файл, или файлы
-        // Тогда при чтении будет считываться json файл
-        
-        var jsonInp = Ext.JSON.encode(positiveArr);
-        var user = localStorage.getItem("login");
-        Ext.Ajax.request({
-            url: '/cr_conf/lens_control_save_levels.php',
-            method: 'POST',
-            params: {
-                login: user,
-                values_json: jsonInp
-            },
-            success: function (ans) {
-                if(typeof dbg !== 'undefined') console.log("save_levels success");
-            },
-            failure: function (ans) {
-                if(typeof dbg !== 'undefined') console.log("save_levels failure");
-                me.messageErrorShow('Не удалось сохранить');
+        function clickSaveLevels(btn) {
+            if (btn === 'no') {
+                return;
+            } else if (btn === 'yes') {
+                // Включение в массив данных только с подключённых истоников
+                var positiveArr = valueOfLevels.filter(function (dt) {
+                    return (dt.device_state !== "FAULT") ? true : false;
+                });
+
+                // Добавлен Ext.Ajax.request({})
+                // Возможно также попробовать сохранение не в БД,а в файл, или файлы
+                // Тогда при чтении будет считываться json файл
+
+                var jsonInp = Ext.JSON.encode(positiveArr);
+                var user = localStorage.getItem("login");
+                Ext.Ajax.request({
+                    url: '/cr_conf/lens_control_save_levels.php',
+                    method: 'POST',
+                    params: {
+                        login: user,
+                        values_json: jsonInp
+                    },
+                    success: function (ans) {
+                        if (typeof dbg !== 'undefined')
+                            console.log("save_levels success");
+                    },
+                    failure: function (ans) {
+                        if (typeof dbg !== 'undefined')
+                            console.log("save_levels failure");
+                        me.messageErrorShow('Не удалось сохранить');
+                    }
+                });
             }
-        });
+        }
         
 
     },
