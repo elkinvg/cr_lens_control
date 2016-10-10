@@ -243,6 +243,10 @@ Ext.define('LensControl.view.lens.Lens', {
 
                         }
                     ]
+                },
+                {
+                    xtype: "image",
+                    src: 'resources/images/LHEP-emblema.jpg'
                 }
             ]
         },
