@@ -5,14 +5,7 @@ Ext.define('LensControl.view.lens.LensController', {
     init: function () {
         if(typeof dbg !== 'undefined') console.log('TestwsController');
 
-        var me = this;
-        // store сейчас определяется как memory.
-        // Заменено type: 'websocket' на type: 'memory'
-        // type: 'websocket' брался из 'Ext.ux.WebSocketManager'
-        // При определении store как websocket приходилось открывать два сокета
-        // Один для заполнения таблиц, другой для отправления команд на сервер
-        var storeMem = Ext.data.StoreManager.get("lensStore");
-        
+        var me = this;        
         
         this.ws = Ext.create('Ext.ux.WebSocket', {
             // получение адреса websocket
@@ -26,15 +19,7 @@ Ext.define('LensControl.view.lens.LensController', {
                 open: function (ws) {
                     if(typeof dbg !== 'undefined') console.log('websocket Open');
                 },
-                message: function (ws, data) {
-                    //здесь принимаются данные с сервера и записываются в Store
-                    var dataForStore = data.data;
-                    if (dataForStore !== undefined ) {
-                        if(typeof dbg !== 'undefined') console.log("Data from powersupplies loaded. ");
-                        storeMem.loadData(dataForStore);
-                    } else {
-                        if(typeof dbg !== 'undefined') console.log("No data from powersupplies. ");
-                    }                    
+                message: function (ws, data) {                   
                     me.getData(data);
                 },
                 close: function (ws) {
@@ -73,8 +58,8 @@ Ext.define('LensControl.view.lens.LensController', {
             run: function () {
                 // Для оповещения об обрыве соединения, или обновления данных
                 // с вэбсокета
-                // timeUpdWs объявленf глобально в Application.js
-                // timeUpdWs обновляется при загрузке данных с Вэбсокета
+                // timeUpdWs объявлен глобально в Application.js
+                // timeUpdWs обновляется при загрузке данных атрибутов с Вэбсокета
                 // timeUpdCom обновляется здесь
                 var timeUpdCom = new Date().getTime() / 1000 | 0;
                 var timeDiff = timeUpdCom - timeUpdWs;
@@ -391,8 +376,36 @@ Ext.define('LensControl.view.lens.LensController', {
             return;
         }
         
-        if (data.event === "read") {
+                
+        // store сейчас определяется как memory.
+        // Заменено type: 'websocket' на type: 'memory'
+        // type: 'websocket' брался из 'Ext.ux.WebSocketManager'
+        // При определении store как websocket приходилось открывать два сокета
+        // Один для заполнения таблиц, другой для отправления команд на сервер
+        var storeMem = Ext.data.StoreManager.get("lensStore");
+        
+        //здесь принимаются данные с сервера и затем записываются в Store
+        var dataForStore = data.data;
+        if (dataForStore !== undefined) {
+            if (typeof dbg !== 'undefined')
+                console.log("Data from powersupplies loaded. ");
+            //storeMem.loadData(dataForStore);
+        } else {
+            if (typeof dbg !== 'undefined')
+                console.log("No data from powersupplies. ");
+        } 
+        
+        var dt_event = data.event;
+        var dt_type_req = data.type_req;
+        
+        // Данные записываются в store, только если dt_type_req === "attribute"
+
+        if (dt_event === "read" && dt_type_req === "attribute") {
+            storeMem.loadData(dataForStore);
             var size = data.data.length;
+            
+            // timeUpdWs объявлен глобально в Application.js
+            // timeUpdWs обновляется при загрузке данных атрибутов с Вэбсокета
             timeUpdWs = new Date().getTime()/1000 | 0;
             function isFault(number) {
                 if (number.device_state === 'FAULT')
