@@ -5,7 +5,7 @@ Ext.define('LensControl.view.lens.LensController', {
     init: function () {
         if(typeof dbg !== 'undefined') console.log('TestwsController');
 
-        var me = this;        
+        var me = this;
         
         this.ws = Ext.create('Ext.ux.WebSocket', {
             // получение адреса websocket
@@ -959,6 +959,28 @@ Ext.define('LensControl.view.lens.LensController', {
             buttons: Ext.Msg.OK,
             message: message
         });
+    },
+    //
+    //
+    //
+    saveSettInLocalStorage : function () {
+        
+    },
+    //
+    //
+    //
+    getSettFromLocalStorage : function (nameOfKey) {
+        var set_data = localStorage.getItem("sett_data");
+        
+        if (set_data===null)
+            return set_data;
+        
+        try {
+            var dataFromSettLS = Ext.util.JSON.decode(set_data);
+        }
+        catch (e) {
+            return null;
+        }
     }
 
 });

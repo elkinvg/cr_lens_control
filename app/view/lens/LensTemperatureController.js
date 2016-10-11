@@ -10,6 +10,15 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
         var dStore = Ext.data.StoreManager.lookup('lenstempStore');
         dStore.load();
         
+        // get controller
+        // Получение значения максимальной температуры из localStorage
+        var lensXType = Ext.ComponentQuery.query("lens");
+        if (lensXType !== undefined) {
+            var lenstempController = lensXType[0].getController('lens');
+            var warn_temp = lenstempController.getSettFromLocalStorage("warning_temperature");
+        }
+ 
+        
         var task = {
             run: function () {
 
@@ -24,7 +33,9 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                                     // Максимальная температура.
                                     // После превышения этой температуры выводится 
                                     // Предупреждающее сообщение
-                                    var maxTemp = 40; 
+                                    if (warn_temp === undefined ||
+                                            warn_temp === null)
+                                        var maxTemp = 40; 
                                     
                                     
                                     // Для вывода значения температуры на картинке
