@@ -42,8 +42,26 @@ Ext.define('LensControl.view.lens.LensController', {
                 },
                 error: function (ws, error) {
                     if (Array.isArray(error)) {
-                        error.arr.forEach(function(item, i, arr) {
-                            if(typeof dbg !== 'undefined') console.log(item);
+//                        error.arr.forEach(function(item, i, arr) {
+//                            if(typeof dbg !== 'undefined') console.log(item);
+//                        });
+
+                        error.forEach(function (item, i, arr) {
+                            var err = item.error;
+                            var type_req = item.type_req;
+                            if (err !== undefined &&
+                                    type_req !== undefined) {
+                                if (err === "Permission denied") {
+                                    var user = localStorage.getItem("login");
+                                    var errMsg = "У пользователя " + user + " нет прав \n на выполнение этой операции.<br>Для получение прав свяжитесь с администратором"
+                                    Ext.Msg.show({
+                                        title: err,
+                                        message: errMsg,
+                                        icon: Ext.Msg.ERROR,
+                                        buttons: Ext.Msg.OK,
+                                    });
+                                }
+                            }
                         });
                     }
                     //Ext.Error.raise(error);
@@ -102,7 +120,7 @@ Ext.define('LensControl.view.lens.LensController', {
         //console.log("lensGet[0].maxheightGrid " + lensGet[0].maxheightGrid);
 
         if (lensGet[0].maxheightGrid < lensGetHeight) {
-            lensGet[0].maxheightGrid = lensGetHeight + 100;
+            lensGet[0].maxheightGrid = lensGetHeight + 200;
             lensGet[0].setMinHeight(lensGet[0].maxheightGrid);
         }
     },    
@@ -401,7 +419,7 @@ Ext.define('LensControl.view.lens.LensController', {
             // &#9606; - знак прямоугольник
             
             if (size===0) {
-                stateOv.setTitle("Источники питания. " + '<span style="color:red; font-size:200%"> &#9899; </span>' + " Данных нет");
+                stateOv.setTitle("Источники питания. " + '<img src="resources/images/Cancel.ico" height="20" width="20">' + " Данных нет");
                 return;
             }
             
@@ -416,17 +434,20 @@ Ext.define('LensControl.view.lens.LensController', {
             }
             
             if (isSomeFault) {
-                stateOv.setTitle("Источники питания. " + '<span style="color:red; font-size:200%"> &#9899; </span>'); // &#9899; || &#9940; || &#9679;
+                stateOv.setTitle("Источники питания. " + '<img src="resources/images/Cancel.ico" height="20" width="20">'); // &#9899; || &#9940; || &#9679;
                 return;
             }
             var isSomeOff = data.data.some(isOff);
             if (isSomeOff) {
-                stateOv.setTitle("Источники питания. " + '<span style="color:orange; font-size:200%"> &#9899; </span>');
+                stateOv.setTitle("Источники питания. " + '<img src="resources/images/Knob_Orange.ico" height="20" width="20">');
                 return;
             }
             
+            // back
+            // //stateOv.setTitle("Источники питания. " + '<span style="color:red; font-size:200%"> &#9899; </span>'); // &#9899; || &#9940; || &#9679; color:red; color:orange; color:green;
+            
             // здесь если все источники имеют состояние ставится зелёный идикатор
-            stateOv.setTitle("Источники питания. " + '<span style="color:green; font-size:200%"> &#9899; </span>');
+            stateOv.setTitle("Источники питания. " + '<img src="resources/images/Ok.ico" height="20" width="20">');
             
             
         }

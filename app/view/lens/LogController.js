@@ -85,11 +85,12 @@ Ext.define('LensControl.view.lens.LogController', {
         // набор символов http://unicode-table.com/ru/#26D4
         // &#9899; - закрашенный круг
         // &#9940; - знак стоп
+        // back  return '<span style="color:green; font-size:150%"> &#9899; </span>'; // or red
         
         if (val === "1")
-            return '<span style="color:green; font-size:150%"> &#9899; </span>';
+            return '<img src="resources/images/Ok.ico" height="20" width="20">';
         else
-            return '<span style="color:red; font-size:150%"> &#9899; </span>';
+            return '<img src="resources/images/Cancel.ico" height="20" width="20">';
 
     },
     //
