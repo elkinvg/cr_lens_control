@@ -7,9 +7,11 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
         if(typeof dbg !== 'undefined') 
             console.log("init LensTemperatureController");
         
+        var maxTempDefault = 40;
+        
         var dStore = Ext.data.StoreManager.lookup('lenstempStore');
         dStore.load();
-//        var warning_temp_field = me.lookupReference('warning_temp_field');
+        var warning_temp_field = me.lookupReference('warning_temp_field');
 //        warning_temp_field.setValue(50);
         // get controller
         // Получение значения максимальной температуры из localStorage
@@ -35,8 +37,13 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                                     // После превышения этой температуры выводится 
                                     // Предупреждающее сообщение
                                     if (warn_temp === undefined ||
-                                            warn_temp === null)
-                                        var maxTemp = 40; 
+                                            warn_temp === null) {
+                                        var maxTemp = maxTempDefault;
+                                        warning_temp_field.setValue(maxTemp);
+                                    } else {
+                                        maxTemp = warn_temp;
+                                        warning_temp_field.setValue(maxTemp);
+                                    }
                                     
                                     
                                     // Для вывода значения температуры на картинке
@@ -141,6 +148,34 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
         };
         var runner = new Ext.util.TaskRunner();
         runner.start(task);
+        
+    },
+//
+//
+//
+    setMaximumTemperature: function () {
+        var me = this;
+        var warning_temp_field = me.lookupReference('warning_temp_field');
+        if (warning_temp_field === undefined || warning_temp_field === null)
+            return;
+        
+        var value = warning_temp_field.getValue();
+        
+        if (value === null)
+            return;
+        
+        var maxVal = warning_temp_field.maxValue;
+        var minVal = warning_temp_field.minValue;
+        
+        if (value < minVal || value > maxVal )
+            return;
+        
+        var lensXType = Ext.ComponentQuery.query("lens");
+        if (lensXType.length === 0)
+            return;
+        var lenstempController = lensXType[0].getController();
+        
+        lenstempController.saveSettInLocalStorage('warning_temperature',value);
         
     },
 //

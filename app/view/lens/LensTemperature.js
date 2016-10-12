@@ -89,7 +89,7 @@ Ext.define('LensControl.view.lens.LensTemperature', {
 //            text: 'Показать график',
 //            handler: 'getTemperatureChart',
 //        },
-        /*{
+        {
             xtype: 'fieldcontainer',
             margin: '50 20 0 0',
             labelWidth: 320,
@@ -109,7 +109,7 @@ Ext.define('LensControl.view.lens.LensTemperature', {
                     xtype: 'numberfield',
                     minValue: 30,
                     allowBlank: false,
-                    maxValue: 70,
+                    maxValue: 90,
                     //value: 0, //value: 9.5,
                     maxLenght: 5,
                     step: 10,
@@ -124,10 +124,10 @@ Ext.define('LensControl.view.lens.LensTemperature', {
                     xtype: 'button',
                     width: 130,
                     text: 'Изменить',
-                    //handler: 'sendNewValue'
+                    handler: 'setMaximumTemperature'
                 }
             ]
-        }*/
+        }
     ],
 });
 
