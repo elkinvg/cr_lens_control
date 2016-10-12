@@ -963,7 +963,10 @@ Ext.define('LensControl.view.lens.LensController', {
     //
     //
     //
-    saveSettInLocalStorage : function () {
+    saveSettInLocalStorage : function (nameOfKey,value) {
+        var set_data = localStorage.getItem("sett_data");
+        
+        //if (set_data===null)
         
     },
     //

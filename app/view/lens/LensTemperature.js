@@ -7,7 +7,8 @@ Ext.define('LensControl.view.lens.LensTemperature', {
         'LensControl.view.lens.LensTemperatureController',
         'LensControl.store.LensTemperatureStore',
         'Ext.chart.*',
-        'Ext.layout.container.Absolute'
+        'Ext.layout.container.Absolute',
+        
     ],
 //    store: {
 //        type: 'lenstempstore'
@@ -22,10 +23,10 @@ Ext.define('LensControl.view.lens.LensTemperature', {
         },
         {
             xtype: 'panel',
-            width: 433,
+            width: 700,
             height: 562,
             layout: 'absolute',
-            bodyStyle: "background-image:url(resources/images/wallp.jpg) !important",
+            bodyStyle: "background-image:url(resources/images/wallp_new.jpg) !important",
             defaultType: 'label',
             items: [
                 {
@@ -57,16 +58,76 @@ Ext.define('LensControl.view.lens.LensTemperature', {
                     x: 214,
                     y: 415,
                     html: '<span style="font-weight:bold; color:blue; font-size:300%"> T5</span>',
-                }
+                },
+                                {
+                    reference: 'T_6',
+                    x: 514,
+                    y: 120,
+                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T6</span>',
+                },
+                {
+                    reference: 'T_7',
+                    x: 514,
+                    y: 216,
+                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T7</span>',
+                },
+                {
+                    x: 490, 
+                    y: 450,
+                    xtype: 'button',
+                    reference: 'graphbut',
+                    width: 150,
+                    text: 'Показать график',
+                    handler: 'getTemperatureChart',
+                },
             ],
         },
-        {
-            xtype: 'button',
-            reference: 'graphbut',
-            width: 150,
-            text: 'Показать график',
-            handler: 'getTemperatureChart',
-        }
+//        {
+//            xtype: 'button',
+//            reference: 'graphbut',
+//            width: 150,
+//            text: 'Показать график',
+//            handler: 'getTemperatureChart',
+//        },
+        /*{
+            xtype: 'fieldcontainer',
+            margin: '50 20 0 0',
+            labelWidth: 320,
+            fieldLabel: '<b>изменить значение температуры при котором высылается предупреждение</b>',
+            combineErrors: false,
+            defaults: {
+                hideLabel: true,
+                margin: '8 20 0 0',
+            },
+            layout: {
+                type: 'hbox',
+            },
+            items: [
+                {
+                    // задание температуры предупреждения
+                    reference: 'warning_temp_field',
+                    xtype: 'numberfield',
+                    minValue: 30,
+                    allowBlank: false,
+                    maxValue: 70,
+                    //value: 0, //value: 9.5,
+                    maxLenght: 5,
+                    step: 10,
+                    width: 100
+                },
+                {
+                    xtype: 'displayfield',
+                    value: '<span style="font-size:150%"><b>&deg;C</b></span>',
+                    width: 30
+                },
+                {
+                    xtype: 'button',
+                    width: 130,
+                    text: 'Изменить',
+                    //handler: 'sendNewValue'
+                }
+            ]
+        }*/
     ],
 });
 

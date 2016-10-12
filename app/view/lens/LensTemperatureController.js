@@ -9,7 +9,8 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
         
         var dStore = Ext.data.StoreManager.lookup('lenstempStore');
         dStore.load();
-        
+//        var warning_temp_field = me.lookupReference('warning_temp_field');
+//        warning_temp_field.setValue(50);
         // get controller
         // Получение значения максимальной температуры из localStorage
         var lensXType = Ext.ComponentQuery.query("lens");
@@ -69,7 +70,10 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                                             Temp.T_2 = me.lookupReference('T_2'),
                                             Temp.T_3 = me.lookupReference('T_3'),
                                             Temp.T_4 = me.lookupReference('T_4'),
-                                            Temp.T_5 = me.lookupReference('T_5');
+                                            Temp.T_5 = me.lookupReference('T_5'),
+                                            Temp.T_6 = me.lookupReference('T_6'),
+                                            Temp.T_7 = me.lookupReference('T_7');
+                                    
                                     
                                     editTempOut(Temp,'T1');
                                     var warning_message = '<h3><span style="color:red; font-size:150%"> Превышена допустимая температура!!!</span></h3>'
@@ -178,6 +182,8 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                                 'T_3',
                                 'T_4',
                                 'T_5',
+                                'T_6',
+                                'T_7',
                             ],
                             //minimum: 18,
                             //maximum: 21,
@@ -238,6 +244,22 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             type: 'line',
                             xField: 'time',
                             yField: 'T_5',
+                            style: {
+                                lineWidth: 4
+                            },
+                        },
+                        {
+                            type: 'line',
+                            xField: 'time',
+                            yField: 'T_6',
+                            style: {
+                                lineWidth: 4
+                            },
+                        },
+                        {
+                            type: 'line',
+                            xField: 'time',
+                            yField: 'T_7',
                             style: {
                                 lineWidth: 4
                             },

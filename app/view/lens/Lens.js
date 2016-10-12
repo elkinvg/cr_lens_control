@@ -257,7 +257,7 @@ Ext.define('LensControl.view.lens.Lens', {
             itemId: 'powersupplies',
             collapsible: false,
             region: 'center',
-            margin: '5 0 0 0',
+            //margin: '5 0 0 0',
             items: [
                 {
                     xtype: 'component',
