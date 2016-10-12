@@ -215,7 +215,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                                 'T_4',
                                 'T_5',
                                 'T_6',
-                                'T_7',
+                                'T_7'
                             ],
                             //minimum: 18,
                             //maximum: 21,
@@ -225,8 +225,8 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             //renderer: 'onAxisLabelRender'
                             listeners: {
                                 rangechange: function (axis, range, eOpts) {
-                                },
-                            },
+                                }
+                            }
                         }, {
                             type: 'category',
                             fields: 'time',
@@ -237,7 +237,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                                     degrees: -45
                                 }
                             }
-                        },
+                        }
                     ],
                     series: [
                         {
@@ -246,7 +246,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             yField: 'T_1',
                             style: {
                                 lineWidth: 4
-                            },
+                            }
                         },
                         {
                             type: 'line',
@@ -254,7 +254,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             yField: 'T_2',
                             style: {
                                 lineWidth: 4
-                            },
+                            }
                         },
                         {
                             type: 'line',
@@ -262,7 +262,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             yField: 'T_3',
                             style: {
                                 lineWidth: 4
-                            },
+                            }
                         },
                         {
                             type: 'line',
@@ -270,7 +270,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             yField: 'T_4',
                             style: {
                                 lineWidth: 4
-                            },
+                            }
                         },
                         {
                             type: 'line',
@@ -278,7 +278,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             yField: 'T_5',
                             style: {
                                 lineWidth: 4
-                            },
+                            }
                         },
                         {
                             type: 'line',
@@ -286,7 +286,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             yField: 'T_6',
                             style: {
                                 lineWidth: 4
-                            },
+                            }
                         },
                         {
                             type: 'line',
@@ -294,9 +294,9 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             yField: 'T_7',
                             style: {
                                 lineWidth: 4
-                            },
-                        },
-                    ],
+                            }
+                        }
+                    ]
                 },
                 {
                     xtype: 'button',

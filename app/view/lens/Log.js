@@ -13,7 +13,7 @@ Ext.define('LensControl.view.lens.Log', {
             xtype: 'component',
             anchor: '100%',
             name: 'warning_mes',
-            hidden: true,
+            hidden: true
 //                    html: []
         },
         {
@@ -124,11 +124,11 @@ Ext.define('LensControl.view.lens.Log', {
                     margin: '0 30 0 0'
                 },
                 {
-                            xtype: 'displayfield',
-                            value: 'Статус',
-                            width: 30,
-                            margin: '0 20 0 10'
-                        },
+                    xtype: 'displayfield',
+                    value: 'Статус',
+                    width: 30,
+                    margin: '0 20 0 10'
+                },
                 {
                     xtype: 'combo',
                     itemId: 'statusSelId',
@@ -141,9 +141,8 @@ Ext.define('LensControl.view.lens.Log', {
                             ['Fault']
                         ]
                     },
-                    displayField: 'status',
-                
-            }
+                    displayField: 'status'
+                }
             ]
         },
         {
@@ -163,19 +162,19 @@ Ext.define('LensControl.view.lens.Log', {
                             text: 'Время исполнения',
                             dataIndex: 'comm_timestamp',
                             renderer: Ext.util.Format.dateRenderer('d/M/Y H:i'),
-                            width: 160,
+                            width: 160
                             //flex: 1
                         },
                         {
                             text: 'Пользователь',
                             dataIndex: 'username',
-                            width: 120,
+                            width: 120
                             //flex: 1
                         },
                         {
                             text: 'IP-адрес',
                             dataIndex: 'user_ip',
-                            width: 120,
+                            width: 120
                             //flex: 1
                         },
                         {

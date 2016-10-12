@@ -15,7 +15,7 @@ Ext.define('LensControl.view.main.Main', {
 
         'LensControl.view.main.LensMainController',
         'LensControl.view.main.LensMainModel',
-        'LensControl.view.lens.Log',
+        'LensControl.view.lens.Log'
         //'LensControl.view.main.List'
     ],
 
@@ -106,7 +106,7 @@ Ext.define('LensControl.view.main.Main', {
             items: [{
                     xtype: 'log'
                 }]
-        },
+        }
     ]
 
 //    items: [{

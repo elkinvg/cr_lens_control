@@ -10,7 +10,7 @@ Ext.define('LensControl.view.lens.Lens', {
         'LensControl.view.lens.LensController',
         'Ext.ux.WebSocket',
 //        'Ext.ux.WebSocketManager',
-        'Ext.ux.data.proxy.WebSocket',
+        //'Ext.ux.data.proxy.WebSocket',
         'LensControl.store.LensWsStore',
         'LensControl.model.LensModel',
         'Ext.layout.container.Border'
@@ -45,7 +45,7 @@ Ext.define('LensControl.view.lens.Lens', {
 //            maxWidth: 600,
             layout: {
                 type: 'vbox',
-                align: 'stretch',
+                align: 'stretch'
             },
             items: [
                 {
@@ -58,7 +58,7 @@ Ext.define('LensControl.view.lens.Lens', {
                     width: '100%',
                     layout: {
                         type: 'vbox',
-                        align: 'stretch',
+                        align: 'stretch'
                     },
                     items: [
                         {
@@ -69,10 +69,10 @@ Ext.define('LensControl.view.lens.Lens', {
                             combineErrors: false,
                             defaults: {
                                 hideLabel: true,
-                                margin: '0 20 0 0',
+                                margin: '0 20 0 0'
                             },
                             layout: {
-                                type: 'hbox',
+                                type: 'hbox'
                             },
                             items: [
                                 {
@@ -86,7 +86,7 @@ Ext.define('LensControl.view.lens.Lens', {
                                     maxValue: 80,
                                     maxLenght: 5,
                                     step: 0.1,//step: 0.5,
-                                    width: 100,
+                                    width: 100
                                 },
                                 {
                                     xtype: 'displayfield',
@@ -110,10 +110,10 @@ Ext.define('LensControl.view.lens.Lens', {
                             combineErrors: false,
                             defaults: {
                                 hideLabel: true,
-                                margin: '0 20 0 0',
+                                margin: '0 20 0 0'
                             },
                             layout: {
-                                type: 'hbox',
+                                type: 'hbox'
                             },
                             items: [
                                 {
@@ -152,7 +152,7 @@ Ext.define('LensControl.view.lens.Lens', {
                                 align: 'stretch'
                             },
                             defaults: {
-                                margin: '10 10 10 10',
+                                margin: '10 10 10 10'
                             },
                             items: [
                                 {
@@ -190,10 +190,10 @@ Ext.define('LensControl.view.lens.Lens', {
                             xtype: 'container',
                             layout: {
                                 type: 'hbox',
-                                align: 'stretch',
+                                align: 'stretch'
                             },
                             defaults: {
-                                margin: '10 10 10 10',
+                                margin: '10 10 10 10'
                                 //flex: 1,
                             },
                             items: [
@@ -218,10 +218,10 @@ Ext.define('LensControl.view.lens.Lens', {
                             xtype: 'container',
                             layout: {
                                 type: 'hbox',
-                                align: 'stretch',
+                                align: 'stretch'
                             },
                             defaults: {
-                                margin: '0 10 0 10',
+                                margin: '0 10 0 10'
                                 //flex: 1,
                             },
                             items: [
@@ -263,7 +263,7 @@ Ext.define('LensControl.view.lens.Lens', {
                     xtype: 'component',
                     anchor: '100%',
                     name: 'warning_mes',
-                    hidden: true,
+                    hidden: true
 //                    html: []
                 },
                 {
@@ -280,7 +280,7 @@ Ext.define('LensControl.view.lens.Lens', {
 
                     listeners: {
                         cellclick: 'cellClickProc',
-                        resize: 'resizeLensPanel',
+                        resize: 'resizeLensPanel'
                     },
                     store: {
                         type: 'lenswsstore'
@@ -315,9 +315,9 @@ Ext.define('LensControl.view.lens.Lens', {
                             text: 'Состояние<br>источника', dataIndex: 'device_state',
                             flex: 1,
                             renderer: 'setStatusColor'
-                        },
-                    ],
-                },
+                        }
+                    ]
+                }
             ]
         }
     ]

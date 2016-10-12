@@ -7,7 +7,7 @@ Ext.define('LensControl.view.lens.LensTemperature', {
         'LensControl.view.lens.LensTemperatureController',
         'LensControl.store.LensTemperatureStore',
         'Ext.chart.*',
-        'Ext.layout.container.Absolute',
+        'Ext.layout.container.Absolute'
         
     ],
 //    store: {
@@ -18,7 +18,7 @@ Ext.define('LensControl.view.lens.LensTemperature', {
             xtype: 'component',
             anchor: '100%',
             name: 'warning_mes',
-            hidden: true,
+            hidden: true
 //                    html: []
         },
         {
@@ -33,43 +33,43 @@ Ext.define('LensControl.view.lens.LensTemperature', {
                     reference: 'T_1',
                     x: 26,
                     y: 355,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T1</span>',
+                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T1</span>'
                 },
                 {
                     reference: 'T_2',
                     x: 216,
                     y: 245,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2</span>',
+                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2</span>'
                 },
                 {
                     reference: 'T_3',
                     x: 304,
                     y: 302,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T3</span>',
+                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T3</span>'
                 },
                 {
                     reference: 'T_4',
                     x: 109,
                     y: 186,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T4</span>',
+                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T4</span>'
                 },
                 {
                     reference: 'T_5',
                     x: 214,
                     y: 415,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T5</span>',
+                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T5</span>'
                 },
                                 {
                     reference: 'T_6',
                     x: 514,
                     y: 120,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T6</span>',
+                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T6</span>'
                 },
                 {
                     reference: 'T_7',
                     x: 514,
                     y: 216,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T7</span>',
+                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T7</span>'
                 },
                 {
                     x: 490, 
@@ -78,9 +78,9 @@ Ext.define('LensControl.view.lens.LensTemperature', {
                     reference: 'graphbut',
                     width: 150,
                     text: 'Показать график',
-                    handler: 'getTemperatureChart',
-                },
-            ],
+                    handler: 'getTemperatureChart'
+                }
+            ]
         },
 //        {
 //            xtype: 'button',
@@ -97,10 +97,10 @@ Ext.define('LensControl.view.lens.LensTemperature', {
             combineErrors: false,
             defaults: {
                 hideLabel: true,
-                margin: '8 20 0 0',
+                margin: '8 20 0 0'
             },
             layout: {
-                type: 'hbox',
+                type: 'hbox'
             },
             items: [
                 {
@@ -128,7 +128,7 @@ Ext.define('LensControl.view.lens.LensTemperature', {
                 }
             ]
         }
-    ],
+    ]
 });
 
 //            listeners: {

@@ -17,7 +17,7 @@ Ext.define('LensControl.view.lens.LogController', {
         if (isNaN(user_type) || (user_type < 4)) {
             userLoginId.setHidden(true);
             grid.columns.forEach(function (col) {
-                if ((col.dataIndex == "user_ip") || (col.dataIndex == "username")) {
+                if ((col.dataIndex === "user_ip") || (col.dataIndex === "username")) {
                     //col.setVisible(false);
                     col.setHidden(true);
                 }
@@ -136,7 +136,7 @@ Ext.define('LensControl.view.lens.LogController', {
         }
         );
 
-    },
+    }
 });
 
 

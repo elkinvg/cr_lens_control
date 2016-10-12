@@ -43,14 +43,14 @@ Ext.define('LensControl.view.lens.LensController', {
                                         title: err,
                                         message: errMsg,
                                         icon: Ext.Msg.ERROR,
-                                        buttons: Ext.Msg.OK,
+                                        buttons: Ext.Msg.OK
                                     });
                                 }
                             }
                         });
                     }
                     //Ext.Error.raise(error);
-                },
+                }
             }
         });
         
@@ -252,7 +252,7 @@ Ext.define('LensControl.view.lens.LensController', {
                 var butText = {
                     yes: "Да",
                     no: "Нет"
-                }
+                };
             } else if (state === 'FAULT') {
                 if(typeof dbg !== 'undefined') console.log('STATUS FAULT');
                 var messageIn = 'связь с Источником ' + id + ' нарушена';
@@ -364,12 +364,12 @@ Ext.define('LensControl.view.lens.LensController', {
                     console.log("Error: " + decodedData.error);
                 if (decodedData.error === "Permission denied") {
                     var user = localStorage.getItem("login");
-                    var errMsg = "У пользователя " + user + " нет прав \n на выполнение этой операции.<br>Для получение прав свяжитесь с администратором"
+                    var errMsg = "У пользователя " + user + " нет прав \n на выполнение этой операции.<br>Для получение прав свяжитесь с администратором";
                     Ext.Msg.show({
                         title: decodedData.error,
                         message: errMsg,
                         icon: Ext.Msg.ERROR,
-                        buttons: Ext.Msg.OK,
+                        buttons: Ext.Msg.OK
                     });
                 }
             }
@@ -491,10 +491,10 @@ Ext.define('LensControl.view.lens.LensController', {
                     combineErrors: false,
                     defaults: {
                         hideLabel: true,
-                        margin: '10 0 0 10',
+                        margin: '10 0 0 10'
                     },
                     layout: {
-                        type: 'hbox',
+                        type: 'hbox'
                     },
                     items: [
                         {
@@ -606,7 +606,7 @@ Ext.define('LensControl.view.lens.LensController', {
                 buttonText: {yes: "Да", no: "Нет"},
                 fn: function (btn) {
                     clickSaveLevels(btn);
-                },
+                }
             });
         } else {
             Ext.Msg.show({
@@ -617,7 +617,7 @@ Ext.define('LensControl.view.lens.LensController', {
                 buttonText: {yes: "Да", no: "Нет"},
                 fn: function (btn) {
                     clickSaveLevels(btn);
-                },
+                }
             });
         }
         
@@ -752,7 +752,7 @@ Ext.define('LensControl.view.lens.LensController', {
                                     store: {
                                         type: 'array',
                                         fields: ['id', 'jsonfiles'],
-                                        data: arr,
+                                        data: arr
                                     },
                                     valueField: 'id',
                                     displayField: 'jsonfiles',
@@ -767,7 +767,7 @@ Ext.define('LensControl.view.lens.LensController', {
                                                 params: {
                                                     login: user,
                                                     action: 'load_confs',
-                                                    json_file: savingLevels,
+                                                    json_file: savingLevels
                                                 },
                                                 success: function (ans) {
                                                     //console.log("true");
@@ -929,7 +929,7 @@ Ext.define('LensControl.view.lens.LensController', {
                                 win2.close();
                             }
                         }
-                    ],
+                    ]
                 });
                 win2.show();
             },
@@ -959,5 +959,5 @@ Ext.define('LensControl.view.lens.LensController', {
             buttons: Ext.Msg.OK,
             message: message
         });
-    },
+    }
 });

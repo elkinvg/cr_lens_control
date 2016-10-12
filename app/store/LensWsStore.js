@@ -23,7 +23,7 @@ Ext.define('LensControl.store.LensWsStore', {
             type: 'json',
             rootProperty: 'data'
         }
-    },  
+    }  
 });
 
 //bck
