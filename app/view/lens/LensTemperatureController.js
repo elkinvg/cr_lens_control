@@ -11,6 +11,18 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
         var dStore = Ext.data.StoreManager.lookup('lenstempStore');
         dStore.load();
         
+        // установка первоначального значения для numberfield с температурой 
+        var maxTempDefault = 40;
+        var warn_temp = LensControl.app.getSettFromLocalStorage("warning_temperature");
+        var warning_temp_field = me.lookupReference('warning_temp_field');
+        if (warn_temp === undefined ||
+                warn_temp === null) {
+            var maxTemp = maxTempDefault;
+        } else {
+            var maxTemp = warn_temp;
+        }
+        warning_temp_field.setValue(maxTemp);
+        
         var task = {
             run: function () {
                 me.loadStoreWithTemperature("phpscript"); 
@@ -26,11 +38,8 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
     //
     //
     loadStoreWithTemperature: function (type) {
-        var me = this;
         
-        // Получение значения максимальной температуры из localStorage
-        var warning_temp_field = me.lookupReference('warning_temp_field');
-        
+        var me = this;        
         
         var warn_temp = LensControl.app.getSettFromLocalStorage("warning_temperature");
         
@@ -92,7 +101,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
             } else {
                 var maxTemp = warn_temp;
             }
-            warning_temp_field.setValue(maxTemp);
+
 
 
             // Для вывода значения температуры на картинке
