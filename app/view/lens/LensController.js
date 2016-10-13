@@ -633,26 +633,33 @@ Ext.define('LensControl.view.lens.LensController', {
                 // Добавлен Ext.Ajax.request({})
                 // Возможно также попробовать сохранение не в БД,а в файл, или файлы
                 // Тогда при чтении будет считываться json файл
+//                Ext.Msg.prompt('Name', 'Введите имя для файла:', function (btn, text) {
+//                    if (btn == 'ok') {
+                        var jsonInp = Ext.JSON.encode(positiveArr);
+                        var user = localStorage.getItem("login");
+                        //text = text.replace(/ /ig,'_');
+                        Ext.Ajax.request({
+                            url: '/cr_conf/lens_control_save_levels.php',
+                            method: 'POST',
+                            params: {
+                                login: user,
+                                values_json: jsonInp,
+                                //filename: text
+                            },
+                            success: function (ans) {
+                                if (typeof dbg !== 'undefined')
+                                    console.log("save_levels success");
+                            },
+                            failure: function (ans) {
+                                if (typeof dbg !== 'undefined')
+                                    console.log("save_levels failure");
+                                me.messageErrorShow('Не удалось сохранить');
+                            }
+                        });
+                    //}
+//                });
 
-                var jsonInp = Ext.JSON.encode(positiveArr);
-                var user = localStorage.getItem("login");
-                Ext.Ajax.request({
-                    url: '/cr_conf/lens_control_save_levels.php',
-                    method: 'POST',
-                    params: {
-                        login: user,
-                        values_json: jsonInp
-                    },
-                    success: function (ans) {
-                        if (typeof dbg !== 'undefined')
-                            console.log("save_levels success");
-                    },
-                    failure: function (ans) {
-                        if (typeof dbg !== 'undefined')
-                            console.log("save_levels failure");
-                        me.messageErrorShow('Не удалось сохранить');
-                    }
-                });
+
             }
         }
         

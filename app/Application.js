@@ -77,13 +77,13 @@ Ext.define('LensControl.Application', {
     //
     //
     onAppUpdate: function () {
-        Ext.Msg.confirm('Приложение обновилось', 'Приложение обновилось на сервере,<br> перезагрузить?',
+                /*Ext.Msg.confirm('Приложение обновилось', 'Приложение обновилось на сервере,<br> перезагрузить?',
             function (choice) {
                 if (choice === 'yes') {
                     window.location.reload();
                 }
             }
-        );
+        );*/window.location.reload();
     },
     //
     //
