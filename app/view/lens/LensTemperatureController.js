@@ -13,15 +13,19 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
         
         var task = {
             run: function () {
-                me.loadStoreWithTemperature(); 
+                me.loadStoreWithTemperature("phpscript"); 
             },
-            interval: 60000 // 1 minute
+            //interval: 60000 // 1 minute
+            interval: 3000 // 3 seconds
         };
         var runner = new Ext.util.TaskRunner();
         runner.start(task);
         
     },
-    loadStoreWithTemperature: function () {
+    //
+    //
+    //
+    loadStoreWithTemperature: function (type) {
         var me = this;
         
         // Получение значения максимальной температуры из localStorage
@@ -29,129 +33,166 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
         
         
         var warn_temp = LensControl.app.getSettFromLocalStorage("warning_temperature");
-        var dStore = Ext.data.StoreManager.lookup('lenstempStore');
         
-        dStore.load(
-                {
-                    callback: function (records, operation, success) {
-                        if (success) {
-                            // Для проверки температуры
-                            var isHeatTemp = false;
-                            var maxTempDefault = 40;
+        if (type === "dstore") {
+            var dStore = Ext.data.StoreManager.lookup('lenstempStore');
 
-                            // Максимальная температура.
-                            // После превышения этой температуры выводится 
-                            // Предупреждающее сообщение
-                            if (warn_temp === undefined ||
-                                    warn_temp === null) {
-                                var maxTemp = maxTempDefault;
+            dStore.load(
+                    {
+                        callback: function (records, operation, success) {
+                            if (success) {
+                                updateDataTemp(records, type);
                             } else {
-                                var maxTemp = warn_temp;
+                                var time_warning_mes = Ext.ComponentQuery.query('[name=warning_mes]');
+                                var warning_message = '<h3><span style="color:red; font-size:150%"> Не удалось загрузить данные по температуре.</span></h3>';
+
+                                Ext.each(time_warning_mes, function (component, index) {
+                                    component.setHidden(false);
+                                    component.update(warning_message);
+                                });
                             }
-                            warning_temp_field.setValue(maxTemp);
+                        }
+                    }
+            );
+        }
+        else if (type === "phpscript") {
+            Ext.Ajax.request({
+                url: '/cr_conf/scripts/reading_of_oil_temp.php',
+                method: 'GET',
+                success: function (ans) {       
+                    try {
+                        var decodedString = Ext.decode(ans.responseText);
+                        var temperature = decodedString.argout;
+                        if (temperature === undefined) {
+                            me.loadStoreWithTemperature("dstore");
+                        }
+                        updateDataTemp(temperature, type);
+                    } catch (e) {
+                        me.loadStoreWithTemperature("dstore");
+                    }
+                },
+                failure: function (ans) {
+                    var type = "dstore";
+                    me.loadStoreWithTemperature(type);
+                }
+            });
+        }
+        
+        function updateDataTemp(records, type) {
+            // Для проверки температуры
+            var isHeatTemp = false;
+            var maxTempDefault = 40;
+
+            // Максимальная температура.
+            // После превышения этой температуры выводится 
+            // Предупреждающее сообщение
+            if (warn_temp === undefined ||
+                    warn_temp === null) {
+                var maxTemp = maxTempDefault;
+            } else {
+                var maxTemp = warn_temp;
+            }
+            warning_temp_field.setValue(maxTemp);
 
 
-                            // Для вывода значения температуры на картинке
-                            function editTempOut(t) {
-                                // Берутся значения из предпоследней итерации
-                                // так как в последней могут быть значения
-                                // не для всех датчиков
-                                var dataTemp = records[records.length - 3].data;
-
-
-                                Ext.Object.each(t,
-                                        function (key, value) {
-                                            var temperature = dataTemp[key];
-                                            var checkTmp = parseInt(temperature, 10);
-                                            if (isNaN(checkTmp) !== true) {
-                                                if (checkTmp > maxTemp) {
-                                                    isHeatTemp = true;
-                                                }
-                                            }
-
-
-                                            var text = '<span style="font-weight:bold; color:blue; font-size:300%">' + temperature + '</span>';
-                                            value.setText(text, false);
-                                        });
+            // Для вывода значения температуры на картинке
+            function editTempOut(t,dataTemp) {
+                Ext.Object.each(t,
+                        function (key, value) {
+                            var temperature = dataTemp[key];
+                            var checkTmp = parseInt(temperature, 10);
+                            if (isNaN(checkTmp) !== true) {
+                                if (checkTmp > maxTemp) {
+                                    isHeatTemp = true;
+                                }
                             }
-                            ;
+
+
+                            var text = '<span style="font-weight:bold; color:blue; font-size:300%">' + temperature + '</span>';
+                            value.setText(text, false);
+                        });
+            }
+            ;
 
 //                                    var ref = me.lookupReference('chart');
 
-                            var Temp = {};
-                            Temp.T_1 = me.lookupReference('T_1'),
-                                    Temp.T_2 = me.lookupReference('T_2'),
-                                    Temp.T_3 = me.lookupReference('T_3'),
-                                    Temp.T_4 = me.lookupReference('T_4'),
-                                    Temp.T_5 = me.lookupReference('T_5'),
-                                    Temp.T_6 = me.lookupReference('T_6'),
-                                    Temp.T_7 = me.lookupReference('T_7');
+            var Temp = {};
+            Temp.T_1 = me.lookupReference('T_1'),
+                    Temp.T_2 = me.lookupReference('T_2'),
+                    Temp.T_3 = me.lookupReference('T_3'),
+                    Temp.T_4 = me.lookupReference('T_4'),
+                    Temp.T_5 = me.lookupReference('T_5'),
+                    Temp.T_6 = me.lookupReference('T_6'),
+                    Temp.T_7 = me.lookupReference('T_7');
 
+            if (type === "dstore") {
+                // Берутся значения из предпоследней итерации
+                // так как в последней могут быть значения
+                // не для всех датчиков
+                var dataTemp = records[records.length - 3].data;
+                editTempOut(Temp,dataTemp);
+            }
+            else if (type === "phpscript") {
+                var dataTemp = records;
+                editTempOut(Temp,dataTemp);
+            }
+            
+            
+            var warning_message = '<h3><span style="color:red; font-size:150%"> Превышена допустимая температура!!!</span></h3>'
+                    + '<p><b>Проверьте показания термодатчиков</b></p>';
+            var powersupplies = Ext.ComponentQuery.query('[name=name_powersupplies]')[0];
+            // Вывод сообщения если превышена максимальная температура
 
-                            editTempOut(Temp);
-                            var warning_message = '<h3><span style="color:red; font-size:150%"> Превышена допустимая температура!!!</span></h3>'
-                                    + '<p><b>Проверьте показания термодатчиков</b></p>';
-                            var powersupplies = Ext.ComponentQuery.query('[name=name_powersupplies]')[0];
-                            // Вывод сообщения если превышена максимальная температура
+            var warning_mes = Ext.ComponentQuery.query('[name=warning_mes]');
+            Ext.each(warning_mes, function (component, index) {
+                if (isHeatTemp) {
+                    component.setHidden(false);
+                    component.update(warning_message);
+                } else {
+                    component.setHidden(true);
+                }
+            });
 
-                            var warning_mes = Ext.ComponentQuery.query('[name=warning_mes]');
-                            Ext.each(warning_mes, function (component, index) {
-                                if (isHeatTemp) {
-                                    component.setHidden(false);
-                                    component.update(warning_message);
-                                } else {
-                                    component.setHidden(true);
-                                }
-                            });
+            if (type === "phpscript") {
+                return;
+            }
+            // Дополнительные данные содержатся в store
+            // В последнем элементе массива records.length - 1
 
-                            // Дополнительные данные содержатся в store
-                            // В последнем элементе массива records.length - 1
+            var lastRec = records[records.length - 1];
+            var dataFrom = lastRec.data;
+            if (dataFrom === undefined) {
+                console.log("Store: dataFrom===undefined");
+                return;
+            }
+            if (dataFrom.last_timestamp === undefined ||
+                    dataFrom.now_timestamp === undefined)
+                return;
 
-                            var lastRec = records[records.length - 1];
-                            var dataFrom = lastRec.data;
-                            if (dataFrom === undefined) {
-                                console.log("Store: dataFrom===undefined");
-                                return;
-                            }
-                            if (dataFrom.last_timestamp === undefined ||
-                                    dataFrom.now_timestamp === undefined)
-                                return;
+            // Вывод сообщения если данные не обновлялись 
+            // больше time_dif_max секунд
+            var time_dif_max = 120;
+            var time_difference = dataFrom.now_timestamp - dataFrom.last_timestamp;
+            var time_warning_mes = Ext.ComponentQuery.query('[name=warning_mes]');
+            warning_message = '<h3><span style="color:red; font-size:150%"> Данные по температуре не обновлялись ' + time_difference + ' секунд</span></h3>';
 
-                            // Вывод сообщения если данные не обновлялись 
-                            // больше time_dif_max секунд
-                            var time_dif_max = 120;
-                            var time_difference = dataFrom.now_timestamp - dataFrom.last_timestamp;
-                            var time_warning_mes = Ext.ComponentQuery.query('[name=warning_mes]');
-                            warning_message = '<h3><span style="color:red; font-size:150%"> Данные по температуре не обновлялись ' + time_difference + ' секунд</span></h3>';
+            Ext.each(time_warning_mes, function (component, index) {
 
-                            Ext.each(time_warning_mes, function (component, index) {
-
-                                if (time_difference > time_dif_max) {
-                                    component.setHidden(false);
-                                    component.update(warning_message);
-                                } else {
-                                    if (!isHeatTemp) {
-                                        component.setHidden(true);
-                                    }
-                                }
-                            });
-
-                        } else {
-                            var time_warning_mes = Ext.ComponentQuery.query('[name=warning_mes]');
-                            warning_message = '<h3><span style="color:red; font-size:150%"> Не удалось загрузить данные по температуре.</span></h3>';
-
-                            Ext.each(time_warning_mes, function (component, index) {
-                                component.setHidden(false);
-                                component.update(warning_message);
-                            });
-                        }
+                if (time_difference > time_dif_max) {
+                    component.setHidden(false);
+                    component.update(warning_message);
+                } else {
+                    if (!isHeatTemp) {
+                        component.setHidden(true);
                     }
                 }
-        );
+            });
+        }
     },
 //
 //
 //
+    
     setMaximumTemperature: function () {
         var me = this;
         var warning_temp_field = me.lookupReference('warning_temp_field');
