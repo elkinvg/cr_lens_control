@@ -43,7 +43,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
         
         var warn_temp = LensControl.app.getSettFromLocalStorage("warning_temperature");
         
-        if (type === "dstore") {
+        /*if (type === "dstore") {
             var dStore = Ext.data.StoreManager.lookup('lenstempStore');
 
             dStore.load(
@@ -64,26 +64,44 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                     }
             );
         }
-        else if (type === "phpscript") {
+        else*/ 
+        if (type === "phpscript") {
             Ext.Ajax.request({
                 url: '/cr_conf/scripts/reading_of_oil_temp.php',
                 method: 'GET',
                 success: function (ans) {       
                     try {
                         var decodedString = Ext.decode(ans.responseText);
-                        var temperature = decodedString.argout;
-                        if (temperature === undefined) {
-                            me.loadStoreWithTemperature("dstore");
+                        var success = decodedString.success;
+                        if (success === true) {
+                            var temperature = decodedString.argout;
+                            if (temperature === undefined) {
+                                //me.loadStoreWithTemperature("dstore");
+                                warn_temperature_mess();
+                            }
+                            updateDataTemp(temperature, type);
                         }
-                        updateDataTemp(temperature, type);
+                        else
+                            warn_temperature_mess();
                     } catch (e) {
-                        me.loadStoreWithTemperature("dstore");
+                        warn_temperature_mess();
+                        //me.loadStoreWithTemperature("dstore");
                     }
                 },
                 failure: function (ans) {
-                    var type = "dstore";
-                    me.loadStoreWithTemperature(type);
+                    /*var type = "dstore";
+                    me.loadStoreWithTemperature(type);*/
+                    warn_temperature_mess();
                 }
+            });
+        }
+        
+        function warn_temperature_mess() {
+            var time_warning_mes = Ext.ComponentQuery.query('[name=warning_mes]');
+            var warning_message = '<h3><span style="color:red; font-size:150%"> Не удалось загрузить данные по температуре</span></h3>';
+            Ext.each(time_warning_mes, function (component, index) {
+                component.update(warning_message);
+                component.setHidden(false);
             });
         }
         
