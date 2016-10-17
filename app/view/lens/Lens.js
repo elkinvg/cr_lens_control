@@ -262,6 +262,11 @@ Ext.define('LensControl.view.lens.Lens', {
                 {
                     xtype: 'component',
                     anchor: '100%',
+                    name: 'info_temp_mes',
+                },
+                {
+                    xtype: 'component',
+                    anchor: '100%',
                     name: 'warning_mes',
                     hidden: true
 //                    html: []

@@ -79,7 +79,10 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                                 //me.loadStoreWithTemperature("dstore");
                                 warn_temperature_mess();
                             }
-                            updateDataTemp(temperature, type);
+                            else {
+                                info_temperature_mess();
+                                updateDataTemp(temperature, type);
+                            }
                         }
                         else
                             warn_temperature_mess();
@@ -96,12 +99,40 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
             });
         }
         
+        function info_temperature_mess() {
+            var info_mes = Ext.ComponentQuery.query('[name=info_temp_mes]');
+            Ext.each(info_mes, function (component, index) {
+                var even_iter = component.even_iter;
+                if (even_iter === undefined) {
+                    component.even_iter = 1;
+                    var info_message = '<h3><span style="color:blue"> Данные по температуре обновились</span></h3>';
+                }
+                else {
+                    if (component.even_iter === 1) {
+                        var info_message = '<h3><span style="color:green"> Данные по температуре обновились</span></h3>';
+                        component.even_iter = 2;
+                    } else if (component.even_iter === 2) {
+                        var info_message = '<h3><span style="color:blue"> Данные по температуре обновились</span></h3>';
+                        component.even_iter = 1;
+                    }
+                }
+                
+                component.update(info_message);
+                component.setHidden(false);
+            });
+        }
+        
         function warn_temperature_mess() {
             var time_warning_mes = Ext.ComponentQuery.query('[name=warning_mes]');
             var warning_message = '<h3><span style="color:red; font-size:150%"> Не удалось загрузить данные по температуре</span></h3>';
             Ext.each(time_warning_mes, function (component, index) {
                 component.update(warning_message);
                 component.setHidden(false);
+            });
+            
+            var info_mes = Ext.ComponentQuery.query('[name=info_temp_mes]');
+             Ext.each(info_mes, function (component) {
+                component.setHidden(true);
             });
         }
         
