@@ -630,21 +630,21 @@ Ext.define('LensControl.view.lens.LensController', {
                     return (dt.device_state !== "FAULT") ? true : false;
                 });
 
-                // Добавлен Ext.Ajax.request({})
-                // Возможно также попробовать сохранение не в БД,а в файл, или файлы
-                // Тогда при чтении будет считываться json файл
-//                Ext.Msg.prompt('Name', 'Введите имя для файла:', function (btn, text) {
-//                    if (btn == 'ok') {
+                 // Добавлен Ext.Ajax.request({})
+                 // Возможно также попробовать сохранение не в БД,а в файл, или файлы
+                 // Тогда при чтении будет считываться json файл
+                Ext.Msg.prompt('Name', 'Введите имя для файла:', function (btn, text) {
+                    if (btn == 'ok') {
                         var jsonInp = Ext.JSON.encode(positiveArr);
                         var user = localStorage.getItem("login");
-                        //text = text.replace(/ /ig,'_');
+                        text = text.replace(/ /ig,'_');
                         Ext.Ajax.request({
                             url: '/cr_conf/lens_control_save_levels.php',
                             method: 'POST',
                             params: {
                                 login: user,
                                 values_json: jsonInp,
-                                //filename: text
+                                filename: text
                             },
                             success: function (ans) {
                                 if (typeof dbg !== 'undefined')
@@ -656,8 +656,8 @@ Ext.define('LensControl.view.lens.LensController', {
                                 me.messageErrorShow('Не удалось сохранить');
                             }
                         });
-                    //}
-//                });
+                    }
+                });
 
 
             }
