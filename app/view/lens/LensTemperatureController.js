@@ -282,7 +282,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
         // При Выводе графика без запроса вылезает глюк, если в течении
         // 30 секунд не перейти на вкладку
         var me = this;
-
+        
         var win = new Ext.Window({
             width: '100%'
             , title: 'Изменение температур системы охлаждения'
@@ -298,6 +298,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                     name: 'chart',
                     width: '100%',
                     height: 500,
+                    interactions: 'crosshair',
                     store: {
                         type: 'lenstempstore'
                     },
@@ -345,6 +346,10 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             yField: 'T_1',
                             style: {
                                 lineWidth: 4
+                            },
+                            tooltip: {
+                                trackMouse: true,
+                                renderer: onSeriesTooltipRender
                             }
                         },
                         {
@@ -353,6 +358,10 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             yField: 'T_2',
                             style: {
                                 lineWidth: 4
+                            },
+                            tooltip: {
+                                trackMouse: true,
+                                renderer: onSeriesTooltipRender
                             }
                         },
                         {
@@ -361,6 +370,10 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             yField: 'T_3',
                             style: {
                                 lineWidth: 4
+                            },
+                            tooltip: {
+                                trackMouse: true,
+                                renderer: onSeriesTooltipRender
                             }
                         },
                         {
@@ -369,6 +382,10 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             yField: 'T_4',
                             style: {
                                 lineWidth: 4
+                            },
+                            tooltip: {
+                                trackMouse: true,
+                                renderer: onSeriesTooltipRender
                             }
                         },
                         {
@@ -377,6 +394,10 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             yField: 'T_5',
                             style: {
                                 lineWidth: 4
+                            },
+                            tooltip: {
+                                trackMouse: true,
+                                renderer: onSeriesTooltipRender
                             }
                         },
                         {
@@ -385,6 +406,10 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             yField: 'T_6',
                             style: {
                                 lineWidth: 4
+                            },
+                            tooltip: {
+                                trackMouse: true,
+                                renderer: onSeriesTooltipRender
                             }
                         },
                         {
@@ -393,6 +418,10 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             yField: 'T_7',
                             style: {
                                 lineWidth: 4
+                            },
+                            tooltip: {
+                                trackMouse: true,
+                                renderer: onSeriesTooltipRender
                             }
                         }
                     ]
@@ -408,6 +437,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                 }
             ]
         });
+
         // установить disable для кнопки, пока не загрузятся данные
         var graphbut = me.lookupReference('graphbut');
         graphbut.disable();
@@ -447,6 +477,9 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                         graphbut.enable();
                     }
                 });
-    }
 
+         function onSeriesTooltipRender(tooltip, record, item) {
+            tooltip.setHtml(item.field + " " + record.get('time') + " " + record.get(item.series.getYField()) + '&deg;C');
+        }
+    }
 });
