@@ -19,8 +19,20 @@ Ext.define('LensControl.view.lens.LensController', {
                 open: function (ws) {
                     if(typeof dbg !== 'undefined') console.log('websocket Open');
                 },
-                message: function (ws, data) {                   
+                message: function (ws, data) {
                     me.getData(data);
+
+
+                    // for debuging begin
+                    if (typeof dbg !== 'undefined') {
+                        var type_req = data.type_req;
+                        if (type_req === 'command') {
+                            var command_name = data.data.command_name;
+                            if (command_name !== undefined)
+                                console.log('Getted answer from WS');
+                        }
+                    }
+                    // for debuging end
                 },
                 close: function (ws) {
                     if(typeof dbg !== 'undefined') console.log('The websocket is closed!');
