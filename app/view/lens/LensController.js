@@ -7,10 +7,25 @@ Ext.define('LensControl.view.lens.LensController', {
 
         var me = this;
         
+        if (typeof mode_cm !== 'undefined') {
+            if (mode_cm === "ro")
+            {
+                me.lookupReference('onOffPanel').disable();
+                me.lookupReference('otherSettPanel').disable();
+                var urlws = 'ws://' + Ext.create('Common_d.Property').getWsforlens();
+            }
+        }
+        else {
+            var urlws = 'ws://' + Ext.create('Common_d.Property').getWsforlens() + 'login=' + localStorage.getItem("login") + '&password=' + localStorage.getItem("password");
+        }
+        
+        
+        
         this.ws = Ext.create('Ext.ux.WebSocket', {
             // получение адреса websocket
             // логин и пароль должны храниться в localStorage
-            url: 'ws://' + Ext.create('Common_d.Property').getWsforlens() + 'login=' + localStorage.getItem("login") + '&password=' + localStorage.getItem("password"),
+            url: urlws,
+//url: 'ws://' + Ext.create('Common_d.Property').getWsforlens() + logpas,
             //url: 'ws://' + Ext.create('Common_d.Property').getWsforlens(),
             autoReconnect: true,
             autoReconnectInterval: 1000,
@@ -185,6 +200,10 @@ Ext.define('LensControl.view.lens.LensController', {
     //
     cellClickProc: function (grid, td, cellIndex, record, tr, rowIndex, e, eOpts)
     {
+        if (typeof mode_cm !== 'undefined')
+        if (mode_cm === "ro")
+            return;
+        
         // получение номера источника и свойства id для колонок
 
         //var msgbox = new NumberPrompt().prompt('Quantity', 'Enter a number', function (btn, text) {});
@@ -448,14 +467,15 @@ Ext.define('LensControl.view.lens.LensController', {
                 return;
             }
             
-            var isAllFault = data.data.every(isFault);
-            if (isAllFault) {
-                onOffPanel.disable();
-                otherSettPanel.disable();
-            }
-            else {
-                onOffPanel.enable();
-                otherSettPanel.enable();
+            if (typeof mode_cm === 'undefined') {
+                var isAllFault = data.data.every(isFault);
+                if (isAllFault) {
+                    onOffPanel.disable();
+                    otherSettPanel.disable();
+                } else {
+                    onOffPanel.enable();
+                    otherSettPanel.enable();
+                }
             }
             
             if (isSomeFault) {

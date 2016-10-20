@@ -8,6 +8,11 @@ Ext.define('LensControl.view.main.LensMainController', {
     extend: 'Ext.app.ViewController',
 
     alias: 'controller.lensmain',
+    
+    init: function() {
+        var app_main = Ext.ComponentQuery.query('app-main');
+        app_main[0].remove(app_main[0].lookupReference('log_lens'));
+    },
 
     onItemSelected: function (sender, record) {
         Ext.Msg.confirm('Confirm', 'Are you sure?', 'onConfirm', this);

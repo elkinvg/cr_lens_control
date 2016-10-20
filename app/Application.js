@@ -17,6 +17,10 @@ if (get_params.dbg === '1') {
     dbg = "";
 }
 
+if (get_params.mode === 'ro') {
+    mode_cm = "ro";
+}
+
 Ext.define('LensControl.Application', {
     extend: 'Ext.app.Application',
     
@@ -49,6 +53,15 @@ Ext.define('LensControl.Application', {
         // для неё по умолчанию ','
         
         Ext.util.Format.decimalSeparator = '.';
+        
+        if (typeof mode_cm !== 'undefined')
+        if (mode_cm === "ro")
+        {
+            Ext.create({
+                xtype: 'app-main'
+            });
+            return;
+        }
 
         // TODO - Launch the application
         // launch - вызывается, когда application подгружает все необходимые классы

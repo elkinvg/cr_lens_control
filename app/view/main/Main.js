@@ -101,6 +101,7 @@ Ext.define('LensControl.view.main.Main', {
         },
         {
             title: 'Журнал',
+            reference: 'log_lens',
             scrollable: true,
             iconCls: 'fa-file-text-o',
             items: [{
