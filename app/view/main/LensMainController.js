@@ -10,8 +10,13 @@ Ext.define('LensControl.view.main.LensMainController', {
     alias: 'controller.lensmain',
     
     init: function() {
-        var app_main = Ext.ComponentQuery.query('app-main');
-        app_main[0].remove(app_main[0].lookupReference('log_lens'));
+        if (typeof mode_cm !== 'undefined') {
+            if (mode_cm === "ro")
+            {
+                var app_main = Ext.ComponentQuery.query('app-main');
+                app_main[0].remove(app_main[0].lookupReference('log_lens'));
+            }
+        }
     },
 
     onItemSelected: function (sender, record) {

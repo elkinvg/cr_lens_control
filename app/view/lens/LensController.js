@@ -12,7 +12,7 @@ Ext.define('LensControl.view.lens.LensController', {
             {
                 me.lookupReference('onOffPanel').disable();
                 me.lookupReference('otherSettPanel').disable();
-                var urlws = 'ws://' + Ext.create('Common_d.Property').getWsforlens();
+                var urlws = 'ws://' + Ext.create('Common_d.Property').getWsforlens_ro();
             }
         }
         else {
