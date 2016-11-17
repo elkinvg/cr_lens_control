@@ -432,6 +432,11 @@ Ext.define('LensControl.view.lens.LensController', {
         // Данные записываются в store, только если dt_type_req === "attribute"
 
         if (dt_event === "read" && dt_type_req === "attribute") {
+            // Выставляет красный индикатор в Title если хотя бы один Fault
+            var isSomeFault = data.data.some(isFault);
+            if (isSomeFault) {
+                getLevelsFromLocalStorage(dataForStore);
+            }
             storeMem.loadData(dataForStore);
             var size = data.data.length;
             
@@ -450,8 +455,7 @@ Ext.define('LensControl.view.lens.LensController', {
                 else
                     return false;
             };
-            // Выставляет красный индикатор в Title если хотя бы один Fault
-            var isSomeFault = data.data.some(isFault);
+
             
             var stateOv = me.lookupReference('powersupplies');
             var onOffPanel = me.lookupReference('onOffPanel');
@@ -493,8 +497,60 @@ Ext.define('LensControl.view.lens.LensController', {
             
             // здесь если все источники имеют состояние ставится зелёный идикатор
             stateOv.setTitle("Источники питания. " + '<img src="resources/images/Ok.ico" height="20" width="20">');
+            saveLevelsInLocalStorage(dataForStore);
             
             
+            
+        }
+        
+        function saveLevelsInLocalStorage(inpData) {
+            // Для сохранения значения всех порогов в localStorage
+            var levelsFromLocalStorage = localStorage.getItem("savedLevels");
+            if (levelsFromLocalStorage === null) {
+                var toLocalStorage = new Object();
+                inpData.forEach(function (item, i, arr) {
+                    var tmpObg = new Object();
+                    tmpObg.curr_level = item.curr_level;
+                    tmpObg.volt_level = item.volt_level;
+                    toLocalStorage[item.device_name] = tmpObg;
+                });
+                var jsonFromLevelsArray = Ext.util.JSON.encode(toLocalStorage);
+                localStorage.setItem("savedLevels",jsonFromLevelsArray);
+            } else {
+                var fromJson = Ext.util.JSON.decode(levelsFromLocalStorage);
+                var resaveLS = false;
+                inpData.forEach(function (item, i, arr) {
+                    var savedLevels = fromJson[item.device_name];
+                    
+                    if (item.curr_level !== savedLevels.curr_level) {
+                        savedLevels.curr_level = item.curr_level;
+                        resaveLS = true;
+                    }
+                    if (item.volt_level !== savedLevels.volt_level) {
+                        savedLevels.volt_level = item.volt_level;
+                        resaveLS = true;
+                    }
+                });
+                if (resaveLS === true) {
+                    var toLocalStorage = Ext.util.JSON.encode(fromJson);
+                    localStorage.setItem("savedLevels",toLocalStorage);
+                }
+            }
+        }
+        
+        function getLevelsFromLocalStorage(inpData) {
+            var levelsFromLocalStorage = localStorage.getItem("savedLevels");
+            if (levelsFromLocalStorage !== null) {
+                var fromJson = Ext.util.JSON.decode(levelsFromLocalStorage);
+                inpData.forEach(function (item, i, arr) {
+                    if (item.curr_level === -1 || item.volt_level === -1) {
+                        var savedLevels = fromJson[item.device_name];
+                        item.curr_level = savedLevels.curr_level;
+                        item.volt_level = savedLevels.volt_level;
+                    }
+                });
+            }
+
         }
     },
     //
