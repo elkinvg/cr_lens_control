@@ -222,9 +222,9 @@ Ext.define('LensControl.view.lens.LensController', {
             
             inputData.id = id;
             inputData.device = device;
-            inputData.title = 'Порог напряжения источника ' + id;
+            inputData.title = 'Установка напряжения источника ' + id;
             inputData.titleForValue = '<b>В';
-            inputData.forFieldLabel = '<b>Порог напряжения</b>';
+            inputData.forFieldLabel = '<b>Установка напряжения</b>';
             inputData.value = record.data.volt_level;
             inputData.maxValue = 40;
             inputData.minValue = 0;
@@ -240,9 +240,9 @@ Ext.define('LensControl.view.lens.LensController', {
             
             inputData.id = id;
             inputData.device = device;
-            inputData.title = 'Порог тока источника ' + id;
+            inputData.title = 'Установка тока источника ' + id;
             inputData.titleForValue = '<b>А';
-            inputData.forFieldLabel = '<b>Порог тока</b>';
+            inputData.forFieldLabel = '<b>Установка тока</b>';
             inputData.value = record.data.curr_level;
             inputData.maxValue = 80;
             inputData.minValue = 0;
@@ -891,8 +891,8 @@ Ext.define('LensControl.view.lens.LensController', {
                                                             device_name_shrt = device_name.substring(indOf+1);
                                                             
                                                         respHtml += "<b>Источник:<span style='color:blue;'>" + space + device_name_shrt + space
-                                                                + "</span> Порог для напряжения:   <span style='color:blue;'>" + space + volt_level + space
-                                                                + "</span>" + " Порог для тока:    <span style='color:blue;'>" + space + curr_level + space + "</b></span><br>";
+                                                                + "</span> Установка для напряжения:   <span style='color:blue;'>" + space + volt_level + space
+                                                                + "</span>" + " Установка для тока:    <span style='color:blue;'>" + space + curr_level + space + "</b></span><br>";
                                                         var gdata = {};
                                                         gdata.volt_level = volt_level;
                                                         gdata.curr_level = curr_level;

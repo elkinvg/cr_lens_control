@@ -64,7 +64,7 @@ Ext.define('LensControl.view.lens.Lens', {
                         {
                             xtype: 'fieldcontainer',
                             itemId: 'currId',
-                            fieldLabel: '<b>Порог тока для всех</b>',
+                            fieldLabel: '<b>Установка тока для всех</b>',
                             labelWidth: 120,
                             combineErrors: false,
                             defaults: {
@@ -104,7 +104,7 @@ Ext.define('LensControl.view.lens.Lens', {
                         },
                         {
                             xtype: 'fieldcontainer',
-                            fieldLabel: '<b>Порог напряжения для всех</b>',
+                            fieldLabel: '<b>Установка напряжения для всех</b>',
                             itemId: 'voltageId',
                             labelWidth: 120,
                             combineErrors: false,
@@ -307,12 +307,12 @@ Ext.define('LensControl.view.lens.Lens', {
                             flex: 1
                         },
                         {
-                            text: 'Порог<br>напряжения (В)', dataIndex: 'volt_level',
+                            text: 'Установка<br>напряжения (В)', dataIndex: 'volt_level',
                             //renderer: 'bold',
                             flex: 1
                         },
                         {
-                            text: 'Порог<br>тока (А)', dataIndex: 'curr_level',
+                            text: 'Установка<br>тока (А)', dataIndex: 'curr_level',
                             //renderer: 'bold',
                             flex: 1
                         },
