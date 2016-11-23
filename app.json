@@ -23,7 +23,8 @@
     "classpath": [
         "app",
         "${toolkit.name}/src",
-        "../cr_login/app"
+        "../cr_login/app",
+        "../common_d/src"
     ],
 
     /**
