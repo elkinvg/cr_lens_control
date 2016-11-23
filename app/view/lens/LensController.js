@@ -16,11 +16,19 @@ Ext.define('LensControl.view.lens.LensController', {
             }
         }
         else {
-            var urlws = 'ws://' + Ext.create('Common_d.Property').getWsforlens() + 'login=' + localStorage.getItem("login") + '&password=' + localStorage.getItem("password");
+            try {
+                var urlws = 'ws://' + Ext.create('Common_d.Property').getWsforlens() + 'login=' + localStorage.getItem("login") + '&password=' + localStorage.getItem("password");
+            } catch (e)
+            {
+                var urlws = "";
+            }
         }
         
         
-        
+        if (urlws === "") {
+            me.messageErrorShow("WebSocket не задан. Проверьте <br>значение wsforlens<br> в Property.js");
+            return;
+        }
         this.ws = Ext.create('Ext.ux.WebSocket', {
             // получение адреса websocket
             // логин и пароль должны храниться в localStorage
