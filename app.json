@@ -23,10 +23,10 @@
     "classpath": [
         "app",
         "${toolkit.name}/src",
-        "../cr_login/app",
-        "../common_d/src"
+        "../cr_login/app"
+        
     ],
-
+    /**"../common_d/src"*/
     /**
      * Comma-separated string with the paths of directories or files to search. Any classes
      * declared in these locations will be automatically required and included in the build.

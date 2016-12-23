@@ -67,7 +67,8 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
         else*/ 
         if (type === "phpscript") {
             Ext.Ajax.request({
-                url: '/cr_conf/scripts/reading_of_oil_temp.php',
+                //url: '/cr_conf/scripts/reading_of_oil_temp.php',
+                url: '/cr_conf/termo/reading_of_oil_temp.php',
                 method: 'GET',
                 success: function (ans) {       
                     try {

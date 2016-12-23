@@ -6,7 +6,7 @@ Ext.define('LensControl.view.lens.Lens', {
 //    title: 'Источники питания',
     maxheightGrid: 0,
     requires: [
-        'Common_d.Property',
+//        'Common_d.Property',
         'LensControl.view.lens.LensController',
         'Ext.ux.WebSocket',
 //        'Ext.ux.WebSocketManager',

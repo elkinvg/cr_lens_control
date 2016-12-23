@@ -17,6 +17,10 @@ Ext.define('LensControl.view.main.LensMainController', {
                 app_main[0].remove(app_main[0].lookupReference('log_lens'));
             }
         }
+        if (typeof log_panel === 'undefined') {
+                var app_main = Ext.ComponentQuery.query('app-main');
+                app_main[0].remove(app_main[0].lookupReference('log_lens'));
+        }
     },
 
     onItemSelected: function (sender, record) {

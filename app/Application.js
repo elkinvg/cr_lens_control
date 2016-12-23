@@ -21,6 +21,10 @@ if (get_params.mode === 'ro') {
     mode_cm = "ro";
 }
 
+if ("log" in get_params) {
+    log_panel = true;
+}
+
 Ext.define('LensControl.Application', {
     extend: 'Ext.app.Application',
     

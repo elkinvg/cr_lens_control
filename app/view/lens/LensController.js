@@ -6,119 +6,155 @@ Ext.define('LensControl.view.lens.LensController', {
         if(typeof dbg !== 'undefined') console.log('TestwsController');
 
         var me = this;
+        var parForAjax = "";
+        var parForWs = "";
+        
         
         if (typeof mode_cm !== 'undefined') {
             if (mode_cm === "ro")
             {
                 me.lookupReference('onOffPanel').disable();
                 me.lookupReference('otherSettPanel').disable();
-                var urlws = 'ws://' + Ext.create('Common_d.Property').getWsforlens_ro();
+                //var urlws = 'ws://' + Ext.create('Common_d.Property').getWsforlens_ro();
+                //var urlws = Ext.create('Common_d.Property').getUrls().wsforlens_ro;
+                parForAjax = "wsforlens_ro";
             }
         }
         else {
+            /*
             try {
                 var urlws = 'ws://' + Ext.create('Common_d.Property').getWsforlens() + 'login=' + localStorage.getItem("login") + '&password=' + localStorage.getItem("password");
             } catch (e)
             {
                 var urlws = "";
             }
+            */
+           parForAjax = "wsforlens";
+           parForWs = '?login=' + localStorage.getItem("login") + '&password=' + localStorage.getItem("password");
         }
         
+        Ext.Ajax.request({
+            url: '/cr_conf/extjs_cr_get_vars.php',
+            method: 'GET',
+            timeout: 2000,
+            disableCaching: false,
+            params: {
+                param: parForAjax
+            },
+            success: function (response, opts) {
+                var fromResponse = Ext.util.JSON.decode(response.responseText);
+                if ('ok' in fromResponse) {
+                    openws(fromResponse['ok'] + parForWs);
+                } else if ('err' in fromResponse) {
+                    me.messageErrorShow(fromResponse['err'],500);
+                } else {
+                    me.messageErrorShow("Неизветный ответ от сервера",300);
+                }
+            },
+            failure: function (response, opts) {
+                me.messageErrorShow("Нет доступа к конфигурационному файлу <b>extjs_cr_get_vars.php</b><br>  проверьте его наличие",500);
+            }
+        });
         
-        if (urlws === "") {
-            me.messageErrorShow("WebSocket не задан. Проверьте <br>значение wsforlens<br> в Property.js");
-            return;
-        }
-        this.ws = Ext.create('Ext.ux.WebSocket', {
-            // получение адреса websocket
-            // логин и пароль должны храниться в localStorage
-            url: urlws,
+        
+        function openws(urlws) {
+            if (urlws === "") {
+                me.messageErrorShow("WebSocket не задан. Проверьте <br>значение wsforlens<br> в Property.js");
+                return;
+            }
+            this.ws = Ext.create('Ext.ux.WebSocket', {
+                // получение адреса websocket
+                // логин и пароль должны храниться в localStorage
+                url: urlws,
 //url: 'ws://' + Ext.create('Common_d.Property').getWsforlens() + logpas,
-            //url: 'ws://' + Ext.create('Common_d.Property').getWsforlens(),
-            autoReconnect: true,
-            autoReconnectInterval: 1000,
-            //url: prop.getUrlwstest(),
-            listeners: {
-                open: function (ws) {
-                    if(typeof dbg !== 'undefined') console.log('websocket Open');
-                },
-                message: function (ws, data) {
-                    me.getData(data);
+                //url: 'ws://' + Ext.create('Common_d.Property').getWsforlens(),
+                autoReconnect: true,
+                autoReconnectInterval: 1000,
+                //url: prop.getUrlwstest(),
+                listeners: {
+                    open: function (ws) {
+                        if (typeof dbg !== 'undefined')
+                            console.log('websocket Open');
+                    },
+                    message: function (ws, data) {
+                        me.getData(data);
 
 
-                    // for debuging begin
-                    if (typeof dbg !== 'undefined') {
-                        var type_req = data.type_req;
-                        if (type_req === 'command') {
-                            var command_name = data.data.command_name;
-                            if (command_name !== undefined)
-                                console.log('Getted answer from WS');
+                        // for debuging begin
+                        if (typeof dbg !== 'undefined') {
+                            var type_req = data.type_req;
+                            if (type_req === 'command') {
+                                var command_name = data.data.command_name;
+                                if (command_name !== undefined)
+                                    console.log('Getted answer from WS');
+                            }
                         }
-                    }
-                    // for debuging end
-                },
-                close: function (ws) {
-                    if(typeof dbg !== 'undefined') console.log('The websocket is closed!');
-                },
-                error: function (ws, error) {
-                    if (Array.isArray(error)) {
+                        // for debuging end
+                    },
+                    close: function (ws) {
+                        if (typeof dbg !== 'undefined')
+                            console.log('The websocket is closed!');
+                    },
+                    error: function (ws, error) {
+                        if (Array.isArray(error)) {
 //                        error.arr.forEach(function(item, i, arr) {
 //                            if(typeof dbg !== 'undefined') console.log(item);
 //                        });
 
-                        error.forEach(function (item, i, arr) {
-                            var err = item.error;
-                            var type_req = item.type_req;
-                            if (err !== undefined &&
-                                    type_req !== undefined) {
-                                if (err === "Permission denied") {
-                                    var user = localStorage.getItem("login");
-                                    var errMsg = "У пользователя " + user + " нет прав \n на выполнение этой операции.<br>Для получение прав свяжитесь с администратором"
-                                    Ext.Msg.show({
-                                        title: err,
-                                        message: errMsg,
-                                        icon: Ext.Msg.ERROR,
-                                        buttons: Ext.Msg.OK
-                                    });
+                            error.forEach(function (item, i, arr) {
+                                var err = item.error;
+                                var type_req = item.type_req;
+                                if (err !== undefined &&
+                                        type_req !== undefined) {
+                                    if (err === "Permission denied") {
+                                        var user = localStorage.getItem("login");
+                                        var errMsg = "У пользователя " + user + " нет прав \n на выполнение этой операции.<br>Для получение прав свяжитесь с администратором"
+                                        Ext.Msg.show({
+                                            title: err,
+                                            message: errMsg,
+                                            icon: Ext.Msg.ERROR,
+                                            buttons: Ext.Msg.OK
+                                        });
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
+                        //Ext.Error.raise(error);
                     }
-                    //Ext.Error.raise(error);
                 }
-            }
-        });
-        
-        var taskTime = {
-            run: function () {
-                // Для оповещения об обрыве соединения, или обновления данных
-                // с вэбсокета
-                // timeUpdWs объявлен глобально в Application.js
-                // timeUpdWs обновляется при загрузке данных атрибутов с Вэбсокета
-                // timeUpdCom обновляется здесь
-                var timeUpdCom = new Date().getTime() / 1000 | 0;
-                var timeDiff = timeUpdCom - timeUpdWs;
-                var newVal = '';
+            });
 
-                var displayUpd = me.lookupReference('updateTime');
+            var taskTime = {
+                run: function () {
+                    // Для оповещения об обрыве соединения, или обновления данных
+                    // с вэбсокета
+                    // timeUpdWs объявлен глобально в Application.js
+                    // timeUpdWs обновляется при загрузке данных атрибутов с Вэбсокета
+                    // timeUpdCom обновляется здесь
+                    var timeUpdCom = new Date().getTime() / 1000 | 0;
+                    var timeDiff = timeUpdCom - timeUpdWs;
+                    var newVal = '';
 
-                if (timeDiff > 10) {
-                    displayUpd.show();
-                    newVal = '<span style="color:red; font-size:200%"><b>' +
-                            timeDiff + '</b></span>';
-                } else
-                    displayUpd.hide();
+                    var displayUpd = me.lookupReference('updateTime');
 
-                newVal = newVal + ' секунд назад';
-                var displayUpd = me.lookupReference('updateTime');
-                displayUpd.setValue(newVal);
+                    if (timeDiff > 10) {
+                        displayUpd.show();
+                        newVal = '<span style="color:red; font-size:200%"><b>' +
+                                timeDiff + '</b></span>';
+                    } else
+                        displayUpd.hide();
+
+                    newVal = newVal + ' секунд назад';
+                    var displayUpd = me.lookupReference('updateTime');
+                    displayUpd.setValue(newVal);
 //                console.log("timeUpdCom: " + timeUpdCom + " | timeUpdWs: " + timeUpdWs);
-            },
-            interval: 10000 // 10 seconds
-        };
-        
-        var runner = new Ext.util.TaskRunner();
-        runner.start(taskTime);
+                },
+                interval: 10000 // 10 seconds
+            };
+
+            var runner = new Ext.util.TaskRunner();
+            runner.start(taskTime);
+        }
 //        
         //Ext.ux.WebSocketManager.register(this.ws);
 //        Ext.ux.WebSocketManager.listen ('system shutdown', function (ws, data) {
@@ -1055,12 +1091,18 @@ Ext.define('LensControl.view.lens.LensController', {
     //
     //
     //
-    messageErrorShow: function (message) {
-        Ext.Msg.show({
+    messageErrorShow: function (message,width) {
+        var params = {
             title: 'Ошибка',
             icon: Ext.Msg.ERROR,
             buttons: Ext.Msg.OK,
             message: message
-        });
+        };
+        
+        if (width !== undefined && (typeof width === 'number')) {
+            params.width = width;
+        }
+        
+        Ext.Msg.show(params);
     }
 });
