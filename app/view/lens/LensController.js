@@ -62,7 +62,7 @@ Ext.define('LensControl.view.lens.LensController', {
                 me.messageErrorShow("WebSocket не задан. Проверьте <br>значение wsforlens<br> в Property.js");
                 return;
             }
-            this.ws = Ext.create('Ext.ux.WebSocket', {
+            me.ws = Ext.create('Ext.ux.WebSocket', {
                 // получение адреса websocket
                 // логин и пароль должны храниться в localStorage
                 url: urlws,
