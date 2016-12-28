@@ -70,7 +70,25 @@ Ext.define('LensControl.Application', {
         // TODO - Launch the application
         // launch - вызывается, когда application подгружает все необходимые классы
         if (this.login === null || this.passw === null) {
-            var app = 'logincheck';
+            Ext.Ajax.request({
+                url: '/cr_conf/get_login_pass_for_ip.php',
+                method: 'GET',
+//                params: {
+//                },
+                success: function (ans) {
+                    if (typeof dbg !== 'undefined')
+                        console.log("save_levels success");
+                    var app = 'app-main';
+                    create_app(app);
+                },
+                failure: function (ans) {
+                    if (typeof dbg !== 'undefined')
+                        console.log("php-script not found or other reason");
+                    var app = 'logincheck';
+                    create_app(app);
+                }
+            });
+            
         } else {
             if (parseInt(this.userandident) === 1) {
                 if (this.randident === null)
@@ -79,10 +97,15 @@ Ext.define('LensControl.Application', {
                     var app = 'app-main';
             } else
                 var app = 'app-main';
+            create_app(app);
         }
-        Ext.create({
-            xtype: app
-        });
+        
+        function create_app(app_cr) {
+            Ext.create({
+                xtype: app_cr
+            });
+        }
+        
     },
     
     init: function () {
