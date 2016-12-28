@@ -76,16 +76,30 @@ Ext.define('LensControl.Application', {
 //                params: {
 //                },
                 success: function (ans) {
+                    var app = 'logincheck';
                     if (typeof dbg !== 'undefined')
                         console.log("save_levels success");
-                    var app = 'app-main';
-                    create_app(app);
+                    try {
+                        var decodedData = Ext.util.JSON.decode(ans.responseText);
+                        if (decodedData.success !== undefined)
+                        if (decodedData.success === true) 
+                        if (decodedData.login !== undefined && decodedData.pass !== undefined) 
+                                {
+                                    localStorage.setItem("login", decodedData.login);
+                                    localStorage.setItem("password", decodedData.pass);
+                                    app = 'app-main';
+                                }
+                        create_app(app);
+                    }
+                    catch (e) {
+                        create_app(app);
+                    }
+                    
                 },
                 failure: function (ans) {
                     if (typeof dbg !== 'undefined')
                         console.log("php-script not found or other reason");
-                    var app = 'logincheck';
-                    create_app(app);
+                    create_app('logincheck');
                 }
             });
             
