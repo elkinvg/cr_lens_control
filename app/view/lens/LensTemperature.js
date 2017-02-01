@@ -135,34 +135,46 @@ Ext.define('LensControl.view.lens.LensTemperature', {
         },
         {
             xtype: 'panel',
-            width: 526,
-            height: 734,
+            /*width: 526,
+            height: 734,*/
+            width: 595,
+            height: 365,
+            margin: '30 0 0 0',
             layout: 'absolute',
-            bodyStyle: "background-image:url(resources/images/termo_new_png.png) !important",
+//            bodyStyle: "background-image:url(resources/images/termo_new_png.png) !important",
+            bodyStyle: "background-image:url(resources/images/termo_tmp_png.png) !important",
             defaultType: 'label',
             items: [
                 {
                     reference: 'T2_1',
-                    x: 54,
-                    y: 395,
+                    /*x: 54,
+                    y: 395,*/
+                    x: 165,
+                    y: 150,
                     html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2_1</span>'
                 },
                 {
                     reference: 'T2_2',
-                    x: 216,
-                    y: 138,
+                    /*x: 216,
+                    y: 138,*/
+                    x: 330,
+                    y: 150,
                     html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2_2</span>'
                 },
                 {
                     reference: 'T2_3',
-                    x: 216,
-                    y: 242,
+                    /*x: 216,
+                    y: 242,*/
+                    x: 165,
+                    y: 236,
                     html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2_3</span>'
                 },
                 {
                     reference: 'T2_4',
-                    x: 380,
-                    y: 393,
+                    /*x: 380,
+                    y: 393,*/
+                    x: 330,
+                    y: 236,
                     html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2_4</span>'
                 }/*,
                 {
