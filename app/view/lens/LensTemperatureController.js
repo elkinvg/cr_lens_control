@@ -182,7 +182,12 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                     Temp.T_4 = me.lookupReference('T_4'),
                     Temp.T_5 = me.lookupReference('T_5'),
                     Temp.T_6 = me.lookupReference('T_6'),
-                    Temp.T_7 = me.lookupReference('T_7');
+                    Temp.T_7 = me.lookupReference('T_7'),
+                    
+                    Temp.T2_1 = me.lookupReference('T2_1'),
+                    Temp.T2_2 = me.lookupReference('T2_2'),
+                    Temp.T2_3 = me.lookupReference('T2_3'),
+                    Temp.T2_4 = me.lookupReference('T2_4');
 
             if (type === "dstore") {
                 // Берутся значения из предпоследней итерации
