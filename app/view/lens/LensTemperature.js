@@ -135,7 +135,7 @@ Ext.define('LensControl.view.lens.LensTemperature', {
         },
         {
             xtype: 'panel',
-            width: 564,
+            width: 526,
             height: 734,
             layout: 'absolute',
             bodyStyle: "background-image:url(resources/images/termo_new_png.png) !important",
