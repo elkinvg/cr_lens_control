@@ -167,10 +167,10 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             }
                             
                             if (checkTmp > maxTemp) {
-                                var text = '<span style="font-weight:bold; color:red; font-size:300%">' + temperature + '</span>';
+                                var text = '<span style="font-weight:bold; color:red; font-size:300%">' + temperature.toFixed(1) + '</span>';
                             }
                             else {
-                                var text = '<span style="font-weight:bold; color:blue; font-size:300%">' + temperature + '</span>';
+                                var text = '<span style="font-weight:bold; color:blue; font-size:300%">' + temperature.toFixed(1) + '</span>';
                             }
                                 
 
