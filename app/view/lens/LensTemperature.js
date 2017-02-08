@@ -189,13 +189,13 @@ Ext.define('LensControl.view.lens.LensTemperature', {
                     html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2_4</span>'
                 },
                 {
-                    reference: 'T2_5',
+                    reference: 'T2_6',
                     x: 218,
                     y: 499,
                     html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2_5(6)</span>'
                 },
                                 {
-                    reference: 'T2_6',
+                    reference: 'T2_7',
                     x: 218,
                     y: 404,
                     html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2_6(7)</span>'
