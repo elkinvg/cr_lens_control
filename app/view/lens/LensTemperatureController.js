@@ -358,6 +358,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             type: 'line',
                             xField: 'time',
                             yField: 'T_1',
+                            title: 'напор<br>общий',
                             style: {
                                 lineWidth: 4
                             },
@@ -370,6 +371,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             type: 'line',
                             xField: 'time',
                             yField: 'T_2',
+                            title: 'K2',
                             style: {
                                 lineWidth: 4
                             },
@@ -382,6 +384,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             type: 'line',
                             xField: 'time',
                             yField: 'T_3',
+                            title: 'K3',
                             style: {
                                 lineWidth: 4
                             },
@@ -394,6 +397,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             type: 'line',
                             xField: 'time',
                             yField: 'T_4',
+                            title: 'K1',
                             style: {
                                 lineWidth: 4
                             },
@@ -406,6 +410,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             type: 'line',
                             xField: 'time',
                             yField: 'T_5',
+                            title: 'слив<br>общий',
                             style: {
                                 lineWidth: 4
                             },
@@ -418,6 +423,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             type: 'line',
                             xField: 'time',
                             yField: 'T_6',
+                            title: 'Вода<br>подача',
                             style: {
                                 lineWidth: 4
                             },
@@ -430,6 +436,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             type: 'line',
                             xField: 'time',
                             yField: 'T_7',
+                            title: 'Вода<br>слив',
                             style: {
                                 lineWidth: 4
                             },
