@@ -137,58 +137,69 @@ Ext.define('LensControl.view.lens.LensTemperature', {
             xtype: 'panel',
             /*width: 526,
             height: 734,*/
-            width: 595,
-            height: 365,
+            /*width: 595,
+            height: 365,*/
+            width: 1125,
+            height: 822,
             margin: '30 0 0 0',
             layout: 'absolute',
 //            bodyStyle: "background-image:url(resources/images/termo_new_png.png) !important",
-            bodyStyle: "background-image:url(resources/images/termo_tmp_png.png) !important",
+//            bodyStyle: "background-image:url(resources/images/termo_tmp_png.png) !important",
+            bodyStyle: "background-image:url(resources/images/termo_new_0802.png) !important",
             defaultType: 'label',
             items: [
                 {
                     reference: 'T2_1',
                     /*x: 54,
                     y: 395,*/
-                    x: 165,
-                    y: 150,
+                    /*x: 165,
+                    y: 150,*/
+                    x: 56,
+                    y: 355,
                     html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2_1</span>'
                 },
                 {
                     reference: 'T2_2',
                     /*x: 216,
                     y: 138,*/
-                    x: 330,
-                    y: 150,
+                    /*x: 330,
+                    y: 150,*/
+                    x: 630,
+                    y: 355,
                     html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2_2</span>'
                 },
                 {
                     reference: 'T2_3',
                     /*x: 216,
                     y: 242,*/
-                    x: 330,
-                    y: 236,
+                    /*x: 330,
+                    y: 236,*/
+                    x: 980,
+                    y: 355,
                     html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2_3</span>'
                 },
                 {
                     reference: 'T2_4',
                     /*x: 380,
                     y: 393,*/
-                    x: 165,
-                    y: 236,
+                    /*x: 165,
+                    y: 236,*/
+                    x: 392,
+                    y: 355,
                     html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2_4</span>'
-                }/*,
+                },
                 {
-                    reference: 'T_5',
-                    x: 214,
-                    y: 415,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T5</span>'
+                    reference: 'T2_5',
+                    x: 218,
+                    y: 499,
+                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2_5(6)</span>'
                 },
                                 {
-                    reference: 'T_6',
-                    x: 514,
-                    y: 120,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T6</span>'
-                },
+                    reference: 'T2_6',
+                    x: 218,
+                    y: 404,
+                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2_6(7)</span>'
+                }/*,
                 {
                     reference: 'T_7',
                     x: 514,

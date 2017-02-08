@@ -83,20 +83,28 @@ Ext.define('LensControl.view.main.Main', {
     },
     
     items: [
-        {
+        /*{
             title: 'Линзы',
             iconCls: 'fa-plug',
             scrollable: true,
             items: [{
                     xtype: 'lens'
                 }]
-        },
+        },*/
         {
             title: 'Температура',
             iconCls: 'fa-area-chart',
             scrollable: true,
             items: [{
                     xtype: 'lenstemp'
+                }]
+        },
+        {
+            title: 'Магниты',
+            iconCls: 'fa-area-chart',
+            scrollable: true,
+            items: [{
+                    xtype: 'magntemp'
                 }]
         }/*,
         {
