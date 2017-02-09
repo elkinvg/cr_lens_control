@@ -149,7 +149,7 @@ Ext.define('LensControl.view.lens.LensTemperature', {
             layout: 'absolute',
 //            bodyStyle: "background-image:url(resources/images/termo_new_png.png) !important",
 //            bodyStyle: "background-image:url(resources/images/termo_tmp_png.png) !important",
-            bodyStyle: "background-image:url(resources/images/termo_new_0802.png) !important",
+            bodyStyle: "background-image:url(resources/images/termo_new_0902.png) !important",
             defaultType: 'label',
             items: [
                 {
