@@ -38,31 +38,31 @@ Ext.define('LensControl.view.lens.LensTemperature', {
                     reference: 'T_1',
                     x: 26,
                     y: 355,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T1</span>'
+                    html: '<span style="font-weight:bold; color:black; font-size:300%"> T1</span>'
                 },
                 {
                     reference: 'T_2',
                     x: 216,
                     y: 245,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2</span>'
+                    html: '<span style="font-weight:bold; color:black; font-size:300%"> T2</span>'
                 },
                 {
                     reference: 'T_3',
                     x: 304,
                     y: 302,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T3</span>'
+                    html: '<span style="font-weight:bold; color:black; font-size:300%"> T3</span>'
                 },
                 {
                     reference: 'T_4',
                     x: 109,
                     y: 186,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T4</span>'
+                    html: '<span style="font-weight:bold; color:black; font-size:300%"> T4</span>'
                 },
                 {
                     reference: 'T_5',
                     x: 214,
                     y: 415,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T5</span>'
+                    html: '<span style="font-weight:bold; color:black; font-size:300%"> T5</span>'
                 },
                                 {
                     reference: 'T_6',
@@ -70,7 +70,7 @@ Ext.define('LensControl.view.lens.LensTemperature', {
                     y: 120,*/
                     x: 514,
                     y: 108,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T6</span>'
+                    html: '<span style="font-weight:bold; color:black; font-size:300%"> T6</span>'
                 },
                 {
                     reference: 'T_7',
@@ -78,7 +78,7 @@ Ext.define('LensControl.view.lens.LensTemperature', {
                     y: 216,*/
                     x: 514,
                     y: 220,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T7</span>'
+                    html: '<span style="font-weight:bold; color:black; font-size:300%"> T7</span>'
                 },
                 {
                     x: 490, 
@@ -160,7 +160,7 @@ Ext.define('LensControl.view.lens.LensTemperature', {
                     y: 150,*/
                     x: 56,
                     y: 355,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2_1</span>'
+                    html: '<span style="font-weight:bold; color:black; font-size:300%"> T2_1</span>'
                 },
                 {
                     reference: 'T2_2',
@@ -170,7 +170,7 @@ Ext.define('LensControl.view.lens.LensTemperature', {
                     y: 150,*/
                     x: 630,
                     y: 355,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2_2</span>'
+                    html: '<span style="font-weight:bold; color:black; font-size:300%"> T2_2</span>'
                 },
                 {
                     reference: 'T2_3',
@@ -180,7 +180,7 @@ Ext.define('LensControl.view.lens.LensTemperature', {
                     y: 236,*/
                     x: 980,
                     y: 355,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2_3</span>'
+                    html: '<span style="font-weight:bold; color:black; font-size:300%"> T2_3</span>'
                 },
                 {
                     reference: 'T2_4',
@@ -190,19 +190,19 @@ Ext.define('LensControl.view.lens.LensTemperature', {
                     y: 236,*/
                     x: 392,
                     y: 355,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2_4</span>'
+                    html: '<span style="font-weight:bold; color:black; font-size:300%"> T2_4</span>'
                 },
                 {
                     reference: 'T2_6',
                     x: 218,
                     y: 499,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2_5(6)</span>'
+                    html: '<span style="font-weight:bold; color:black; font-size:300%"> T2_5(6)</span>'
                 },
                                 {
                     reference: 'T2_7',
                     x: 218,
                     y: 404,
-                    html: '<span style="font-weight:bold; color:blue; font-size:300%"> T2_6(7)</span>'
+                    html: '<span style="font-weight:bold; color:black; font-size:300%"> T2_6(7)</span>'
                 }/*,
                 {
                     reference: 'T_7',
