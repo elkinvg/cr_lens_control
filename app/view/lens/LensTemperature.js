@@ -31,6 +31,7 @@ Ext.define('LensControl.view.lens.LensTemperature', {
             width: 700,
             height: 562,
             layout: 'absolute',
+            //id:'cooling_sys_temp',
             bodyStyle: "background-image:url(resources/images/wallp_new.jpg?random=" + new Date().getTime() + ") !important",
 	//bodyStyle: "background-image:url(resources/images/wallp_new.jpg) !important",
             defaultType: 'label',

@@ -7,6 +7,9 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
         if(typeof dbg !== 'undefined') 
             console.log("init LensTemperatureController");
         
+//        var cooling_sys_temp = Ext.getCmp('cooling_sys_temp');
+//        cooling_sys_temp.setBodyStyle("background-image:url(resources/images/wallp_new.jpg?random=" + new Date().getTime() + ") !important");
+        
         
         var dStore = Ext.data.StoreManager.lookup('lenstempStore');
         dStore.load();
