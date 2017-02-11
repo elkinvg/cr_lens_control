@@ -1,14 +1,13 @@
-Ext.define('LensControl.view.lens.LensTemperature', {
+Ext.define('LensControl.view.lens.LensTemperature_magn', {
     extend: 'Ext.panel.Panel',
-    xtype: 'lenstemp',
+    xtype: 'magntemp',
     controller: 'lenstemp',
     requires: [
         'Ext.data.Store',
         'LensControl.view.lens.LensTemperatureController',
         'LensControl.store.LensTemperatureStore',
         'Ext.chart.*',
-        'Ext.layout.container.Absolute'
-        
+        'Ext.layout.container.Absolute'        
     ],
 //    store: {
 //        type: 'lenstempstore'
@@ -31,9 +30,8 @@ Ext.define('LensControl.view.lens.LensTemperature', {
             width: 700,
             height: 562,
             layout: 'absolute',
-            //id:'cooling_sys_temp',
-            bodyStyle: "background-image:url(resources/images/wallp_new.jpg?random=" + new Date().getTime() + ") !important",
-	//bodyStyle: "background-image:url(resources/images/wallp_new.jpg) !important",
+            hidden: true,
+            bodyStyle: "background-image:url(resources/images/wallp_new.jpg) !important",
             defaultType: 'label',
             items: [
                 {
@@ -68,18 +66,14 @@ Ext.define('LensControl.view.lens.LensTemperature', {
                 },
                                 {
                     reference: 'T_6',
-                    /*x: 514,
-                    y: 120,*/
                     x: 514,
-                    y: 108,
+                    y: 120,
                     html: '<span style="font-weight:bold; color:black; font-size:300%"> T6</span>'
                 },
                 {
                     reference: 'T_7',
-                    /*x: 514,
-                    y: 216,*/
                     x: 514,
-                    y: 220,
+                    y: 216,
                     html: '<span style="font-weight:bold; color:black; font-size:300%"> T7</span>'
                 },
                 {
@@ -93,52 +87,52 @@ Ext.define('LensControl.view.lens.LensTemperature', {
                 }
             ]
         },
+////        {
+////            xtype: 'button',
+////            reference: 'graphbut',
+////            width: 150,
+////            text: 'Показать график',
+////            handler: 'getTemperatureChart',
+////        },
 //        {
-//            xtype: 'button',
-//            reference: 'graphbut',
-//            width: 150,
-//            text: 'Показать график',
-//            handler: 'getTemperatureChart',
+//            xtype: 'fieldcontainer',
+//            margin: '50 20 0 0',
+//            labelWidth: 320,
+//            fieldLabel: '<b>изменить значение температуры при котором высылается предупреждение</b>',
+//            combineErrors: false,
+//            defaults: {
+//                hideLabel: true,
+//                margin: '8 20 0 0'
+//            },
+//            layout: {
+//                type: 'hbox'
+//            },
+//            items: [
+//                {
+//                    // задание температуры предупреждения
+//                    reference: 'warning_temp_field',
+//                    xtype: 'numberfield',
+//                    minValue: 30,
+//                    allowBlank: false,
+//                    maxValue: 90,
+//                    //value: 0, //value: 9.5,
+//                    maxLenght: 5,
+//                    step: 10,
+//                    width: 100
+//                },
+//                {
+//                    xtype: 'displayfield',
+//                    value: '<span style="font-size:150%"><b>&deg;C</b></span>',
+//                    width: 30
+//                },
+//                {
+//                    xtype: 'button',
+//                    width: 130,
+//                    text: 'Изменить',
+//                    handler: 'setMaximumTemperature'
+//                }
+//            ]
 //        },
-        {
-            xtype: 'fieldcontainer',
-            margin: '50 20 0 0',
-            labelWidth: 320,
-            fieldLabel: '<b>изменить значение температуры при котором высылается предупреждение</b>',
-            combineErrors: false,
-            defaults: {
-                hideLabel: true,
-                margin: '8 20 0 0'
-            },
-            layout: {
-                type: 'hbox'
-            },
-            items: [
-                {
-                    // задание температуры предупреждения
-                    reference: 'warning_temp_field',
-                    xtype: 'numberfield',
-                    minValue: 30,
-                    allowBlank: false,
-                    maxValue: 90,
-                    //value: 0, //value: 9.5,
-                    maxLenght: 5,
-                    step: 10,
-                    width: 100
-                },
-                {
-                    xtype: 'displayfield',
-                    value: '<span style="font-size:150%"><b>&deg;C</b></span>',
-                    width: 30
-                },
-                {
-                    xtype: 'button',
-                    width: 130,
-                    text: 'Изменить',
-                    handler: 'setMaximumTemperature'
-                }
-            ]
-        },
         {
             xtype: 'panel',
             /*width: 526,
@@ -150,6 +144,7 @@ Ext.define('LensControl.view.lens.LensTemperature', {
             margin: '30 0 0 0',
             layout: 'absolute',
 //            bodyStyle: "background-image:url(resources/images/termo_new_png.png) !important",
+//            bodyStyle: "background-image:url(resources/images/termo_tmp_png.png) !important",
             bodyStyle: "background-image:url(resources/images/termo_new_0902.png) !important",
             defaultType: 'label',
             items: [
@@ -220,6 +215,45 @@ Ext.define('LensControl.view.lens.LensTemperature', {
                     text: 'Показать график',
                     handler: 'getTemperatureChart'
                 }*/
+            ]
+        },
+        {
+            xtype: 'fieldcontainer',
+            margin: '50 20 0 0',
+            labelWidth: 320,
+            fieldLabel: '<b>изменить значение температуры при котором высылается предупреждение</b>',
+            combineErrors: false,
+            defaults: {
+                hideLabel: true,
+                margin: '8 20 0 0'
+            },
+            layout: {
+                type: 'hbox'
+            },
+            items: [
+                {
+                    // задание температуры предупреждения
+                    reference: 'warning_temp_field',
+                    xtype: 'numberfield',
+                    minValue: 30,
+                    allowBlank: false,
+                    maxValue: 90,
+                    //value: 0, //value: 9.5,
+                    maxLenght: 5,
+                    step: 10,
+                    width: 100
+                },
+                {
+                    xtype: 'displayfield',
+                    value: '<span style="font-size:150%"><b>&deg;C</b></span>',
+                    width: 30
+                },
+                {
+                    xtype: 'button',
+                    width: 130,
+                    text: 'Изменить',
+                    handler: 'setMaximumTemperature'
+                }
             ]
         },
     ]

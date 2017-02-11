@@ -41,6 +41,7 @@ Ext.define('LensControl.Application', {
         'Login.view.login.RandIdentCheck',
         'LensControl.view.main.Main',
         'LensControl.view.lens.LensTemperature',
+        'LensControl.view.lens.LensTemperature_magn',
         'LensControl.view.lens.Lens'
     ],
 //    requires: [
@@ -137,7 +138,8 @@ Ext.define('LensControl.Application', {
                     window.location.reload();
                 }
             }
-        );*/window.location.reload();
+        );*/
+        window.location.reload(true);
     },
     //
     //

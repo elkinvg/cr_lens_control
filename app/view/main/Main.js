@@ -98,6 +98,14 @@ Ext.define('LensControl.view.main.Main', {
             items: [{
                     xtype: 'lenstemp'
                 }]
+        },
+        {
+            title: 'Магниты',
+            iconCls: 'fa-area-chart',
+            scrollable: true,
+            items: [{
+                    xtype: 'magntemp'
+                }]
         }/*,
         {
             title: 'Журнал',
