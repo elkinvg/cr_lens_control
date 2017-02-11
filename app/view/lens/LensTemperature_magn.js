@@ -258,20 +258,3 @@ Ext.define('LensControl.view.lens.LensTemperature_magn', {
         },
     ]
 });
-
-//            listeners: {
-//                initialize: function (me, eOpts) {
-//                    console.log("INIIIT");
-//                    Ext.getStore('lenstempStore').load({
-//                        callback: function (records, operation, success) {
-//                            console.log("init charts");
-////                            var data = records[0].data;
-////                            var axes = me.getAxes();
-////                            var SampleValuesAxis = axes[0];
-////                            SampleValuesAxis.setMinimum(data.minimum);
-////                            SampleValuesAxis.setMaximum(data.maximum);
-//                        },
-//                        scope: this
-//                    });
-//                }
-//            },

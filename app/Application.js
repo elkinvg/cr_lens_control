@@ -138,7 +138,8 @@ Ext.define('LensControl.Application', {
                     window.location.reload();
                 }
             }
-        );*/window.location.reload(true);
+        );*/
+        window.location.reload(true);
     },
     //
     //

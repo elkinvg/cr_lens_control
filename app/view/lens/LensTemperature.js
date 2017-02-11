@@ -150,7 +150,6 @@ Ext.define('LensControl.view.lens.LensTemperature', {
             margin: '30 0 0 0',
             layout: 'absolute',
 //            bodyStyle: "background-image:url(resources/images/termo_new_png.png) !important",
-//            bodyStyle: "background-image:url(resources/images/termo_tmp_png.png) !important",
             bodyStyle: "background-image:url(resources/images/termo_new_0902.png) !important",
             defaultType: 'label',
             items: [
@@ -225,20 +224,3 @@ Ext.define('LensControl.view.lens.LensTemperature', {
         },
     ]
 });
-
-//            listeners: {
-//                initialize: function (me, eOpts) {
-//                    console.log("INIIIT");
-//                    Ext.getStore('lenstempStore').load({
-//                        callback: function (records, operation, success) {
-//                            console.log("init charts");
-////                            var data = records[0].data;
-////                            var axes = me.getAxes();
-////                            var SampleValuesAxis = axes[0];
-////                            SampleValuesAxis.setMinimum(data.minimum);
-////                            SampleValuesAxis.setMaximum(data.maximum);
-//                        },
-//                        scope: this
-//                    });
-//                }
-//            },
