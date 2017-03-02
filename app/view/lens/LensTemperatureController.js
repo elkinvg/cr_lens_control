@@ -4,6 +4,30 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
 
     init: function () {
         var me = this;
+        
+        var viewSize = Ext.getBody().getViewSize();
+        var test = Ext.ComponentQuery.query('[name=T_1]');
+        
+        if (me.view.xtype === 'lenstemp') {
+            var lenstemp_cont_h = me.lookupReference('lenstemp_cont_h');
+            var lenstemp_cont_v = me.lookupReference('lenstemp_cont_v');
+
+            var lenstemp_pan = Ext.ComponentQuery.query('[name=lenstemp]')[0];
+            
+            // Ориентировка выводов с термодатчиков.
+            // Если ширина экрана больше высоты расположить последовательно
+            // Иначе друг над другом
+            if (viewSize.width <= viewSize.height ) {
+                lenstemp_cont_h.setHidden(true);
+                lenstemp_cont_v.setHidden(false);
+            }
+            else {
+                lenstemp_cont_h.setHidden(false);
+                lenstemp_cont_v.setHidden(true);
+            }
+            
+        }
+        
         if(typeof dbg !== 'undefined') 
             console.log("init LensTemperatureController");
         
@@ -84,8 +108,10 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                                 warn_temperature_mess();
                             }
                             else {
-                                info_temperature_mess();
-                                updateDataTemp(temperature, type);
+                                if (me.view.xtype === 'lenstemp') {
+                                    info_temperature_mess();
+                                    updateDataTemp(temperature, type);
+                                }
                             }
                         }
                         else
@@ -158,6 +184,8 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
 
 
             // Для вывода значения температуры на картинке
+            // if t is xtype
+            // Temp - from lookupReference
             function editTempOut(t,dataTemp) {
                 Ext.Object.each(t,
                         function (key, value) {
@@ -182,37 +210,83 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             
                             value.setText(text, false);
                         });
-            }
-            ;
+            };
+            
+            // Для вывода значения температуры на картинке
+            // if t is ARRAY
+            // Temp - from Ext.ComponentQuery.query
+            function editTempOutByName(t,dataTemp) {
+                Ext.Object.each(t,
+                        function (key, value) {
+                            var temperature = dataTemp[key];
+                            var checkTmp = parseInt(temperature, 10);
+                            if (isNaN(checkTmp) !== true) {
+                                if (checkTmp > maxTemp) {
+                                    isHeatTemp = true;
+                                }
+                            }
+                            
+                            if (checkTmp > maxTemp) {
+                                var text = '<span style="font-weight:bold; color:red; font-size:250%">' + temperature.toFixed(1) + '</span>';
+                            }
+                            else {
+                                //var text = '<span style="font-weight:bold; color:blue; font-size:300%">' + temperature.toFixed(1) + '</span>';
+                                var text = '<span style="font-weight:bold; color:black; font-size:250%">' + temperature.toFixed(1) + '</span>';
+                            }
+                            
+                            Ext.each(value, function (component, index) {
+                               component.setText(text, false);
+                            }); 
+                        });
+            };
 
 //                                    var ref = me.lookupReference('chart');
 
-            var Temp = {};
-            Temp.T_1 = me.lookupReference('T_1'),
-                    Temp.T_2 = me.lookupReference('T_2'),
-                    Temp.T_3 = me.lookupReference('T_3'),
-                    Temp.T_4 = me.lookupReference('T_4'),
-                    Temp.T_5 = me.lookupReference('T_5'),
-                    Temp.T_6 = me.lookupReference('T_6'),
-                    Temp.T_7 = me.lookupReference('T_7'),
+//            var Temp = {};
+            var Temp2 = {};
+
+//            Temp.T_1 = me.lookupReference('T_1'),
+//                    Temp.T_2 = me.lookupReference('T_2'),
+//                    Temp.T_3 = me.lookupReference('T_3'),
+//                    Temp.T_4 = me.lookupReference('T_4'),
+//                    Temp.T_5 = me.lookupReference('T_5'),
+//                    Temp.T_6 = me.lookupReference('T_6'),
+//                    Temp.T_7 = me.lookupReference('T_7'),
+//                    
+//                    Temp.T2_1 = me.lookupReference('T2_1'),
+//                    Temp.T2_2 = me.lookupReference('T2_2'),
+//                    Temp.T2_3 = me.lookupReference('T2_3'),
+//                    Temp.T2_4 = me.lookupReference('T2_4'),
+//                    Temp.T2_6 = me.lookupReference('T2_6'),
+//                    Temp.T2_7 = me.lookupReference('T2_7');
                     
-                    Temp.T2_1 = me.lookupReference('T2_1'),
-                    Temp.T2_2 = me.lookupReference('T2_2'),
-                    Temp.T2_3 = me.lookupReference('T2_3'),
-                    Temp.T2_4 = me.lookupReference('T2_4');
-                    Temp.T2_6 = me.lookupReference('T2_6');
-                    Temp.T2_7 = me.lookupReference('T2_7');
+            Temp2.T_1 = Ext.ComponentQuery.query('[name=T_1]'),
+                    Temp2.T_2 = Ext.ComponentQuery.query('[name=T_2]'),
+                    Temp2.T_3 = Ext.ComponentQuery.query('[name=T_3]'),
+                    Temp2.T_4 = Ext.ComponentQuery.query('[name=T_4]'),
+                    Temp2.T_5 = Ext.ComponentQuery.query('[name=T_5]'),
+                    Temp2.T_6 = Ext.ComponentQuery.query('[name=T_6]'),
+                    Temp2.T_7 = Ext.ComponentQuery.query('[name=T_7]'),
+                    
+                    Temp2.T2_1 = Ext.ComponentQuery.query('[name=T2_1]'),
+                    Temp2.T2_2 = Ext.ComponentQuery.query('[name=T2_2]'),
+                    Temp2.T2_3 = Ext.ComponentQuery.query('[name=T2_3]'),
+                    Temp2.T2_4 = Ext.ComponentQuery.query('[name=T2_4]'),
+                    Temp2.T2_6 = Ext.ComponentQuery.query('[name=T2_6]'),
+                    Temp2.T2_7 = Ext.ComponentQuery.query('[name=T2_7]');
 
             if (type === "dstore") {
                 // Берутся значения из предпоследней итерации
                 // так как в последней могут быть значения
                 // не для всех датчиков
                 var dataTemp = records[records.length - 3].data;
-                editTempOut(Temp,dataTemp);
+                //editTempOut(Temp,dataTemp);
+                editTempOutByName(Temp2,dataTemp);
             }
             else if (type === "phpscript") {
                 var dataTemp = records;
-                editTempOut(Temp,dataTemp);
+                //editTempOut(Temp,dataTemp);
+                editTempOutByName(Temp2,dataTemp);
             }
             
             
