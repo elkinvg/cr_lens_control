@@ -9,6 +9,13 @@ Ext.define('LensControl.view.lens.LensController', {
         var parForAjax = "";
         var parForWs = "";
         
+        // Инициализация значения для предупреждающей разницы токов
+        // Если относительная разница больше заданного значения для максимума
+        // Поле вывода тока окрашивается в заданный цвет
+        var curr_diff_alarm =  me.lookupReference('curr_diff_alarm');
+        var curr_diff_alarm_value = LensControl.app.getSettFromLocalStorage('curr_diff_alarm');
+        if (curr_diff_alarm_value !== null)
+            curr_diff_alarm.setValue(curr_diff_alarm_value);
         
         if (typeof mode_cm !== 'undefined') {
             if (mode_cm === "ro")
@@ -364,7 +371,28 @@ Ext.define('LensControl.view.lens.LensController', {
     //
     //
     //
-    boldnnum: function (val) {
+    boldnnum: function (val,meta,data) {
+        // Здесь производится проверка разницы токов
+        // Если разница превышает заданный уровень - предупрждение
+        if (meta.column.dataIndex === "curr_measure") {
+            var curr_l =  data.data.curr_level;
+            var curr_m =  data.data.curr_measure;
+            var diff_l_m = curr_l - curr_m;
+            if (curr_l === -1 || curr_m === -1)
+                var diff_perc = 0;
+            else
+                var diff_perc = (diff_l_m) * 100. /curr_l;
+            var diff_alarm = LensControl.app.getSettFromLocalStorage('curr_diff_alarm');
+            
+            if (diff_alarm === null) 
+                diff_alarm = 5;
+            
+            
+            if (Math.abs(diff_perc) > diff_alarm)
+            {
+                meta.style = "background-color: #FFCF0B;";
+            }
+        }
         // изменить жирность текста
         return "<b>" + val.toFixed(3) + "</b>";
     },
@@ -510,6 +538,20 @@ Ext.define('LensControl.view.lens.LensController', {
             // &#9940; - знак стоп
             // &#9606; - знак прямоугольник
             
+            /*
+            Данные приходят в таком виде
+             curr_level
+             curr_measure
+             device_name
+             device_state
+             device_status
+             id
+             timestamp
+             volt_level
+             volt_measure
+             */
+            
+            
             if (size===0) {
                 stateOv.setTitle("Источники питания. " + '<img src="resources/images/Cancel.ico" height="20" width="20">' + " Данных нет");
                 return;
@@ -600,6 +642,19 @@ Ext.define('LensControl.view.lens.LensController', {
     //
     //
     //
+    // Установка максимальной разницы в процентах между установленым
+    // и измереным током
+    setNewCurrDiff: function() {
+        var me = this;
+        var warning_curr_diff = me.lookupReference('curr_diff_alarm');
+        var value = warning_curr_diff.getValue();
+        var oldValue = LensControl.app.getSettFromLocalStorage('curr_diff_alarm');
+        if (oldValue != value)
+            LensControl.app.saveSettInLocalStorage('curr_diff_alarm',value);
+    },
+    //
+    //
+    //    
     changeLevel: function(inputData) {
         var me = this;
         var win = new Ext.Window({    

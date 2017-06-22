@@ -5,5 +5,6 @@
 nbproject/*
 rtrrn/*
 .sencha/*
+.idea/*
 sass/example/*
 app/oth/Property.js

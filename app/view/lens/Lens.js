@@ -241,6 +241,61 @@ Ext.define('LensControl.view.lens.Lens', {
                                 }
                             ]
 
+                        },
+                        {
+                            xtype: 'container',
+                            layout: {
+                                type: 'hbox',
+                                align: 'stretch'
+                            },
+                            defaults: {
+                                margin: '10 10 0 10'
+                                //flex: 1,
+                            },
+                            items: [
+                                {
+                                    xtype: 'fieldcontainer',
+                                    itemId: 'currId',
+                                    fieldLabel: '<b>Предупреждающая разница токов</b>',
+                                    labelWidth: 140,
+                                    combineErrors: false,
+                                    defaults: {
+                                        hideLabel: true,
+                                        margin: '10 20 0 0'
+                                    },
+                                    layout: {
+                                        type: 'hbox'
+                                    },
+                                    items: [
+                                        {
+                                            name: 'curr_diff_alarm',
+                                            itemId: 'curr_diff_alarm',
+                                            reference: 'curr_diff_alarm',
+                                            xtype: 'numberfield',
+                                            minValue: 0,
+                                            allowBlank: false,
+                                            value: 5, //value: 5.5,
+                                            maxValue: 50,
+                                            maxLenght: 5,
+                                            step: 5, //step: 0.5,
+                                            width: 75
+                                        },
+                                        {
+                                            xtype: 'displayfield',
+                                            value: '<b>%',
+                                            width: 12
+                                        },
+                                        {
+                                            xtype: 'button',
+                                            width: 130,
+                                            text: 'Установить',
+                                            handler: 'setNewCurrDiff'
+                                        }
+                                    ]
+                                    
+                                }
+                            ]
+
                         }
                     ]
                 },
@@ -307,7 +362,7 @@ Ext.define('LensControl.view.lens.Lens', {
                             text: 'Ток (А)', dataIndex: 'curr_measure',
                             renderer: 'boldnnum',
                             flex: 1,
-                            align: "center"
+                            align: "center",
                         },
                         {
                             text: 'Установка<br>напряжения (В)', dataIndex: 'volt_level',
