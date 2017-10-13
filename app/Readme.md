@@ -1,30 +1,20 @@
-# ./controller
+# cr_lens_control
 
-This folder contains the application's global controllers. ViewControllers are located
-alongside their respective view class in `"./view"`. These controllers are used for routing
-and other activities that span all views.
+### Температурные данные
+Ext-js клиент для чтения данных с источников питания постоянного тока для ЛУ20.
 
-# ./model
+Для загрузки данных по температуре БД должна содержаться таблица `extjs_controlroom`.`ws_rest_hosts` и `extjs_controlroom`.`devices_for_php_request`. SQL-скрипт для создания данной таблицы содержится в проекте cr_conf.
 
-This folder contains the application's (data) Model classes.
+В таблицу `ws_rest_hosts` должны быть записаны следующие данные для `oil_temp_rest`
 
-# ./view
+| ws_rest_host   |      name      |
+|----------------|:--------------:|
+| `hostname` и порт<br> REST сервера | `oil_temp_rest`|
 
-This folder contains the views as well as ViewModels and ViewControllers depending on the
-application's architecture. Pure MVC applications may not have ViewModels, for example. For
-MVCVM applications or MVC applications that use ViewControllers, the following directory
-structure is recommended:
+Также в таблицу `devices_for_php_request` должны быть записаны данные для `oil_temp`
 
-    ./view/
-        foo/                    # Some meaningful grouping of one or more views
-            Foo.js              # The view class
-            FooController.js    # The controller for Foo (a ViewController)
-            FooModel.js         # The ViewModel for Foo
+| alias   |      device_name      |
+|----------------|:--------------:|
+| `oil_temp` | имя девайса в одном из форматов<br> либо a/b/c<br> tango://host:port/a/b/c|
 
-This structure helps keep these closely related classes together and easily identifiable in
-most tabbed IDE's or text editors.
-
-# ./store
-
-This folder contains any number of store instances or types that can then be reused in the
-application.
+Ведётся запрос по URL `hostname`/tango/rest/rc4/hosts/`oil_temp_rest`/10000/devices/LU20/oil_termo/gr_oil/attributes/oil_temperature/value/plain

@@ -25,6 +25,10 @@ if ("log" in get_params) {
     log_panel = true;
 }
 
+if ("home" in get_params) {
+    HOME_DEBUG = true;
+}
+
 Ext.define('LensControl.Application', {
     extend: 'Ext.app.Application',
     

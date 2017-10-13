@@ -6,7 +6,6 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
         var me = this;
         
         var viewSize = Ext.getBody().getViewSize();
-        var test = Ext.ComponentQuery.query('[name=T_1]');
         
         if (me.view.xtype === 'lenstemp') {
             var lenstemp_cont_h = me.lookupReference('lenstemp_cont_h');
@@ -70,61 +69,104 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
         
         var warn_temp = LensControl.app.getSettFromLocalStorage("warning_temperature");
         
-        /*if (type === "dstore") {
-            var dStore = Ext.data.StoreManager.lookup('lenstempStore');
+        /// Происходит запрос на /cr_conf/scripts/get_data_from_restds.php
+        /// В этом скрипте запрос перенаправляется на RESTDS сервер
+        /// В БД должны быть прописаны для "alias": "oil_temp"
+        ///                                 "host_from_db" : "oil_temp_rest"
 
-            dStore.load(
-                    {
-                        callback: function (records, operation, success) {
-                            if (success) {
-                                updateDataTemp(records, type);
-                            } else {
-                                var time_warning_mes = Ext.ComponentQuery.query('[name=warning_mes]');
-                                var warning_message = '<h3><span style="color:red; font-size:150%"> Не удалось загрузить данные по температуре.</span></h3>';
-
-                                Ext.each(time_warning_mes, function (component, index) {
-                                    component.setHidden(false);
-                                    component.update(warning_message);
-                                });
-                            }
-                        }
-                    }
-            );
+        if (me.device_for_req === undefined || me.rest_or_wshost === undefined) {
+            var params = {
+                "type_req" : "restds_read_attrs",
+                "is_first_req": true,
+                "attrs": "oil_temperature",
+                "host_from_db": "oil_temp_rest",
+                "alias": "oil_temp"
+            }
         }
-        else*/ 
+        else {
+            var params = {
+                "type_req" : "restds_read_attrs",
+                "attrs": "oil_temperature",
+                "device_for_req": me.device_for_req,
+                "rest_or_wshost": me.rest_or_wshost
+            }
+        }
+
+        // Для работы вне института использовать локальный php
+        // должен также быть задан GET параметр home
+        if(typeof HOME_DEBUG !== 'undefined') {
+            var url_for_rest_req = "/cr_conf/home-debug.php";
+        }
+        else
+            var url_for_rest_req = "/cr_conf/scripts/get_data_from_restds.php";
+
         if (type === "phpscript") {
             Ext.Ajax.request({
-                //url: '/cr_conf/scripts/reading_of_oil_temp.php',
-                url: '/cr_conf/termo/reading_of_oil_temp.php',
+                url: url_for_rest_req,
                 method: 'GET',
-                success: function (ans) {       
+                params: params,
+                success: function (ans) {
                     try {
                         var decodedString = Ext.decode(ans.responseText);
-                        var success = decodedString.success;
-                        if (success === true) {
-                            var temperature = decodedString.argout;
-                            if (temperature === undefined) {
-                                //me.loadStoreWithTemperature("dstore");
-                                warn_temperature_mess();
+                        var temperature = decodedString.data;
+
+                        if (me.device_for_req === undefined || me.rest_or_wshost === undefined) {
+                            var tango_device = decodedString.tango_device;
+                            var rest_or_wshost = decodedString.rest_or_wshost;
+
+                            if (tango_device === undefined || rest_or_wshost === undefined) {
+                                warn_temperature_mess("Неправильные json-данные с сервера<br>нет ключа tango_device или rest_or_wshost");
+                                return;
+                            }
+
+                            me.device_for_req = tango_device;
+                            me.rest_or_wshost = rest_or_wshost;
+                        }
+
+                        if (temperature === undefined)
+                        {
+                            warn_temperature_mess("Неправильные json-данные с сервера<br>нет ключа data или tango_device или rest_or_wshost");
+                            return;
+                        }
+
+                        // На данный момент с сервера приходят данные с 14 значениями
+
+                        var templength = 14;
+
+                        if (temperature.length !== templength)
+                        {
+                            warn_temperature_mess("Длина массива данных с температурами должна быть 14");
+                            return;
+                        }
+
+                        var tempIn = {};
+                        for (var i = 0; i < templength; i++){
+                            if (i<7) {
+                                var key = "T_" + (i+1);
                             }
                             else {
-                                if (me.view.xtype === 'lenstemp') {
-                                    info_temperature_mess();
-                                    updateDataTemp(temperature, type);
-                                }
+                                var key = "T2_" + (i-6);
                             }
+                            tempIn[key] = temperature[i];
                         }
-                        else
-                            warn_temperature_mess();
-                    } catch (e) {
-                        warn_temperature_mess();
-                        //me.loadStoreWithTemperature("dstore");
+                        if (me.view.xtype === 'lenstemp') {
+                            info_temperature_mess();
+                        }
+                        updateDataTemp(tempIn, type);
+
+                    }
+                    catch (e) {
+                        warn_temperature_mess("Неправильные json-данные с сервера");
                     }
                 },
-                failure: function (ans) {
-                    /*var type = "dstore";
-                    me.loadStoreWithTemperature(type);*/
-                    warn_temperature_mess();
+                failure: function (response) {
+                    try {
+                        var respData = Ext.JSON.decode(response.responseText);
+                        var warn_mess = respData.err_mess;
+                    }
+                    catch(e){}
+
+                    warn_temperature_mess(warn_mess);
                 }
             });
         }
@@ -152,9 +194,13 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
             });
         }
         
-        function warn_temperature_mess() {
+        function warn_temperature_mess(warning_message) {
             var time_warning_mes = Ext.ComponentQuery.query('[name=warning_mes]');
-            var warning_message = '<h3><span style="color:red; font-size:150%"> Не удалось загрузить данные по температуре</span></h3>';
+
+            if (warning_message === undefined)
+                var warning_message = spanWarnMess("Не удалось загрузить данные по температуре");
+            else
+                var warning_message = spanWarnMess(warning_message);
             Ext.each(time_warning_mes, function (component, index) {
                 component.update(warning_message);
                 component.setHidden(false);
@@ -164,6 +210,10 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
              Ext.each(info_mes, function (component) {
                 component.setHidden(true);
             });
+
+             function spanWarnMess(inpWarnMess) {
+                 return '<h3><span style="color:red; font-size:150%">' + inpWarnMess + '</span></h3>'
+             }
         }
         
         function updateDataTemp(records, type) {
@@ -240,26 +290,9 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                         });
             };
 
-//                                    var ref = me.lookupReference('chart');
-
-//            var Temp = {};
             var Temp2 = {};
 
-//            Temp.T_1 = me.lookupReference('T_1'),
-//                    Temp.T_2 = me.lookupReference('T_2'),
-//                    Temp.T_3 = me.lookupReference('T_3'),
-//                    Temp.T_4 = me.lookupReference('T_4'),
-//                    Temp.T_5 = me.lookupReference('T_5'),
-//                    Temp.T_6 = me.lookupReference('T_6'),
-//                    Temp.T_7 = me.lookupReference('T_7'),
-//                    
-//                    Temp.T2_1 = me.lookupReference('T2_1'),
-//                    Temp.T2_2 = me.lookupReference('T2_2'),
-//                    Temp.T2_3 = me.lookupReference('T2_3'),
-//                    Temp.T2_4 = me.lookupReference('T2_4'),
-//                    Temp.T2_6 = me.lookupReference('T2_6'),
-//                    Temp.T2_7 = me.lookupReference('T2_7');
-                    
+
             Temp2.T_1 = Ext.ComponentQuery.query('[name=T_1]'),
                     Temp2.T_2 = Ext.ComponentQuery.query('[name=T_2]'),
                     Temp2.T_3 = Ext.ComponentQuery.query('[name=T_3]'),
@@ -575,9 +608,40 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                             }
                             win.show();
                         }
+                        else {
+                            if (operation.error !== undefined) {
+                                try {
+                                    var errorMessJson = Ext.JSON.decode(operation.error.response.responseText);
+                                    var errorMess = errorMessJson["reason"];
+                                    if (errorMess.length === 0)
+                                        throw -1;
+                                    messageErrorShow(errorMess,500);
+                                }
+                                catch (e){
+                                    messageErrorShow("Неизвестная ошибка с сервера",500);
+                                }
+
+
+                            }
+                        }
                         graphbut.enable();
                     }
                 });
+
+        function messageErrorShow(message,width) {
+            var params = {
+                title: 'Ошибка',
+                icon: Ext.Msg.ERROR,
+                buttons: Ext.Msg.OK,
+                message: message
+            };
+
+            if (width !== undefined && (typeof width === 'number')) {
+                params.width = width;
+            }
+
+            Ext.Msg.show(params);
+        }
 
          function onSeriesTooltipRender(tooltip, record, item) {
             tooltip.setHtml(item.field + " " + record.get('time') + " " + record.get(item.series.getYField()) + '&deg;C');

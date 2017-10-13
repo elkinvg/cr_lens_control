@@ -46,12 +46,13 @@ Ext.define('LensControl.view.lens.LensController', {
             timeout: 2000,
             disableCaching: false,
             params: {
+                type: "get_host",
                 param: parForAjax
             },
             success: function (response, opts) {
                 var fromResponse = Ext.util.JSON.decode(response.responseText);
-                if ('ok' in fromResponse) {
-                    openws(fromResponse['ok'] + parForWs);
+                if ('host' in fromResponse) {
+                    openws("ws://" + fromResponse['host'] + parForWs);
                 } else if ('err' in fromResponse) {
                     me.messageErrorShow(fromResponse['err'],500);
                 } else {
@@ -59,7 +60,14 @@ Ext.define('LensControl.view.lens.LensController', {
                 }
             },
             failure: function (response, opts) {
-                me.messageErrorShow("Нет доступа к конфигурационному файлу <b>extjs_cr_get_vars.php</b><br>  проверьте его наличие",500);
+                try {
+                    var respData = Ext.JSON.decode(response.responseText);
+                    me.messageErrorShow(respData.reason,500);
+                }
+                catch (e) {
+                    me.messageErrorShow("Возможно нет доступа к конфигурационному <br>файлу <b>extjs_cr_get_vars.php</b>  проверьте его наличие",500);
+                }
+
             }
         });
         
@@ -831,7 +839,7 @@ Ext.define('LensControl.view.lens.LensController', {
                             params: {
                                 login: user,
                                 values_json: jsonInp,
-                                filename: text
+                                alias: text
                             },
                             success: function (ans) {
                                 if (typeof dbg !== 'undefined')
@@ -840,7 +848,14 @@ Ext.define('LensControl.view.lens.LensController', {
                             failure: function (ans) {
                                 if (typeof dbg !== 'undefined')
                                     console.log("save_levels failure");
-                                me.messageErrorShow('Не удалось сохранить');
+                                try {
+                                    var errorMessJson = Ext.JSON.decode(ans.responseText);
+                                    var errorMess = errorMessJson["reason"];
+                                    me.messageErrorShow(errorMess,500);
+                                }
+                                catch (e) {
+                                    me.messageErrorShow('Не удалось сохранить');
+                                }
                             }
                         });
                     }
@@ -881,25 +896,10 @@ Ext.define('LensControl.view.lens.LensController', {
                     // Здесь используется два варианта для разных выводов из php
                     // Второй добавлен после добавления в php сортировки массива
                     // по имени файла, и по количеству элементов
-                    try {
-                        if (index.indexOf(".json") !== -1) {
-                            forIndOf(item, index);
-                        }
-                    } catch (e) {
-                        try {
-                            if (item.indexOf(".json") !== -1) {
-                                forIndOf(index, item);
-                            }
-                        } catch (e) {}
-                    }
-                    
-                    function forIndOf(ind, filename) {
-                        var inpArr = new Array();
-                        inpArr.push(ind);
-                        inpArr.push(filename);
-                        arr.push(inpArr);
-                    }
-                    
+                    var inpArr = new Array();
+                    inpArr.push(index);
+                    inpArr.push(item);
+                    arr.push(inpArr);
                 });
                 
                 if (arr.length === 0 ) {
@@ -961,7 +961,7 @@ Ext.define('LensControl.view.lens.LensController', {
                                                 params: {
                                                     login: user,
                                                     action: 'load_confs',
-                                                    json_file: savingLevels
+                                                    alias: savingLevels
                                                 },
                                                 success: function (ans) {
                                                     //console.log("true");
