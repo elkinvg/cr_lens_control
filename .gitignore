@@ -8,3 +8,4 @@ rtrrn/*
 .idea/*
 sass/example/*
 app/oth/Property.js
+*.vscode/*

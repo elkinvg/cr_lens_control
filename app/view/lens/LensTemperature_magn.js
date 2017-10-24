@@ -22,7 +22,8 @@ Ext.define('LensControl.view.lens.LensTemperature_magn', {
             xtype: 'component',
             anchor: '100%',
             name: 'warning_mes',
-            hidden: true
+            hidden: true,
+            cls: "warn_mess"
 //                    html: []
         },
         {

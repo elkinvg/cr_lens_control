@@ -212,7 +212,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
             });
 
              function spanWarnMess(inpWarnMess) {
-                 return '<h3><span style="color:red; font-size:150%">' + inpWarnMess + '</span></h3>'
+                return inpWarnMess;
              }
         }
         
