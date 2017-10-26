@@ -28,9 +28,10 @@ Ext.define('LensControl.view.lens.LensTemperature_magn', {
         },
         {
             xtype: 'fieldcontainer',
-            margin: '50 20 0 0',
-            labelWidth: 320,
-            fieldLabel: '<b>изменить значение температуры при котором высылается предупреждение</b>',
+            margin: '5 20 0 0',
+            labelWidth: 280,
+            cls: 'temperature_mess',
+            fieldLabel: '<b>Значение температуры, при котором высылается предупреждение </b>',
             combineErrors: false,
             defaults: {
                 hideLabel: true,
@@ -41,27 +42,19 @@ Ext.define('LensControl.view.lens.LensTemperature_magn', {
             },
             items: [
                 {
-                    // задание температуры предупреждения
-                    reference: 'warning_temp_field',
-                    xtype: 'numberfield',
-                    minValue: 30,
-                    allowBlank: false,
-                    maxValue: 90,
-                    //value: 0, //value: 9.5,
-                    maxLenght: 5,
-                    step: 10,
-                    width: 100
+                    xtype: 'displayfield',
+                    value: '<span style="font-size:150%"><b>' + LensControl.conf.Constants.ALARM_TEMPERATURE + ' &deg;C</b></span>',
+                    width: 50
+                },
+                {
+                    xtype: 'label',
+                    width: 280,
+                    html: '<b>Значение температуры, при котором источники автоматически отключаются</b>'
                 },
                 {
                     xtype: 'displayfield',
-                    value: '<span style="font-size:150%"><b>&deg;C</b></span>',
-                    width: 30
-                },
-                {
-                    xtype: 'button',
-                    width: 130,
-                    text: 'Изменить',
-                    handler: 'setMaximumTemperature'
+                    value: '<span style="font-size:150%"><b>' + LensControl.conf.Constants.MAX_TEMPERATURE + ' &deg;C</b></span>',
+                    width: 50
                 }
             ]
         },

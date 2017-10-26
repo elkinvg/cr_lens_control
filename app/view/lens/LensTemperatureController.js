@@ -37,7 +37,8 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
         var dStore = Ext.data.StoreManager.lookup('lenstempStore');
         dStore.load();
         
-        // установка первоначального значения для numberfield с температурой 
+        // установка первоначального значения для numberfield с температурой
+        /* 
         var maxTempDefault = 40;
         var warn_temp = LensControl.app.getSettFromLocalStorage("warning_temperature");
         var warning_temp_field = me.lookupReference('warning_temp_field');
@@ -48,7 +49,8 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
             var maxTemp = warn_temp;
         }
         warning_temp_field.setValue(maxTemp);
-        
+        */
+
         var task = {
             run: function () {
                 me.loadStoreWithTemperature("phpscript"); 
@@ -67,7 +69,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
         
         var me = this;        
         
-        var warn_temp = LensControl.app.getSettFromLocalStorage("warning_temperature");
+        //var warn_temp = LensControl.app.getSettFromLocalStorage("warning_temperature");
         
         /// Происходит запрос на /cr_conf/scripts/get_data_from_restds.php
         /// В этом скрипте запрос перенаправляется на RESTDS сервер
@@ -219,6 +221,9 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
         function updateDataTemp(records, type) {
             // Для проверки температуры
             var isHeatTemp = false;
+            
+            /*
+            Старая проверка из LocalStorge
             var maxTempDefault = 40;
 
             // Максимальная температура.
@@ -230,7 +235,8 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
             } else {
                 var maxTemp = warn_temp;
             }
-
+            */
+            maxTemp = LensControl.conf.Constants.ALARM_TEMPERATURE;
 
 
             // Для вывода значения температуры на картинке
@@ -240,13 +246,13 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                 Ext.Object.each(t,
                         function (key, value) {
                             var temperature = dataTemp[key];
-                            var checkTmp = parseInt(temperature, 10);
+                            var checkTmp = parseFloat(temperature);
                             if (isNaN(checkTmp) !== true) {
                                 if (checkTmp > maxTemp) {
                                     isHeatTemp = true;
                                 }
                             }
-                            
+
                             if (checkTmp > maxTemp) {
                                 var text = '<span style="font-weight:bold; color:red; font-size:300%">' + temperature.toFixed(1) + '</span>';
                             }
@@ -269,13 +275,14 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                 Ext.Object.each(t,
                         function (key, value) {
                             var temperature = dataTemp[key];
-                            var checkTmp = parseInt(temperature, 10);
+                            var checkTmp = parseFloat(temperature);
                             if (isNaN(checkTmp) !== true) {
                                 if (checkTmp > maxTemp) {
                                     isHeatTemp = true;
                                 }
                             }
                             
+
                             if (checkTmp > maxTemp) {
                                 var text = '<span style="font-weight:bold; color:red; font-size:250%">' + temperature.toFixed(1) + '</span>';
                             }
@@ -373,33 +380,6 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                 }
             });
         }
-    },
-//
-//
-//
-    
-    setMaximumTemperature: function () {
-        var me = this;
-        var warning_temp_field = me.lookupReference('warning_temp_field');
-        if (warning_temp_field === undefined || warning_temp_field === null)
-            return;
-        
-        var value = warning_temp_field.getValue();
-        
-        if (value === null)
-            return;
-        
-        var maxVal = warning_temp_field.maxValue;
-        var minVal = warning_temp_field.minValue;
-        
-        if (value < minVal || value > maxVal )
-            return;
-        
-        LensControl.app.saveSettInLocalStorage('warning_temperature',value);
-        
-        // Загружается Store, для того, чтобы убрать или выставить
-        // оповещения о превышении температуры
-        me.loadStoreWithTemperature();
     },
 //
 //

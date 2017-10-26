@@ -29,6 +29,7 @@ if ("home" in get_params) {
     HOME_DEBUG = true;
 }
 
+
 Ext.define('LensControl.Application', {
     extend: 'Ext.app.Application',
     
@@ -48,16 +49,14 @@ Ext.define('LensControl.Application', {
         'LensControl.view.lens.LensTemperature_magn',
         'LensControl.view.lens.Lens'
     ],
-//    requires: [
-//        'LensControl.store.LensTemperatureStore',
-//    ],
-
+    
     stores: [
         // TODO: add global / shared stores here
         'LensTemperatureStore','LogStore'
     ],
     
     launch: function () {
+        LensControl.app = this;
         // Для смены сепаратора чисел. Стоит русская локализация, 
         // для неё по умолчанию ','
         
