@@ -260,10 +260,7 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                                 //var text = '<span style="font-weight:bold; color:blue; font-size:300%">' + temperature.toFixed(1) + '</span>';
                                 var text = '<span style="font-weight:bold; color:black; font-size:300%">' + temperature.toFixed(1) + '</span>';
                             }
-                                
-
-
-                            
+                       
                             value.setText(text, false);
                         });
             };
@@ -276,14 +273,15 @@ Ext.define('LensControl.view.lens.LensTemperatureController', {
                         function (key, value) {
                             var temperature = dataTemp[key];
                             var checkTmp = parseFloat(temperature);
+                            // Проверка температуры идёт только по T_* а не по T2_*
                             if (isNaN(checkTmp) !== true) {
-                                if (checkTmp > maxTemp) {
+                                if (checkTmp > maxTemp && key.indexOf("T2_") == -1) {
                                     isHeatTemp = true;
                                 }
                             }
                             
-
-                            if (checkTmp > maxTemp) {
+                            // Проверка температуры идёт только по T_* а не по T2_*
+                            if (checkTmp > maxTemp && key.indexOf("T2_") == -1) {
                                 var text = '<span style="font-weight:bold; color:red; font-size:250%">' + temperature.toFixed(1) + '</span>';
                             }
                             else {
