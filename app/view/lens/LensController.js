@@ -209,25 +209,48 @@ Ext.define('LensControl.view.lens.LensController', {
         var gettingItemId = myView.getItemId();
         var command = new Object();
         if (gettingItemId === 'currId') {
-            var valueField = myView.getComponent('currforall').getValue();
-            if (valueField === null)
+            var currforall = myView.getComponent('currforall');
+            var isValid = currforall.wasValid;
+            // Проверка валидности вводимых значений
+            if (isValid !== true) {
+                me.messageErrorShow("Проверьте вводимое значение");
                 return;
+            }
+
+            if (valueField === null)
+            return;
+
+            var valueField = myView.getComponent('currforall').getValue();
+
+            if (valueField === 0) {
+                me.messageErrorShow("Не установлено значение");
+                return;
+            }
+            
+
             if(typeof dbg !== 'undefined') console.log("sendNewValue " + valueField + " from currId");
             command.command = "SetCurrentLevelForAll";
-            var titleMsg = "Установка порогового значения тока";
-            var messageIn = "Установить порог для всех источников в " + valueField + " A?";
+            if (valueField<0) {
+                var pre = "Уменьшить"
+            }
+            else {
+                var pre = "Увеличить"
+            }
+            var titleMsg = "Изменение значения тока";
+            var messageIn = pre + " ток для всех источников на " + valueField + "A?";
         } else if (gettingItemId === 'voltageId') {
             var valueField = myView.getComponent('voltforall').getValue();
             if (valueField === null)
                 return;
             if(typeof dbg !== 'undefined') console.log("sendNewValue " + valueField + " from voltageId");
             command.command = "SetVoltageLevelForAll";
-            var messageIn = "Установить порог для всех источников в " + valueField + " В?";
-            var titleMsg = "Установка порогового значения напряжения";
+            var messageIn = "Установить напряжение для всех источников в " + valueField + " В?";
+            var titleMsg = "Установка значения напряжения";
         } else
             return;
         
         command.argin = valueField;
+        // Сейчас используется только для установки порогового значения напряжения
         var comJson = Ext.util.JSON.encode(command);
         
         Ext.Msg.show({
@@ -238,11 +261,50 @@ Ext.define('LensControl.view.lens.LensController', {
             buttonText: { yes: "Да", no: "Нет"},
             fn: function (btn) {
                 if (btn === 'yes') {
-                    me.ws.send(comJson);
+                    if (gettingItemId === 'voltageId') {
+                        me.ws.send(comJson);
+                    }
+                    if (gettingItemId === 'currId') {
+                        sendCommandSetCurrentLevelForDevice(valueField);
+                    }
                 }
             }
             
         });
+
+        // Отправить команду с установкой  отдельно на каждый источник
+        function sendCommandSetCurrentLevelForDevice(changeVal) {
+            var store = me.lookupReference('mainGrid').getStore();
+            var command = new Object();
+            command.command = "SetCurrentLevelForDevice";
+
+
+            // Прибавление или удаление для каждого из источников
+            store.data.each(function (item, index, totalItems) {
+                var valueOfLevels = new Array();
+                var dataFrom =  item.data;
+
+                if (dataFrom === undefined) {
+                    return;
+                }
+
+                if (dataFrom.device_name === undefined ) {
+                    return;
+                }
+                
+                // Получение нынешнего установленного порога
+                // И прибавление к нему присланного значения
+                var newCurrLevel = dataFrom.curr_level + changeVal;
+
+                valueOfLevels.push(dataFrom.device_name);
+                valueOfLevels.push(newCurrLevel);
+                command.argin = valueOfLevels;
+                var comJson = Ext.util.JSON.encode(command);
+                me.ws.send(comJson);
+            });
+
+
+        }
         
 //        me.ws.send(comJson);
         

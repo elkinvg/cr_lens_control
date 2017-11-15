@@ -64,7 +64,7 @@ Ext.define('LensControl.view.lens.Lens', {
                         {
                             xtype: 'fieldcontainer',
                             itemId: 'currId',
-                            fieldLabel: '<b>Установка тока для всех</b>',
+                            fieldLabel: '<b>Увеличить/уменьшить значение тока на</b>',
                             labelWidth: 120,
                             combineErrors: false,
                             defaults: {
@@ -80,12 +80,12 @@ Ext.define('LensControl.view.lens.Lens', {
                                     name: 'currforall',
                                     itemId: 'currforall',
                                     xtype: 'numberfield',
-                                    minValue: 0,
+                                    minValue: -20.,
                                     allowBlank: false,
                                     value: 0.0,//value: 5.5,
-                                    maxValue: 80,
+                                    maxValue: 20.,
                                     maxLenght: 5,
-                                    step: 0.1,//step: 0.5,
+                                    step: 1.0,//step: 0.5,
                                     width: 100
                                 },
                                 {
