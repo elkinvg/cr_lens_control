@@ -191,7 +191,7 @@ Ext.define('LensControl.view.lens.LensController', {
         //console.log("lensGet[0].maxheightGrid " + lensGet[0].maxheightGrid);
 
         if (lensGet[0].maxheightGrid < lensGetHeight) {
-            lensGet[0].maxheightGrid = lensGetHeight + 200;
+            lensGet[0].maxheightGrid = lensGetHeight + 400;
             lensGet[0].setMinHeight(lensGet[0].maxheightGrid);
         }
     },    
